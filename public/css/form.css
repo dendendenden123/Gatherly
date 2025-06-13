@@ -122,7 +122,7 @@ body {
     color: var(--accent-red);
     font-size: 12px;
     margin-top: 4px;
-    display: none;
+    display: inline;
 }
 
 .auth-input.error {

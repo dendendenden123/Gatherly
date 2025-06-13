@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -13,10 +12,24 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->enum('role', ['Finance', 'SCAN', 'Deacon', 'Kalihim', 'Choir', "None"])->required();
+            $table->string('first_name')->required();
+            $table->string('last_name')->required();
+            $table->string('middle_name')->required();
+            $table->string('email')->unique()->required();
+            $table->string('password')->required();
+            $table->string('phone')->nullable();
+            $table->string('address')->nullable();
+            $table->date('birthdate')->nullable();
+            $table->enum('sex', ['male', 'female'])->nullable();
+            $table->date('baptism_date')->nullable();
+            $table->string('marital_status')->nullable();
+            $table->string('profile_image_url')->default('https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg')->nullable();
+            $table->string('document_image_url')->nullable();
+            $table->enum('status', ['active', 'inactive', 'suspended'])->nullable();
+            $table->boolean('is_Verify')->default(false);
+            $table->boolean('email_verified')->default(false);
+            $table->timestamp('last_login_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
