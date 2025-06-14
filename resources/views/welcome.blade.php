@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grace Community Church | Loving God, Serving People</title>
+    <title>Gatherly Church | Loving God, Serving People</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -31,7 +31,7 @@
                 <div class="flex items-center">
                     <div class="flex-shrink-0 flex items-center">
                         <i class="bi bi-church text-primary text-2xl mr-2"></i>
-                        <span class="text-xl font-bold text-primary">Grace Community</span>
+                        <span class="text-xl font-bold text-primary">Gatherly</span>
                     </div>
                 </div>
                 <div class="hidden md:flex items-center space-x-8">
@@ -75,7 +75,7 @@
                 <div class="md:w-1/2">
                     <div class="bg-white p-2 rounded-lg shadow-xl">
                         <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
-                            alt="Grace Community Church Building" class="rounded-lg w-full h-auto">
+                            alt="Gatherly Church Building" class="rounded-lg w-full h-auto">
                     </div>
                 </div>
             </div>
@@ -133,7 +133,7 @@
             <div class="md:flex items-center">
                 <div class="md:w-1/2 mb-10 md:mb-0 md:pr-10">
                     <h2 class="text-3xl font-bold mb-6">Our Story</h2>
-                    <p class="text-gray-600 mb-4">Founded in 1985, Grace Community Church began as a small Bible study
+                    <p class="text-gray-600 mb-4">Founded in 1985, Gatherly Church began as a small Bible study
                         in a living room. Today, we're a vibrant congregation of over 500 members, committed to sharing
                         God's love in our community.</p>
                     <p class="text-gray-600 mb-6">Our mission is simple: <span class="font-semibold text-primary">"To
@@ -164,7 +164,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
                 <h2 class="text-3xl font-bold mb-4">Meet Our Pastoral Team</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">Shepherds of Grace Community Church</p>
+                <p class="text-gray-600 max-w-2xl mx-auto">Shepherds of Gatherly Church</p>
             </div>
 
             <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
@@ -468,7 +468,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="md:flex items-center">
                 <div class="md:w-1/2 mb-10 md:mb-0 md:pr-10">
-                    <h2 class="text-3xl font-bold mb-6">New to Grace Community?</h2>
+                    <h2 class="text-3xl font-bold mb-6">New to Gatherly?</h2>
                     <p class="mb-6 opacity-90">We're so glad you're considering visiting our church! Here's what you can
                         expect:</p>
                     <ul class="space-y-3 mb-8">
@@ -610,7 +610,7 @@
                 <div class="md:col-span-2">
                     <div class="flex items-center mb-4">
                         <i class="bi bi-church text-primary text-2xl mr-2"></i>
-                        <span class="text-xl font-bold text-white">Grace Community Church</span>
+                        <span class="text-xl font-bold text-white">Gatherly Church</span>
                     </div>
                     <p class="mb-4">Loving God, Serving People - Since 1985</p>
                     <div class="flex space-x-4">
@@ -653,7 +653,7 @@
             </div>
 
             <div class="border-t border-gray-800 mt-8 pt-8 text-sm text-gray-500 text-center">
-                <p>&copy; 2023 Grace Community Church. All rights reserved. | <a href="#"
+                <p>&copy; 2023 Gatherly Church. All rights reserved. | <a href="#"
                         class="hover:text-white transition">Privacy Policy</a> | <a href="#"
                         class="hover:text-white transition">Terms of Use</a></p>
             </div>
