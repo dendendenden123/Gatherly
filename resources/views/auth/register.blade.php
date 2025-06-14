@@ -1,6 +1,7 @@
 @extends('layout.form')
 @section('title', 'Register')
 @section("subtitle", "Please enter your credentials to register.")
+@section("form-action", route('register'))
 
 @section("form-fields")
     <!-- first name -->
@@ -18,7 +19,7 @@
     <!-- Role -->
     <x-form.field label="Role" name="role" type="select" :error="$errors->first('role')">
         <option value="">Select your role</option>
-        <option value="Finance" {{ old('role') == 'Finance' ? 'selected' : '' }}>Finance</option>
+        <option value="Finance" {{ old('role') == 'Finance' ? 'selected' : '' }} disabled>Finance</option>
         <option value="SCAN" {{ old('role') == 'SCAN' ? 'selected' : '' }}>SCAN</option>
         <option value="Deacon" {{ old('role') == 'Deacon' ? 'selected' : '' }}>Deacon</option>
         <option value="Kalihim" {{ old('role') == 'Kalihim' ? 'selected' : '' }}>Kalihim</option>
@@ -62,6 +63,10 @@
     <!-- baptism date -->
     <x-form.field label="Baptism Date" name="baptism_date" type="date" :error="$errors->first('baptism_date')" />
 
+    <!-- Upload your supporting documents(NSO Livebirth etc)-->
+    <x-form.field name="document_image" type="file" accept="image/*" label="Upload supporting documents"
+        aria-placeholder="NSO, Livebirth and PSA etc" :error="$errors->first('document_image')" />
+
     <!-- email -->
     <x-form.field label="Email" name="email" type="email" placeholder="you@example.com" :error="$errors->first('email')" />
 
@@ -79,5 +84,5 @@
 @endsection
 
 @section("footer-text")
-    <p>Already have an account? <a href="{{ route('login') }}" class="auth-link">Log In</a></p>
+    <p>Already have an account? <a href="{{ route('showLoginForm') }}" class="auth-link">Log In</a></p>
 @endsection

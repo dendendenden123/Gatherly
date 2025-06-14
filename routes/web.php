@@ -1,16 +1,17 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
+Route::controller(UserController::class)->group(function () {
+    Route::get('/login', 'showLoginForm')->name('showLoginForm');
+    Route::post('/login', 'login')->name('login');
+    Route::get('/register', 'showRegisterForm')->name('showRegisterForm');
+    Route::post('/register', 'store')->name('register');
+    Route::get('/logout', 'logout')->name('logout');
+});
 
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
-
-Route::get('/register', function () {
-    return view('auth.register');
-})->name('register');
