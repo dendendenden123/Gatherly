@@ -16,6 +16,10 @@
 <body>
     <div class="auth-container">
         <div class="auth-card">
+            <a href="#" class="back-link btn btn-link p-0 mb-3 left-align top-2">
+                <img src="{{ asset('images/back.png') }}" alt="Back"
+                    style="height: 20px; vertical-align: middle; margin-right: 6px;">
+            </a>
             <h1 class="auth-title">@yield("title")</h1>
             <p class="auth-subtitle">@yield("subtitle")</p>
 
@@ -31,5 +35,14 @@
         </div>
     </div>
 </body>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const backLink = document.querySelector(".back-link");
+        backLink.addEventListener("click", function (event) {
+            event.preventDefault();
+            window.history.back();
+        });
+    });
+</script>
 
 </html>

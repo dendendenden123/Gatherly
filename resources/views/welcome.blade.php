@@ -40,8 +40,10 @@
                     <a href="#sermons" class="text-gray-700 hover:text-primary transition">Sermons</a>
                     <a href="#events" class="text-gray-700 hover:text-primary transition">Events</a>
                     <a href="#contact" class="text-gray-700 hover:text-primary transition">Contact</a>
-                    <a href="#"
-                        class="bg-primary hover:bg-secondary text-white px-4 py-2 rounded-md transition">Give</a>
+                    <a href="{{ route('showLoginForm') }}" class="text-gray-700 hover:text-primary transition">Log
+                        In</a>
+                    <a href="{{ route('showRegisterForm') }}"
+                        class="bg-primary hover:bg-secondary text-white px-4 py-2 rounded-md transition">Register</a>
                 </div>
                 <div class="md:hidden flex items-center">
                     <button class="text-gray-700">
