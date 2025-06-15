@@ -75,7 +75,8 @@
                         <i class="bi bi-house-door"></i>
                         <span class="md:hidden lg:block">Dashboard</span>
                     </a>
-                    <a href="#" class="flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100">
+                    <a href="/member/attendance"
+                        class="flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100">
                         <i class="bi bi-calendar-check"></i>
                         <span class="md:hidden lg:block">Attendance</span>
                     </a>
