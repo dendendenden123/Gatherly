@@ -20,7 +20,7 @@
             }
         }
     </script>
-    <link rel="stylesheet" href={{ asset('css/member.css') }}>
+    <link rel="stylesheet" href={{ asset('css/welcome.css') }}>
 </head>
 
 <body class="font-sans antialiased text-gray-800">

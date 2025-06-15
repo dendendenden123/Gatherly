@@ -22,7 +22,7 @@ class UserController extends Controller
 
         if (auth()->attempt($credentials)) {
             $user = auth()->user();
-            return redirect()->route('member.home');
+            return redirect()->route('member.index');
         } else {
             return response()->json(['error' => 'Invalid credentials'], 401);
         }
