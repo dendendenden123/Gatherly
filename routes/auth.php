@@ -4,8 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 
 Route::get('/member', function () {
-    return view('member.index');
-})->name('member.index');
+    return view('member.dashboard');
+})->name('member.dashboard');
 
 Route::get('/member/attendance', function () {
     return view("member.attendance");
@@ -25,3 +25,4 @@ Route::get('/member/messages', function () {
 Route::get('/member/tasks', function () {
     return view("member.tasks");
 });
+

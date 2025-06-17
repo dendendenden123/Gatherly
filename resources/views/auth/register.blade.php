@@ -19,7 +19,7 @@
     <!-- Role -->
     <x-form.field label="Role" name="role" type="select" :error="$errors->first('role')">
         <option value="">Select your role</option>
-        <option value="Finance" {{ old('role') == 'Finance' ? 'selected' : '' }} disabled>Finance</option>
+        <option value="Minister" {{ old('role') == 'Minister' ? 'selected' : '' }}>Minister</option>
         <option value="SCAN" {{ old('role') == 'SCAN' ? 'selected' : '' }}>SCAN</option>
         <option value="Deacon" {{ old('role') == 'Deacon' ? 'selected' : '' }}>Deacon</option>
         <option value="Kalihim" {{ old('role') == 'Kalihim' ? 'selected' : '' }}>Kalihim</option>
