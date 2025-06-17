@@ -22,7 +22,12 @@ class UserController extends Controller
 
         if (auth()->attempt($credentials)) {
             $user = auth()->user();
-            return redirect()->route('member.index');
+
+            if ($user->role === 'admin' || $user->role === 'Minister') {
+                return redirect()->route('admin.dashboard');
+            }
+            return redirect()->route('member.dashboard');
+
         } else {
             return response()->json(['error' => 'Invalid credentials'], 401);
         }
@@ -32,7 +37,7 @@ class UserController extends Controller
         // Validate the request data
         try {
             $validatedData = $request->validate([
-                'role' => 'required|in:Finance,SCAN,Deacon,Kalihim,Choir,None',
+                'role' => 'required|in:Minister,Finance,SCAN,Deacon,Kalihim,Choir,None',
                 'first_name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',
                 'middle_name' => 'required|string|max:255',
