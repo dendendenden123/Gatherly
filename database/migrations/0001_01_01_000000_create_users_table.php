@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->enum('role', ['Finance', 'SCAN', 'Deacon', 'Kalihim', 'Choir', "None"])->required();
+            $table->enum('role', ['Minister', 'Finance', 'SCAN', 'Deacon', 'Kalihim', 'Choir', "None"])->required();
             $table->string('first_name')->required();
             $table->string('last_name')->required();
             $table->string('middle_name')->required();
