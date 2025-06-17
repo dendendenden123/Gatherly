@@ -18,7 +18,7 @@ class AuthAdmin
     {
 
         $user = auth()->user();
-        if ($user && $user->role != 'Minister') {
+        if (auth()->check() && $user->role != 'Minister') {
             return redirect()->route('logout');
         }
         return $next($request);
