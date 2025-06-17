@@ -1,3 +1,5 @@
+<!-- requirements: form.css -->
+
 @if ($type == 'select')
     <div class="input-group">
         <label for="{{ $id ?? ' '}}">{{ $label ?? ' '}}</label>
