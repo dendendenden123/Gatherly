@@ -5,7 +5,7 @@ use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('landing_page');
 
 Route::controller(UserController::class)->group(function () {
     Route::get('/login', 'showLoginForm')->name('showLoginForm');
