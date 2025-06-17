@@ -11,3 +11,7 @@ Route::get('/admin', function () {
 Route::get('/admin/attendance', function () {
     return view('admin.attendance');
 })->name('admin.attendance');
+
+Route::get('/admin/members', function () {
+    return view('admin.members');
+})->name('admin.members');
