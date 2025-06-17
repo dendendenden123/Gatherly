@@ -1,3 +1,5 @@
+<!-- sections/yield: styles, header, header-text, header-subtext, content -->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,6 +7,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gatherly - Church Management System</title>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2ecc71',
+                        secondary: '#27ae60',
+                        accent: '#e74c3c',
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         :root {
             --primary-green: #2ecc71;
@@ -606,6 +621,8 @@
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    @yield('styles')
 </head>
 
 <body>
@@ -629,47 +646,71 @@
         </div>
 
         <div class="nav-menu">
-            <div class="nav-item active">
-                <i class="fas fa-home"></i>
-                <span>Dashboard</span>
+            <div class="nav-item {{ request()->is('admin') ? 'active' : '' }}">
+                <a href="{{ route('admin.dashboard') }}" class="text-decoration-none text-reset">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
             </div>
-            <div class="nav-item">
-                <i class="fas fa-users"></i>
-                <span>Members</span>
+            <div class="nav-item {{ request()->is('admin/members') ? 'active' : '' }}">
+                <a href="{{ route('admin.members') }}" class="text-decoration-none text-reset">
+                    <i class="fas fa-users"></i>
+                    <span>Members</span>
+                </a>
             </div>
-            <div class="nav-item">
-                <a href="{{ route('admin.attendance') }}" class="style reset">
+            <div class="nav-item {{ request()->is('admin/attendance') ? 'active' : '' }}">
+                <a href="{{ route('admin.attendance') }}" class="text-decoration-none text-reset">
                     <i class="fas fa-calendar-check"></i>
                     <span>Attendance</span>
                 </a>
             </div>
-            <div class="nav-item">
-                <i class="fas fa-chart-bar"></i>
-                <span>Reports</span>
+            <div class="nav-item {{ request()->is('admin/reports') ? 'active' : '' }}">
+                <a href="#" class="text-decoration-none text-reset">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Reports</span>
+                </a>
             </div>
-            <div class="nav-item">
-                <i class="fas fa-bell"></i>
-                <span>Notifications</span>
+            <div class="nav-item {{ request()->is('admin/notifications') ? 'active' : '' }}">
+                <a href="#" class="text-decoration-none text-reset">
+                    <i class="fas fa-bell"></i>
+                    <span>Notifications</span>
+                </a>
             </div>
-            <div class="nav-item">
-                <i class="fas fa-user-tie"></i>
-                <span>Officers</span>
+            <div class="nav-item {{ request()->is('admin/officers') ? 'active' : '' }}">
+                <a href="#" class="text-decoration-none text-reset">
+                    <i class="fas fa-user-tie"></i>
+                    <span>Officers</span>
+                </a>
             </div>
-            <div class="nav-item">
-                <i class="fas fa-hands-helping"></i>
-                <span>Volunteers</span>
+            <div class="nav-item {{ request()->is('admin/volunteers') ? 'active' : '' }}">
+                <a href="#" class="text-decoration-none text-reset">
+                    <i class="fas fa-hands-helping"></i>
+                    <span>Volunteers</span>
+                </a>
             </div>
-            <div class="nav-item">
-                <i class="fas fa-calendar-alt"></i>
-                <span>Events</span>
+            <div class="nav-item {{ request()->is('admin/events') ? 'active' : '' }}">
+                <a href="#" class="text-decoration-none text-reset">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Events</span>
+                </a>
             </div>
-            <div class="nav-item">
-                <i class="fas fa-chart-line"></i>
-                <span>Engagement</span>
+            <div class="nav-item  {{ request()->is('admin/engagement') ? 'active' : '' }}">
+                <a href="#" class="text-decoration-none text-reset">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Engagement</span>
+                </a>
             </div>
-            <div class="nav-item">
-                <i class="fas fa-cog"></i>
-                <span>Settings</span>
+            <div class="nav-item {{ request()->is('admin/settings') ? 'active' : '' }}">
+                <a href="#" class="text-decoration-none text-reset">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </div>
+            <div class="nav-item {{ request()->is('logout') ? 'active' : '' }}">
+                <a href="/logout" class="text-decoration-none text-reset">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
             </div>
         </div>
 
@@ -686,10 +727,11 @@
 
     <!-- Main Content Area -->
     <div class="main-content">
+        @section('header')
         <div class="header">
             <div class="page-title">
-                <h1>Dashboard Overview</h1>
-                <p>Welcome back! Here's what's happening with your church today.</p>
+                <h1>@yield('header-text', 'Dashboard Overview')</h1>
+                <p>@yield('header-subtext', "Welcome back! Here's what's happening with your church today.")</p>
             </div>
 
             <div class="header-actions">
@@ -703,238 +745,10 @@
                 </div>
             </div>
         </div>
-
-        <!-- Dashboard Widgets -->
-        <div class="dashboard-widgets">
-            <div class="widget">
-                <div class="widget-header">
-                    <div class="widget-title">Total Members</div>
-                    <i class="fas fa-users"></i>
-                </div>
-                <div class="widget-value">1,248</div>
-                <div class="widget-footer">
-                    <i class="fas fa-arrow-up positive"></i>
-                    <span class="positive">12% from last month</span>
-                </div>
-            </div>
-
-            <div class="widget">
-                <div class="widget-header">
-                    <div class="widget-title">Weekly Attendance</div>
-                    <i class="fas fa-calendar-check"></i>
-                </div>
-                <div class="widget-value">876</div>
-                <div class="widget-footer">
-                    <i class="fas fa-arrow-up positive"></i>
-                    <span class="positive">5% from last week</span>
-                </div>
-            </div>
-
-            <div class="widget">
-                <div class="widget-header">
-                    <div class="widget-title">Upcoming Events</div>
-                    <i class="fas fa-calendar-alt"></i>
-                </div>
-                <div class="widget-value">7</div>
-                <div class="widget-footer">
-                    <span>This week</span>
-                </div>
-            </div>
-        </div>
+        @show
 
         <!-- Main Sections -->
-        <div class="main-sections">
-            <div class="section">
-                <div class="section-header">
-                    <div class="section-title">Recent Members</div>
-                    <div class="section-actions">
-                        <a href="#">View All</a>
-                    </div>
-                </div>
-
-                <table class="members-table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Join Date</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <div class="member-info">
-                                    <div class="member-avatar"></div>
-                                    <div>
-                                        <div class="member-name">Sarah Johnson</div>
-                                        <div class="member-email">sarah@example.com</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>Jun 12, 2023</td>
-                            <td><span class="status-badge status-active">Active</span></td>
-                            <td>
-                                <button class="action-btn edit-btn">Edit</button>
-                                <button class="action-btn delete-btn">Delete</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="member-info">
-                                    <div class="member-avatar"></div>
-                                    <div>
-                                        <div class="member-name">Michael Brown</div>
-                                        <div class="member-email">michael@example.com</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>Jun 10, 2023</td>
-                            <td><span class="status-badge status-active">Active</span></td>
-                            <td>
-                                <button class="action-btn edit-btn">Edit</button>
-                                <button class="action-btn delete-btn">Delete</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="member-info">
-                                    <div class="member-avatar"></div>
-                                    <div>
-                                        <div class="member-name">Emily Davis</div>
-                                        <div class="member-email">emily@example.com</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>Jun 5, 2023</td>
-                            <td><span class="status-badge status-inactive">Inactive</span></td>
-                            <td>
-                                <button class="action-btn edit-btn">Edit</button>
-                                <button class="action-btn delete-btn">Delete</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="member-info">
-                                    <div class="member-avatar"></div>
-                                    <div>
-                                        <div class="member-name">Robert Wilson</div>
-                                        <div class="member-email">robert@example.com</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>May 28, 2023</td>
-                            <td><span class="status-badge status-active">Active</span></td>
-                            <td>
-                                <button class="action-btn edit-btn">Edit</button>
-                                <button class="action-btn delete-btn">Delete</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="member-info">
-                                    <div class="member-avatar"></div>
-                                    <div>
-                                        <div class="member-name">Jennifer Lee</div>
-                                        <div class="member-email">jennifer@example.com</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>May 20, 2023</td>
-                            <td><span class="status-badge status-active">Active</span></td>
-                            <td>
-                                <button class="action-btn edit-btn">Edit</button>
-                                <button class="action-btn delete-btn">Delete</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="section">
-                <div class="section-header">
-                    <div class="section-title">Recent Activity</div>
-                    <div class="section-actions">
-                        <a href="#">View All</a>
-                    </div>
-                </div>
-
-                <ul class="activity-list">
-                    <li class="activity-item">
-                        <div class="activity-icon">
-                            <i class="fas fa-user-plus"></i>
-                        </div>
-                        <div class="activity-details">
-                            <h4>New Member Added</h4>
-                            <p>Sarah Johnson joined the church</p>
-                            <div class="activity-time">2 hours ago</div>
-                        </div>
-                    </li>
-                    <li class="activity-item">
-                        <div class="activity-icon">
-                            <i class="fas fa-calendar-check"></i>
-                        </div>
-                        <div class="activity-details">
-                            <h4>Sunday Service</h4>
-                            <p>Attendance recorded: 876 members</p>
-                            <div class="activity-time">1 day ago</div>
-                        </div>
-                    </li>
-                    <li class="activity-item">
-                        <div class="activity-icon">
-                            <i class="fas fa-envelope"></i>
-                        </div>
-                        <div class="activity-details">
-                            <h4>Notification Sent</h4>
-                            <p>Weekly bulletin sent to all members</p>
-                            <div class="activity-time">2 days ago</div>
-                        </div>
-                    </li>
-                    <li class="activity-item">
-                        <div class="activity-icon">
-                            <i class="fas fa-user-tie"></i>
-                        </div>
-                        <div class="activity-details">
-                            <h4>Officer Assignment</h4>
-                            <p>Michael Brown assigned as Small Group Leader</p>
-                            <div class="activity-time">3 days ago</div>
-                        </div>
-                    </li>
-                    <li class="activity-item">
-                        <div class="activity-icon">
-                            <i class="fas fa-hands-helping"></i>
-                        </div>
-                        <div class="activity-details">
-                            <h4>Volunteer Signup</h4>
-                            <p>5 new volunteers for Food Bank event</p>
-                            <div class="activity-time">4 days ago</div>
-                        </div>
-                    </li>
-                </ul>
-
-                <div class="quick-actions">
-                    <h3 class="section-title">Quick Actions</h3>
-                    <div class="action-buttons">
-                        <button class="action-button">
-                            <i class="fas fa-user-plus"></i>
-                            <span>Add Member</span>
-                        </button>
-                        <button class="action-button">
-                            <i class="fas fa-calendar-plus"></i>
-                            <span>Create Event</span>
-                        </button>
-                        <button class="action-button">
-                            <i class="fas fa-envelope"></i>
-                            <span>Send Message</span>
-                        </button>
-                        <button class="action-button red">
-                            <i class="fas fa-file-export"></i>
-                            <span>Generate Report</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @yield('content')
     </div>
 
     <script>
