@@ -64,7 +64,7 @@ class UserController extends Controller
         request()->session()->invalidate();
         // Regenerate CSRF token
         request()->session()->regenerateToken();
-        return redirect()->route('showLoginForm');
+        return redirect()->route('landing_page');
     }
 
 }
