@@ -1,3 +1,5 @@
+<!-- sections/yield: styles, header, header-text, content -->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grace Community | Member Portal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="@yield('styles')" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -55,6 +58,24 @@
             transform: rotate(-90deg);
             transform-origin: 50% 50%;
         }
+
+        .sermon-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-thumbnail:hover .play-icon {
+            transform: scale(1.1);
+        }
+
+        .series-tag {
+            transition: all 0.3s ease;
+        }
+
+        .series-tag:hover {
+            background-color: #27ae60;
+            color: white;
+        }
     </style>
 </head>
 
@@ -100,22 +121,22 @@
                         <i class="bi bi-people"></i>
                         <span class="md:hidden lg:block">Family</span>
                     </a>
-                    <a href="#"
-                        class="{{ Request::is('member/announcements') ? 'flex items-center space-x-3 p-2 rounded-lg bg-primary bg-opacity-10 text-primary' : 'flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100' }}">
+                    <a href="/member/announcement"
+                        class="{{ Request::is('member/announcement') ? 'flex items-center space-x-3 p-2 rounded-lg bg-primary bg-opacity-10 text-primary' : 'flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100' }}">
                         <i class="bi bi-megaphone"></i>
                         <span class="md:hidden lg:block">Announcements</span>
                     </a>
-                    <a href="#"
-                        class="{{ Request::is('member/sermons') ? 'flex items-center space-x-3 p-2 rounded-lg bg-primary bg-opacity-10 text-primary' : 'flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100' }}">
+                    <a href="/member/sermon"
+                        class="{{ Request::is('member/sermon') ? 'flex items-center space-x-3 p-2 rounded-lg bg-primary bg-opacity-10 text-primary' : 'flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100' }}">
                         <i class="bi bi-collection-play"></i>
                         <span class="md:hidden lg:block">Sermons</span>
                     </a>
-                    <a href="#"
+                    <a href="/member/messages"
                         class="{{ Request::is('member/messages') ? 'flex items-center space-x-3 p-2 rounded-lg bg-primary bg-opacity-10 text-primary' : 'flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100' }}">
                         <i class="bi bi-chat-left-text"></i>
                         <span class="md:hidden lg:block">Messages</span>
                     </a>
-                    <a href="#"
+                    <a href="/member/tasks"
                         class="{{ Request::is('member/tasks') ? 'flex items-center space-x-3 p-2 rounded-lg bg-primary bg-opacity-10 text-primary' : 'flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100' }}">
                         <i class="bi bi-list-task"></i>
                         <span class="md:hidden lg:block">Tasks</span>
