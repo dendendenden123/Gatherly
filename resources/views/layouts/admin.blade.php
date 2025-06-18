@@ -672,7 +672,8 @@
                     <span>Reports</span>
                 </a>
             </div>
-            <div class="nav-item {{ request()->is('admin/notifications') ? 'active' : '' }}">
+            <div
+                class="nav-item {{ request()->is('admin/notifications') || request()->is('admin/notifications/*') ? 'active' : '' }}">
                 <a href="{{ route('admin.notifications.index') }}" class="text-decoration-none text-reset">
                     <i class="fas fa-bell"></i>
                     <span>Notifications</span>
