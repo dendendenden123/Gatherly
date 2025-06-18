@@ -19,3 +19,4 @@ Route::get('/admin/members', function () {
 Route::get('/admin/reports', function () {
     return view('admin.reports');
 })->name('admin.reports');
+
