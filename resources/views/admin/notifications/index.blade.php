@@ -412,9 +412,11 @@
                 <button class="btn btn-outline" id="markAllReadBtn">
                     <i class="fas fa-check-circle"></i> Mark All Read
                 </button>
-                <button class="btn btn-primary" id="newNotificationBtn">
-                    <i class="fas fa-plus"></i> New Notification
-                </button>
+                <a href="{{ route('admin.notifications.create') }}" class="text-reset text-decoration-none">
+                    <button class="btn btn-primary" id="newNotificationBtn">
+                        <i class="fas fa-plus"></i> New Notification
+                    </button>
+                </a>
             </div>
         </div>
 
