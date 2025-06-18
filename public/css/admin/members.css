@@ -51,26 +51,6 @@ body {
     color: var(--primary-green);
 }
 
-/* Sidebar (Hidden on Mobile by Default) */
-.sidebar {
-    width: 250px;
-    background-color: white;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-    padding: 20px 0;
-    display: none;
-    flex-direction: column;
-    position: fixed;
-    height: 100vh;
-    z-index: 99;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-}
-
-.sidebar.active {
-    transform: translateX(0);
-    display: flex;
-}
-
 /* Main Content */
 .main-content {
     flex-grow: 1;
