@@ -665,7 +665,7 @@
                 </a>
             </div>
             <div class="nav-item {{ request()->is('admin/reports') ? 'active' : '' }}">
-                <a href="#" class="text-decoration-none text-reset">
+                <a href="{{ route('admin.reports') }}" class="text-decoration-none text-reset">
                     <i class="fas fa-chart-bar"></i>
                     <span>Reports</span>
                 </a>
