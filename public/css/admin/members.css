@@ -2,7 +2,7 @@
     --primary-green: #2ecc71;
     --dark-green: #27ae60;
     --accent-red: #e74c3c;
-    --light-gray: #f5f5f5;
+    --white: #fff;
     --medium-gray: #ecf0f1;
     --dark-gray: #95a5a6;
     --text-dark: #2c3e50;
@@ -20,7 +20,7 @@ body {
     display: flex;
     /* flex-direction: column; */
     min-height: 100vh;
-    background-color: var(--light-gray);
+    background-color: var(--white);
     color: var(--text-dark);
 }
 
@@ -339,5 +339,6 @@ body {
 
     .main-content {
         margin-top: 0;
+        margin-left: unset;
     }
 }

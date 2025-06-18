@@ -1,4 +1,4 @@
-@extends('layout.form')
+@extends('layouts.form')
 @section('title', 'Register')
 @section("subtitle", "Please enter your credentials to register.")
 @section("form-action", route('register'))

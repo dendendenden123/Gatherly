@@ -1,4 +1,4 @@
-@extends('layout.member')
+@extends('layouts.member')
 @section('content')
 
     <body class="bg-gray-50 font-sans antialiased">

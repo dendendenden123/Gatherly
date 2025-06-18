@@ -1,4 +1,4 @@
-@extends('layout.member')
+@extends('layouts.member')
 @section('content')
     @section('header')
         <header class="bg-white shadow-sm">
