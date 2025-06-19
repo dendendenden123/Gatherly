@@ -3,6 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\OfficerController;
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\EngagementController;
 
 
 Route::get('/admin', function () {
@@ -25,4 +28,19 @@ Route::get('/admin/reports', function () {
 Route::controller(NotificationController::class)->group(function () {
     Route::get('/admin/notifications', 'index')->name('admin.notifications.index');
     Route::get('/admin/notifications/create', 'create')->name('admin.notifications.create');
+});
+
+//Officer Routes
+Route::controller(OfficerController::class)->group(function () {
+    Route::get('/admin/officers', 'index')->name('admin.officers');
+});
+
+//Events Routes
+Route::controller(EventController::class)->group(function () {
+    Route::get('/admin/events', 'index')->name('admin.events.index');
+});
+
+//Engagements Routes
+Route::controller(EngagementController::class)->group(function () {
+    Route::get('/admin/engagements', 'index')->name('admin.engagements.index');
 });
