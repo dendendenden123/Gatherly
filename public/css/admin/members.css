@@ -330,15 +330,7 @@ body {
         display: none;
     }
 
-    .sidebar {
-        display: flex;
-        position: relative;
-        transform: translateX(0);
-        height: auto;
-    }
-
     .main-content {
         margin-top: 0;
-        margin-left: unset;
     }
 }
