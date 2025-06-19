@@ -537,7 +537,7 @@
                 display: flex;
                 position: fixed;
                 transform: translateX(0);
-                height: auto;
+                height: 100vh;
             }
 
             .main-content {
@@ -680,7 +680,7 @@
                 </a>
             </div>
             <div class="nav-item {{ request()->is('admin/officers') ? 'active' : '' }}">
-                <a href="#" class="text-decoration-none text-reset">
+                <a href="{{ route('admin.officers') }}" class="text-decoration-none text-reset">
                     <i class="fas fa-user-tie"></i>
                     <span>Officers</span>
                 </a>
@@ -692,15 +692,15 @@
                 </a>
             </div>
             <div class="nav-item {{ request()->is('admin/events') ? 'active' : '' }}">
-                <a href="#" class="text-decoration-none text-reset">
+                <a href="{{ route('admin.events.index') }}" class="text-decoration-none text-reset">
                     <i class="fas fa-calendar-alt"></i>
                     <span>Events</span>
                 </a>
             </div>
-            <div class="nav-item  {{ request()->is('admin/engagement') ? 'active' : '' }}">
-                <a href="#" class="text-decoration-none text-reset">
+            <div class="nav-item  {{ request()->is('admin/engagements') ? 'active' : '' }}">
+                <a href="{{ route('admin.engagements.index') }}" class="text-decoration-none text-reset">
                     <i class="fas fa-chart-line"></i>
-                    <span>Engagement</span>
+                    <span>Engagements</span>
                 </a>
             </div>
             <div class="nav-item {{ request()->is('admin/settings') ? 'active' : '' }}">
