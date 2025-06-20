@@ -10,8 +10,8 @@ Route::get('/member', function () {
 Route::get('/member/attendance', function () {
     return view("member.attendance");
 });
-Route::get('/member/family', function () {
-    return view("member.family");
+Route::get('/member/community-group', function () {
+    return view("member.community-group");
 });
 Route::get('/member/announcement', function () {
     return view("member.announcement");

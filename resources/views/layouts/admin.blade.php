@@ -7,6 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gatherly - Church Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -20,6 +21,8 @@
             }
         }
     </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root {
             --primary-green: #2ecc71;
@@ -30,6 +33,10 @@
             --dark-gray: #95a5a6;
             --text-dark: #2c3e50;
             --text-light: #7f8c8d;
+            --white: #fff;
+            --purple: #9b59b6;
+            --blue: #3498db;
+            --orange: #e67e22;
         }
 
         * {
@@ -39,6 +46,11 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
+        h2 {
+            font-size: unset;
+            font-weight: unset;
+        }
+
         body {
             display: flex;
             flex-direction: column;
@@ -46,6 +58,7 @@
             background-color: var(--light-gray);
             color: var(--text-dark);
         }
+
 
         /* Mobile First Approach */
 
@@ -622,8 +635,6 @@
             }
         }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     @yield('styles')
 </head>
 
@@ -679,16 +690,11 @@
                     <span>Notifications</span>
                 </a>
             </div>
+
             <div class="nav-item {{ request()->is('admin/officers') ? 'active' : '' }}">
                 <a href="{{ route('admin.officers') }}" class="text-decoration-none text-reset">
                     <i class="fas fa-user-tie"></i>
                     <span>Officers</span>
-                </a>
-            </div>
-            <div class="nav-item {{ request()->is('admin/volunteers') ? 'active' : '' }}">
-                <a href="#" class="text-decoration-none text-reset">
-                    <i class="fas fa-hands-helping"></i>
-                    <span>Volunteers</span>
                 </a>
             </div>
             <div class="nav-item {{ request()->is('admin/events') ? 'active' : '' }}">

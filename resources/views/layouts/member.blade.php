@@ -8,7 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grace Community | Member Portal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="@yield('styles')" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -77,15 +76,15 @@
             color: white;
         }
     </style>
+    @yield('styles')
 </head>
 
 <body class="bg-gray-100 font-sans antialiased">
     <div class="flex h-screen overflow-hidden">
         <!-- Sidebar -->
         <div class="sidebar bg-white w-64 md:w-20 lg:w-64 flex-shrink-0 shadow-md">
-            <div
-                class="p-4 border-b border-gray-200 flex items-center justify-between md:justify-center lg:justify-between">
-                <span class="text-xl font-bold text-primary md:hidden lg:block">GraceConnect</span>
+            <div class="p-4 flex items-center justify-between md:justify-center lg:justify-between">
+                <span class="text-xl font-bold text-primary md:hidden lg:block">Gatherly</span>
                 <i class="bi bi-church text-primary text-2xl hidden md:block lg:hidden"></i>
                 <button class="text-gray-500 md:hidden">
                     <i class="bi bi-x-lg"></i>
@@ -116,10 +115,10 @@
                         <i class="bi bi-calendar-check"></i>
                         <span class="md:hidden lg:block">Attendance</span>
                     </a>
-                    <a href="/member/family"
-                        class="{{ Request::is('member/family') ? 'flex items-center space-x-3 p-2 rounded-lg bg-primary bg-opacity-10 text-primary' : 'flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100' }}">
+                    <a href="/member/community-group"
+                        class="{{ Request::is('member/community-group') ? 'flex items-center space-x-3 p-2 rounded-lg bg-primary bg-opacity-10 text-primary' : 'flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100' }}">
                         <i class="bi bi-people"></i>
-                        <span class="md:hidden lg:block">Family</span>
+                        <span class="md:hidden lg:block">Community Group</span>
                     </a>
                     <a href="/member/announcement"
                         class="{{ Request::is('member/announcement') ? 'flex items-center space-x-3 p-2 rounded-lg bg-primary bg-opacity-10 text-primary' : 'flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100' }}">
