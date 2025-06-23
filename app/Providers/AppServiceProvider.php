@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\AuthAdmin;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+
+        Route::middleware(['web', 'auth'])
+            ->group(base_path('routes/auth.php'));
+
+        Route::middleware(['web', 'auth', AuthAdmin::class])
+            ->group(base_path('routes/admin.php'));
     }
 }
