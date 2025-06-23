@@ -6,15 +6,12 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OfficerController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\EngagementController;
+use App\Http\Controllers\AttendanceController;
 
 
 Route::get('/admin', function () {
     return view('admin.dashboard');
 })->name('admin.dashboard');
-
-Route::get('/admin/attendance', function () {
-    return view('admin.attendance');
-})->name('admin.attendance');
 
 Route::get('/admin/members', function () {
     return view('admin.members');
@@ -23,6 +20,12 @@ Route::get('/admin/members', function () {
 Route::get('/admin/reports', function () {
     return view('admin.reports');
 })->name('admin.reports');
+
+
+// Attendance Routes
+Route::controller(AttendanceController::class)->group(function () {
+    Route::get('/admin/attendance', 'index')->name('admin.attendance');
+});
 
 // Notification Routes
 Route::controller(NotificationController::class)->group(function () {
