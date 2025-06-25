@@ -361,7 +361,7 @@
                         </td>
                     </tr>
 
-                    @foreach($attendance as $member)
+                    @foreach($attendance as $attend)
                     <tr class="hover:bg-gray-50">
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
@@ -370,19 +370,31 @@
                                     <i class="bi bi-person text-gray-500"></i>
                                 </div>
                                 <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">{{ $member->user->first_name }}
-                                        {{ $member->user->last_name }}
+                                    <div class="text-sm font-medium text-gray-900">{{ $attend->user->first_name }}
+                                        {{ $attend->user->last_name }}
                                     </div>
-                                    <div class="text-sm text-gray-500">{{ $member->user->email }}</div>
+                                    <div class="text-sm text-gray-500">{{ $attend->user->email }}</div>
                                 </div>
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">Member</div>
-                            <div class="text-sm text-gray-500">Youth</div>
+                            <div class="text-sm text-gray-900">{{$attend->user->role}}</div>
+                            <div class="text-sm text-gray-500">
+                                @php
+                                    $age = \Carbon\Carbon::parse($attend->user->birthdate)->age;
+                                    if ($age < 18) {
+                                        $ageGroup = "Binhi Youth";
+                                    } else if ($age >= 18 && $attend->user->marital_status != "married") {
+                                        $ageGroup = "Kadiwa Youth";
+                                    } else if ($age >= 18 && $attend->user->marital_status == "married") {
+                                        $ageGroup = "Buklod/Married";
+                                    }
+                                @endphp
+                                {{  $ageGroup  }}
+                            </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">{{ $member->created_at->format('M d, Y') }}</div>
+                            <div class="text-sm text-gray-900">{{ $attend->created_at->format('M d, Y') }}</div>
                             <div class="text-sm text-gray-500">Youth Night</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">

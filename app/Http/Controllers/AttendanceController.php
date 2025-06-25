@@ -15,6 +15,14 @@ class AttendanceController extends Controller
             ->unique('user_id')
             ->values();
 
+
+        foreach ($attendance as $attend) {
+            dump($attend->user->events);
+        }
+
+
+
+
         return view('admin.attendance.index', compact('attendance'));
     }
 }

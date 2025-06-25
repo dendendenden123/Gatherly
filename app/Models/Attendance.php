@@ -17,6 +17,6 @@ class Attendance extends Model
 
     public function event()
     {
-
+        return $this->belongsTo()
     }
 }
