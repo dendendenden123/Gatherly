@@ -20,10 +20,20 @@ return new class extends Migration {
             $table->string('password')->required();
             $table->string('phone')->nullable();
             $table->string('address')->nullable();
-            $table->date('birthdate')->nullable();
-            $table->enum('sex', ['male', 'female'])->nullable();
+            $table->date('birthdate');
+            $table->enum('sex', ['male', 'female']);
             $table->date('baptism_date')->nullable();
-            $table->string('marital_status')->nullable();
+            $table->enum('marital_status', [
+                'single',
+                'married',
+                'divorced',
+                'separated',
+                'widowed',
+                'engaged',
+                'civil union',
+                'domestic partnership',
+                'annulled'
+            ]);
             $table->string('profile_image')->default('https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg')->nullable();
             $table->string('document_image')->nullable();
             $table->enum('status', ['active', 'inactive', 'suspended'])->default('active');
