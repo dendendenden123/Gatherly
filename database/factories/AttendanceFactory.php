@@ -19,7 +19,7 @@ class AttendanceFactory extends Factory
         return [
             'user_id' => \App\Models\User::factory(),
             'event_id' => \App\Models\Event::factory(),
-            'service_date' => $this->faker->date(),
+            'service_date' => $this->faker->dateTimeBetween('2025-06-01', '2025-06-30')->format('Y-m-d'),
             'check_in_time' => $this->faker->time(),
             'check_out_time' => $this->faker->optional()->time(),
             'attendance_method' => $this->faker->randomElement(['in-person', 'online', 'fingerprint', 'mobile']),

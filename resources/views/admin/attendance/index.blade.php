@@ -272,7 +272,7 @@
                             Last Attended</th>
                         <th scope="col"
                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Monthly %</th>
+                            Last month attendance %</th>
                         <th scope="col"
                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Status</th>
@@ -282,85 +282,6 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div
-                                    class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                                    <i class="bi bi-person text-gray-500"></i>
-                                </div>
-                                <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">Sarah Johnson</div>
-                                    <div class="text-sm text-gray-500">sarah@example.com</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">Volunteer</div>
-                            <div class="text-sm text-gray-500">Worship Team</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">Jun 11</div>
-                            <div class="text-sm text-gray-500">Sunday Service</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="w-16 mr-2">
-                                    <div class="w-full bg-gray-200 rounded-full h-2">
-                                        <div class="bg-primary h-2 rounded-full" style="width: 92%"></div>
-                                    </div>
-                                </div>
-                                <div class="text-sm">92%</div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Active</span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <button class="text-primary hover:text-secondary mr-3">Edit</button>
-                            <button class="text-gray-500 hover:text-gray-700">History</button>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div
-                                    class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                                    <i class="bi bi-person text-gray-500"></i>
-                                </div>
-                                <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">Michael Brown</div>
-                                    <div class="text-sm text-gray-500">michael@example.com</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">Member</div>
-                            <div class="text-sm text-gray-500">Adult</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">Jun 4</div>
-                            <div class="text-sm text-gray-500">Sunday Service</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="w-16 mr-2">
-                                    <div class="w-full bg-gray-200 rounded-full h-2">
-                                        <div class="bg-primary h-2 rounded-full" style="width: 60%"></div>
-                                    </div>
-                                </div>
-                                <div class="text-sm">60%</div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">Irregular</span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <button class="text-primary hover:text-secondary mr-3">Edit</button>
-                            <button class="text-gray-500 hover:text-gray-700">History</button>
-                        </td>
-                    </tr>
-
                     @foreach($attendance as $attend)
                     <tr class="hover:bg-gray-50">
                         <td class="px-6 py-4 whitespace-nowrap">
@@ -370,7 +291,8 @@
                                     <i class="bi bi-person text-gray-500"></i>
                                 </div>
                                 <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">{{ $attend->user->first_name }}
+                                    <div class="text-sm font-medium text-gray-900">
+                                        {{ $attend->user->first_name }}
                                         {{ $attend->user->last_name }}
                                     </div>
                                     <div class="text-sm text-gray-500">{{ $attend->user->email }}</div>
@@ -395,22 +317,31 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm text-gray-900">{{ $attend->created_at->format('M d, Y') }}</div>
-                            <div class="text-sm text-gray-500">Youth Night</div>
+                            <div class="text-sm text-gray-500">{{ $attend->event->event_name }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
                                 <div class="w-16 mr-2">
                                     <div class="w-full bg-gray-200 rounded-full h-2">
-                                        <div class="bg-primary h-2 rounded-full" style="width: 45%"></div>
+                                        <div class="bg-primary h-2 rounded-full"
+                                            style="width: {{ $attend->user->getAttendanceRate() }}%"></div>
                                     </div>
                                 </div>
-                                <div class="text-sm">45%</div>
+                                <div class="text-sm">{{ $attend->user->getAttendanceRate() }}%</div>
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 py-1 text-xs rounded-full">Inactive</span>
-                            <span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">Inactive</span>
-                            <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Active</span>
+                            @if($attend->user->status == 'partially-active')
+                                <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">Partially
+                                    Active</span>
+                            @elseif($attend->user->status == 'expelled')
+                                <span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">Expelled</span>
+                            @elseif($attend->user->status == 'active')
+                                <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Active</span>
+                            @elseif($attend->user->status == 'inactive')
+                                <span class="px-2 py-1 text-xs rounded-full bg-orange-100 text-orange-800">Inactive</span>
+
+                            @endif
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <button class="text-primary hover:text-secondary mr-3">Edit</button>
@@ -422,6 +353,10 @@
                 </tbody>
             </table>
         </div>
+
+        {{ $attendance->links() }}
+
+        <!--         
         <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
             <div class="text-sm text-gray-500">
                 Showing <span class="font-medium">1</span> to <span class="font-medium">4</span> of <span
@@ -437,7 +372,7 @@
                     Next
                 </button>
             </div>
-        </div>
+        </div> -->
     </div>
 </main>
 @endSection
