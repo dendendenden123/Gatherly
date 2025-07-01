@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Attendance;
 
@@ -9,18 +9,14 @@ class AttendanceController extends Controller
 {
     public function index()
     {
-        $attendance = Attendance::with(['user'])
+        $attendance = Attendance::with(['user', 'event'])
+            ->whereIn('id', function ($query) {
+                $query->select(DB::raw('MAX(id)'))
+                    ->from('attendances')
+                    ->groupBy('user_id');
+            })
             ->orderBy('created_at', 'desc')
-            ->get()
-            ->unique('user_id')
-            ->values();
-
-
-        foreach ($attendance as $attend) {
-            dump($attend->user->events);
-        }
-
-
+            ->Paginate(5);
 
 
         return view('admin.attendance.index', compact('attendance'));
