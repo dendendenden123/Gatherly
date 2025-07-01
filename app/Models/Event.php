@@ -12,6 +12,18 @@ class Event extends Model
 
     public function user()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class, 'attendances')
+            ->using(Attendance::class)
+            ->withPivot([
+                'service_date',
+                'check_in_time',
+                'check_out_time',
+                'attendance_method',
+                'biometric_data_id',
+                'recorded_by',
+                'status',
+                'notes',
+            ])
+            ->withTimestamps();
     }
 }
