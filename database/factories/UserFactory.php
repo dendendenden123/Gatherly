@@ -48,7 +48,7 @@ class UserFactory extends Factory
             ]),
             'profile_image' => 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',
             'document_image' => $this->faker->optional()->imageUrl(),
-            'status' => $this->faker->randomElement(['active', 'inactive', 'suspended']),
+            'status' => $this->faker->randomElement(['active', 'inactive', 'partially-active', 'expelled']),
             'is_Verify' => false,
             'email_verified' => false,
             'last_login_at' => $this->faker->dateTime(),

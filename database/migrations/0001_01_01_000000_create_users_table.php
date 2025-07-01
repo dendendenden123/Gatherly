@@ -36,7 +36,7 @@ return new class extends Migration {
             ]);
             $table->string('profile_image')->default('https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg')->nullable();
             $table->string('document_image')->nullable();
-            $table->enum('status', ['active', 'inactive', 'suspended'])->default('active');
+            $table->enum('status', ['active', 'inactive', 'partially-active', "expelled"])->default('active');
             $table->boolean('is_Verify')->default(false);
             $table->boolean('email_verified')->default(false);
             $table->timestamp('last_login_at')->nullable();
