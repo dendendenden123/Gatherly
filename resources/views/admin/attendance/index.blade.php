@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 @section('styles')
     <link rel="stylesheet" href="{{ asset('css/admin/attendance/index.css') }}">
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 @endsection
 
 
@@ -250,139 +251,63 @@
         <div class="p-4 border-b border-gray-200 flex justify-between items-center">
             <h2 class="text-lg font-semibold">Member Attendance</h2>
             <div class="flex items-center space-x-2">
-                <input type="text" placeholder="Search members..."
-                    class="border border-gray-300 rounded-md px-3 py-1 text-sm">
-                <button class="text-gray-500 hover:text-primary">
-                    <i class="bi bi-funnel"></i>
-                </button>
+                <form class="search-members">
+                    <input type="text" class="search-box border border-gray-300 rounded-md px-3 py-1 text-sm"
+                        placeholder="Search members...">
+                    <button class="text-gray-500 hover:text-primary">
+                        <i class="bi bi-funnel"></i>
+                    </button>
+                </form>
             </div>
         </div>
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Member</th>
-                        <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Role</th>
-                        <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Last Attended</th>
-                        <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Last month attendance %</th>
-                        <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Status</th>
-                        <th scope="col"
-                            class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    @foreach($attendance as $attend)
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div
-                                    class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 flex items-center justify- #2ecc71 #2ecc71center">
-                                    <i class="bi bi-person text-gray-500"></i>
-                                </div>
-                                <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">
-                                        {{ $attend->user->first_name }}
-                                        {{ $attend->user->last_name }}
-                                    </div>
-                                    <div class="text-sm text-gray-500">{{ $attend->user->email }}</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">{{$attend->user->role}}</div>
-                            <div class="text-sm text-gray-500">
-                                @php
-                                    $age = \Carbon\Carbon::parse($attend->user->birthdate)->age;
-                                    if ($age < 18) {
-                                        $ageGroup = "Binhi Youth";
-                                    } else if ($age >= 18 && $attend->user->marital_status != "married") {
-                                        $ageGroup = "Kadiwa Youth";
-                                    } else if ($age >= 18 && $attend->user->marital_status == "married") {
-                                        $ageGroup = "Buklod/Married";
-                                    }
-                                @endphp
-                                {{  $ageGroup  }}
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">{{ $attend->created_at->format('M d, Y') }}</div>
-                            <div class="text-sm text-gray-500">{{ $attend->event->event_name }}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div class="w-16 mr-2">
-                                    <div class="w-full bg-gray-200 rounded-full h-2">
-                                        <div class="bg-primary h-2 rounded-full"
-                                            style="width: {{ $attend->user->getAttendanceRate() }}%"></div>
-                                    </div>
-                                </div>
-                                <div class="text-sm">{{ $attend->user->getAttendanceRate() }}%</div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            @if($attend->user->status == 'partially-active')
-                                <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">Partially
-                                    Active</span>
-                            @elseif($attend->user->status == 'expelled')
-                                <span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">Expelled</span>
-                            @elseif($attend->user->status == 'active')
-                                <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Active</span>
-                            @elseif($attend->user->status == 'inactive')
-                                <span class="px-2 py-1 text-xs rounded-full bg-orange-100 text-orange-800">Inactive</span>
-
-                            @endif
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <button class="text-primary hover:text-secondary mr-3">Edit</button>
-                            <button class="text-gray-500 hover:text-gray-700">History</button>
-                        </td>
-                    </tr>
-                    @endForeach
-
-                </tbody>
-            </table>
+        <div class="member-attendance-list overflow-x-auto">
+            @include('admin.attendance.member-attendance-list')
         </div>
-
-        {{ $attendance->links() }}
-
-        <!--         
-        <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
-            <div class="text-sm text-gray-500">
-                Showing <span class="font-medium">1</span> to <span class="font-medium">4</span> of <span
-                    class="font-medium">24</span> members
-            </div>
-            <div class="flex space-x-2">
-                <button
-                    class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-                    Previous
-                </button>
-                <button
-                    class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-                    Next
-                </button>
-            </div>
-        </div> -->
     </div>
 </main>
-@endSection
+
 
 <script>
-    // Simulate loading progress
-    setTimeout(() => {
-        const progressCircle = document.querySelector('.progress-ring__circle');
-        if (progressCircle) {
-            progressCircle.style.strokeDashoffset = '22';
-        }
-    }, 500);
+    $(document).on('click', '.pagination a', function (e) {
+        e.preventDefault();
+        var url = $(this).attr('href');
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function (data) {
+                $('.member-attendance-list').html(data);
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        $('.search-box').on('input change', function (e) {
+            e.preventDefault();
+            var url = "/admin/attendance/search";
+
+            $.ajax({
+                url: url,
+                type: 'GET',
+                data: {
+                    searchTerm: $(this).val()
+                },
+                success: function (data) {
+                    $('.member-attendance-list').html(data);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Search Request Failed:', {
+                        status: xhr.status,
+                        statusText: xhr.statusText,
+                        responseText: xhr.responseText,
+                        searchTerm: $('.search-box').val()
+                    });
+
+                    // Show user-friendly error message
+                    $('.member-attendance-list')
+                        .html('<div class="error">Search failed. Please try again.</div>');
+                }
+            });
+        });
+    });
 </script>
+@endSection
