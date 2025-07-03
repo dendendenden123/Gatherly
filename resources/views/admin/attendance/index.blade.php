@@ -251,8 +251,9 @@
         <div class="p-4 border-b border-gray-200 flex justify-between items-center">
             <h2 class="text-lg font-semibold">Member Attendance</h2>
             <div class="flex items-center space-x-2">
-                <form class="search-members">
-                    <input type="text" class="search-box border border-gray-300 rounded-md px-3 py-1 text-sm"
+                <form class="search-member-form">
+                    <input type="text" name="search"
+                        class="search-box border border-gray-300 rounded-md px-3 py-1 text-sm"
                         placeholder="Search members...">
                     <button class="text-gray-500 hover:text-primary">
                         <i class="bi bi-funnel"></i>
@@ -280,33 +281,20 @@
         });
     });
 
-    $(document).ready(function () {
-        $('.search-box').on('input change', function (e) {
-            e.preventDefault();
-            var url = "/admin/attendance/search";
-
-            $.ajax({
-                url: url,
-                type: 'GET',
-                data: {
-                    searchTerm: $(this).val()
-                },
-                success: function (data) {
-                    $('.member-attendance-list').html(data);
-                },
-                error: function (xhr, status, error) {
-                    console.error('Search Request Failed:', {
-                        status: xhr.status,
-                        statusText: xhr.statusText,
-                        responseText: xhr.responseText,
-                        searchTerm: $('.search-box').val()
-                    });
-
-                    // Show user-friendly error message
-                    $('.member-attendance-list')
-                        .html('<div class="error">Search failed. Please try again.</div>');
-                }
-            });
+    $(document).on('input change', '.search-member-form .search-box', function (e) {
+        e.preventDefault();
+        $.ajax({
+            url: "/admin/attendance/search",
+            type: 'GET',
+            data: {
+                query: $('.search-member-form .search-box').val()
+            },
+            success: function (data) {
+                $('.member-attendance-list').html(data);
+            },
+            error: function (xhr) {
+                console.error(xhr.responseText);
+            }
         });
     });
 </script>
