@@ -25,6 +25,7 @@ return new class extends Migration {
                 ->onDelete("cascade")
                 ->onUpdate("cascade");
             $table->integer("number_Volunteer_needed")->nullable();
+            $table->enum("repeat", ["once", "weekly", "monthly", "yearly"])->default("once");
             $table->enum("status", ["upcoming", "ongoing", "completed", "cancelled"])->default("upcoming");
             $table->boolean("reminder_sent")->default(false);
             $table->timestamps();
