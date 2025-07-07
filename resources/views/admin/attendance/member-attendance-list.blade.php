@@ -25,8 +25,7 @@
                         <i class="bi bi-person text-gray-500"></i>
                     </div>
                     <div class="ml-4">
-                        <div class="text-sm font-medium text-gray-900">
-                            {{ $attend->user->first_name }}
+                        <div class="text-sm font-medium text-gray-900">{{ $attend->user->first_name }}
                             {{ $attend->user->last_name }}
                         </div>
                         <div class="text-sm text-gray-500">{{ $attend->user->email }}</div>
@@ -78,8 +77,9 @@
                 @endif
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <button class="text-primary hover:text-secondary mr-3">Edit</button>
-                <button class="text-gray-500 hover:text-gray-700">History</button>
+                <a href="{{ route('admin.attendance.show', $attend->user->id) }}">
+                    <button class="text-gray-500 hover:text-gray-700">History</button>
+                </a>
             </td>
         </tr>
         @endForeach
