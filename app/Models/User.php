@@ -65,7 +65,6 @@ class User extends Authenticatable
 
     public function getAttendanceRate(): float
     {
-
         $startOfLastMonth = Carbon::now()->subMonth()->startOfMonth();
         $endOfLastMonth = Carbon::now()->subMonth()->endOfMonth();
 
@@ -80,7 +79,6 @@ class User extends Authenticatable
             ->count();
 
         return intval(($attendedService / $monthlyWorshipSericeCount) * 100);
-
     }
 
     // Count the total number of Sundays and Thursdays within the specified date range
