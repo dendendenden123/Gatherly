@@ -247,17 +247,30 @@
     </div>
 
     <!-- Individual Attendance -->
-    <div class="bg-white rounded-lg shadow overflow-hidden">
+    <div class="min-h-screen bg-white rounded-lg shadow overflow-hidden">
         <div class="p-4 border-b border-gray-200 flex justify-between items-center">
             <h2 class="text-lg font-semibold">Member Attendance</h2>
             <div class="flex items-center space-x-2">
+                <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                    <div class="relative">
+                        <select
+                            class="appearance-none bg-light-gray border-0 text-gray-700 py-2 pl-3 pr-8 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-green">
+                            <option>Filter</option>
+                            <option>Status</option>
+                            <option>Last 3 months</option>
+                            <option>Last 6 months</option>
+                            <option>Last year</option>
+                        </select>
+                        <div
+                            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </div>
+                    </div>
+                </div>
                 <form class="search-member-form">
                     <input type="text" name="search"
                         class="search-box border border-gray-300 rounded-md px-3 py-1 text-sm"
                         placeholder="Search members...">
-                    <button class="text-gray-500 hover:text-primary">
-                        <i class="bi bi-funnel"></i>
-                    </button>
                 </form>
             </div>
         </div>
@@ -269,22 +282,12 @@
 
 
 <script>
-    $(document).on('click', '.pagination a', function (e) {
-        e.preventDefault();
-        var url = $(this).attr('href');
-        $.ajax({
-            url: url,
-            type: 'GET',
-            success: function (data) {
-                $('.member-attendance-list').html(data);
-            }
-        });
-    });
 
+    //search
     $(document).on('input change', '.search-member-form .search-box', function (e) {
         e.preventDefault();
         $.ajax({
-            url: "/admin/attendance/search",
+            url: "/admin/attendance",
             type: 'GET',
             data: {
                 query: $('.search-member-form .search-box').val()
