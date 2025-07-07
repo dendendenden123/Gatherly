@@ -11,7 +11,7 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 
-Schedule::daily()->at('20:57')->call(function () {
+Schedule::daily()->at('17:36')->call(function () {
     // Get all events that ended today or just ended
     $events = Event::all();
 
