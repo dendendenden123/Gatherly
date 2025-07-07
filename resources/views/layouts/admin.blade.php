@@ -17,6 +17,10 @@
                         primary: '#2ecc71',
                         secondary: '#27ae60',
                         accent: '#e74c3c',
+                        'primary-green': '#2ecc71',
+                        'dark-green': '#27ae60',
+                        'accent-red': '#e74c3c',
+                        'light-gray': '#f5f5f5',
                     }
                 }
             }

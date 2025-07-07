@@ -25,7 +25,7 @@ Route::get('/admin/reports', function () {
 // Attendance Routes
 Route::controller(AttendanceController::class)->group(function () {
     Route::get('/admin/attendance', 'index')->name('admin.attendance');
-    Route::get('/admin/attendance/search', 'searchMembers')->name('admin.attendance.search');
+    Route::get('/admin/attendance/{id}', 'show')->name('admin.attendance.show');
 });
 
 // Notification Routes

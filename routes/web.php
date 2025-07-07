@@ -3,6 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 
+
+use App\Jobs\RecordAbsentAttendance;
+use App\Models\Event;
+
+
 Route::get('/', function () {
     return view('welcome');
 })->name('landing_page');
