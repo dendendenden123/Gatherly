@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use App\Jobs\RecordAbsentAttendance;
 use App\Models\Attendance;
 use App\Models\User;
+use App\Models\Event;
 
 class AttendanceController extends Controller
 {
