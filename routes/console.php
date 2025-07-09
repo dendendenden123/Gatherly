@@ -10,5 +10,5 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 
-Schedule::command(CheckEventOccurrence::class)->everyTenMinutes();
+Schedule::command(CheckEventOccurrence::class)->everyMinute();
 
