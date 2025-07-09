@@ -9,7 +9,3 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-
-//Record absences for events  
-//Schedule::command(EventAbsenteesRecorder::class)->everyMinute();
-
