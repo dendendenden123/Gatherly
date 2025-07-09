@@ -10,6 +10,8 @@ class EventOccurrence extends Model
     /** @use HasFactory<\Database\Factories\EventOccurrenceFactory> */
     use HasFactory;
 
+    protected $guarded = [];
+
     public function event()
     {
         return $this->belongsTo(Event::class);
