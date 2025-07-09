@@ -31,7 +31,6 @@ class EventFactory extends Factory
             'start_time' => $this->faker->time(),
             'end_time' => $this->faker->optional()->time(),
             'location' => $this->faker->address(),
-            'user_id' => \App\Models\User::factory(),
             'number_Volunteer_needed' => $this->faker->optional()->numberBetween(1, 50),
             'status' => $this->faker->randomElement(['upcoming', 'ongoing', 'completed', 'cancelled']),
             'reminder_sent' => $this->faker->boolean(),

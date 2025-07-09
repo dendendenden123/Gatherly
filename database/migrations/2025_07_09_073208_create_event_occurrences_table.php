@@ -14,8 +14,8 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('event_id')->constrained('events')->onDelete('cascade')->onUpdate('cascade');
             $table->date('occurrence_date');
-            $table->timestamp('start_time')->nullable();
-            $table->timestamp('end_time')->nullable();
+            $table->time('start_time')->nullable();
+            $table->time('end_time')->nullable();
             $table->enum('status', ['pending', 'ongoing', 'ended', 'cancelled'])->default('pending');
             $table->boolean('attendance_checked')->default(false);
             $table->timestamps();
