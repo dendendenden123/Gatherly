@@ -26,4 +26,9 @@ class Event extends Model
             ])
             ->withTimestamps();
     }
+
+    public function event_occurrences()
+    {
+        return $this->hasMany(EventOccurrence::class);
+    }
 }
