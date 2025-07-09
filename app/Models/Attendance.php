@@ -4,9 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class Attendance extends Pivot
+class Attendance extends Model
 {
     /** @use HasFactory<\Database\Factories\AttendanceFactory> */
     use HasFactory;
@@ -18,8 +17,8 @@ class Attendance extends Pivot
         return $this->belongsTo(User::class);
     }
 
-    public function event()
+    public function event_occurrence()
     {
-        return $this->belongsTo(Event::class);
+        return $this->belongsTo(EventOccurrence::class);
     }
 }

@@ -46,21 +46,9 @@ class User extends Authenticatable
         ];
     }
 
-    public function events()
+    public function attendances()
     {
-        return $this->belongsToMany(Event::class, 'attendances')
-            ->using(Attendance::class)
-            ->withPivot([
-                'service_date',
-                'check_in_time',
-                'check_out_time',
-                'attendance_method',
-                'biometric_data_id',
-                'recorded_by',
-                'status',
-                'notes',
-            ])
-            ->withTimestamps();
+        return $this->hasMany(Attendance::class);
     }
 
     public function getAttendanceRate(): float

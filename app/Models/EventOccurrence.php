@@ -11,9 +11,15 @@ class EventOccurrence extends Model
     use HasFactory;
 
     protected $guarded = [];
+    public $table = 'event_occurrences';
 
     public function event()
     {
         return $this->belongsTo(Event::class);
+    }
+
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
     }
 }

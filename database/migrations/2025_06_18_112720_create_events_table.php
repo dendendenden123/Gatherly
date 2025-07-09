@@ -20,10 +20,6 @@ return new class extends Migration {
             $table->time("start_time");
             $table->time("end_time")->nullable();
             $table->string("location");
-            $table->foreignId("user_id")
-                ->constrained("users")
-                ->onDelete("cascade")
-                ->onUpdate("cascade");
             $table->integer("number_Volunteer_needed")->nullable();
             $table->enum("repeat", ["once", "weekly", "monthly", "yearly"])->default("once");
             $table->enum("status", ["upcoming", "ongoing", "completed", "cancelled"])->default("upcoming");
