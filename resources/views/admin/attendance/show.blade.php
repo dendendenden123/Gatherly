@@ -155,7 +155,7 @@
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
 
-                        @foreach ($attendance->events as $record)
+                        @foreach ($user->attendance as $record)
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                 {{ $record->pivot->created_at->format('F j, Y') }}

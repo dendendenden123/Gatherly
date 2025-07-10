@@ -18,7 +18,7 @@ class AttendanceFactory extends Factory
     {
         return [
             'user_id' => \App\Models\User::factory(),
-            "occurrence_id" => \App\Models\EventOccurrence::factory(),
+            "event_occurrence_id" => \App\Models\EventOccurrence::factory(),
             'service_date' => $this->faker->dateTimeBetween('2025-06-01', '2025-06-30')->format('Y-m-d'),
             'check_in_time' => $this->faker->time(),
             'check_out_time' => $this->faker->optional()->time(),

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Attendance;
+use App\Models\EventOccurrence;
 use App\Models\User;
 
 class AttendanceController extends Controller
@@ -35,8 +36,8 @@ class AttendanceController extends Controller
 
     public function show($id)
     {
-        $attendance = User::with('attendances.events')->findOrFail($id);
+        $user = User::with('attendances', 'attendances.event_occurrence')->findOrFail($id);
 
-        return view('admin.attendance.show', compact('attendance'));
+        return view('admin.attendance.show', compact('user'));
     }
 }
