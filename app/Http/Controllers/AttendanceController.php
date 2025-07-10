@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use App\Jobs\RecordAbsentAttendance;
 use App\Models\Attendance;
 use App\Models\User;
-use App\Models\Event;
 
 class AttendanceController extends Controller
 {
@@ -14,7 +12,7 @@ class AttendanceController extends Controller
     {
         $search = $request->input('query');
 
-        $attendance = Attendance::with(['user', 'event'])
+        $attendance = Attendance::with(['user', 'event_occurrence'])
             // Filter by user search
             ->whereHas('user', function ($query) use ($search) {
                 $query->where('first_name', 'like', "%{$search}%")
@@ -37,10 +35,7 @@ class AttendanceController extends Controller
 
     public function show($id)
     {
-        $fromDate = "2025-06-05";
-        $attendance = User::with(["events"])
-            ->where("id", $id)
-            ->firstOrFail();
+        $attendance = User::with('attendances.events')->findOrFail($id);
 
         return view('admin.attendance.show', compact('attendance'));
     }

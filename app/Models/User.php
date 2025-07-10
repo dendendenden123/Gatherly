@@ -53,20 +53,23 @@ class User extends Authenticatable
 
     public function getAttendanceRate(): float
     {
-        $startOfLastMonth = Carbon::now()->subMonth()->startOfMonth();
-        $endOfLastMonth = Carbon::now()->subMonth()->endOfMonth();
+        return 0;
+        // $startOfLastMonth = Carbon::now()->subMonth()->startOfMonth();
+        // $endOfLastMonth = Carbon::now()->subMonth()->endOfMonth();
 
-        //Get the total number of worship service last month
-        $monthlyWorshipSericeCount = $this->getDaysCount($startOfLastMonth, $endOfLastMonth);
+        // //Get the total number of worship service last month
+        // $monthlyWorshipSericeCount = $this->getDaysCount($startOfLastMonth, $endOfLastMonth);
 
-        //Get the number of attended worship service last month
-        $attendedService = $this->events()
-            ->wherePivot('status', 'present')
-            ->wherePivotBetween('service_date', [$startOfLastMonth, $endOfLastMonth])
-            ->whereIn('event_type', ['weekdays worship service', 'Weekend worship service'])
-            ->count();
+        // //Get the number of attended worship service last month
+        // $attendedService = $this->event_occurrences()
+        //     ->where('status', 'present')
+        //     ->whereBetween('service_date', [$startOfLastMonth, $endOfLastMonth])
+        //     ->whereHas('event', function ($query) {
+        //         $query->whereIn('event_type', ["Weekend worship service", "weekdays worship services"]);
+        //     })
+        //     ->count();
 
-        return intval(($attendedService / $monthlyWorshipSericeCount) * 100);
+        // return intval(($attendedService / $monthlyWorshipSericeCount) * 100);
     }
 
     // Count the total number of Sundays and Thursdays within the specified date range

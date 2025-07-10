@@ -50,7 +50,7 @@
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
                 <div class="text-sm text-gray-900">{{ $attend->created_at->format('M d, Y') }}</div>
-                <div class="text-sm text-gray-500">{{ $attend->event->event_name }}</div>
+                <div class="text-sm text-gray-500">{{ $attend->event_name }}</div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center">
