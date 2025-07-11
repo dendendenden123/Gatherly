@@ -87,4 +87,4 @@
     </tbody>
 </table>
 
-<x-pagination :data="$attendance" />
+<x-pagination :data="$attendance" containerClass="index-attendance-list" />

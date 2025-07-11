@@ -26,5 +26,3 @@
     </td>
 </tr>
 @endForeach
-
-<x-pagination :data="$user->attendances" />
