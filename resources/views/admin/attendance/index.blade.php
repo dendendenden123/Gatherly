@@ -274,8 +274,8 @@
                 </form>
             </div>
         </div>
-        <div class="member-attendance-list overflow-x-auto">
-            @include('admin.attendance.member-attendance-list')
+        <div class="index-attendance-list overflow-x-auto">
+            @include('admin.attendance.index-attendance-list')
         </div>
     </div>
 </main>
@@ -293,7 +293,7 @@
                 query: $('.search-member-form .search-box').val()
             },
             success: function (data) {
-                $('.member-attendance-list').html(data);
+                $('.index-attendance-list').html(data);
             },
             error: function (xhr) {
                 console.error(xhr.responseText);

@@ -29,7 +29,7 @@
             <!-- Next Page Link -->
             @if($data->hasMorePages())
                 <a href="{{ $data->nextPageUrl() }}" class="next-button">
-                    <button 
+                    <button
                         class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
                         Next
                     </button>
@@ -45,22 +45,22 @@
     </div>
 @endif
 <script>
-$(document).on('click', '.pagination a', function (e) {
-    e.preventDefault();
-    var url = $(this).attr('href');
-    var searchQuery = $('.search-member-form .search-box').val();
-    
-    setTimeout(function() {
-        $.ajax({
-            url: url,
-            type: 'GET',
-            data: {
-                query: searchQuery
-            },
-            success: function (data) {
-                $('.member-attendance-list').html(data);
-            }
-        });
-    }, 1000);
-});
+    $(document).on('click', '.pagination a', function (e) {
+        e.preventDefault();
+        var url = $(this).attr('href');
+        var searchQuery = $('.search-member-form .search-box').val();
+
+        setTimeout(function () {
+            $.ajax({
+                url: url,
+                type: 'GET',
+                data: {
+                    query: searchQuery
+                },
+                success: function (data) {
+                    $('.index-attendance-list').html(data);
+                }
+            });
+        }, 1000);
+    });
 </script>

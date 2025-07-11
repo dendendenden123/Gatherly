@@ -47,7 +47,7 @@
                     <img class="h-16 w-16 rounded-full mr-4"
                         src="https://ui-avatars.com/api/?name=John+Doe&background=2ecc71&color=fff" alt="User">
                     <div>
-                        <h3 class="text-lg font-semibold text-gray-800">{{ $attendance->first_name }}</h3>
+                        <h3 class="text-lg font-semibold text-gray-800">{{ $user->first_name }}</h3>
                         <p class="text-gray-600">Member since: January 2020</p>
                         <div class="flex mt-1">
                             <span class="bg-light-gray text-dark-green text-xs px-2 py-1 rounded mr-2">Active
@@ -153,35 +153,8 @@
                                 Notes</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-
-                        @foreach ($user->attendance as $record)
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                {{ $record->pivot->created_at->format('F j, Y') }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ $record->event_name }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span
-                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Present</span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">9:42 AM</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Brought 2 guests</td>
-                        </tr>
-                        @endForeach
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">May 22,
-                                2023</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Sunday Service</td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span
-                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Absent</span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">-</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Out of town</td>
-                        </tr>
+                    <tbody class="show-attendance-list bg-white divide-y divide-gray-200">
+                        @include('admin.attendance.show-attendance-list')
                     </tbody>
                 </table>
             </div>
