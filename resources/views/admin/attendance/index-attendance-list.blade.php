@@ -16,7 +16,10 @@
         </tr>
     </thead>
     <tbody class="bg-white divide-y divide-gray-200">
-        @foreach($attendance as $attend)
+        @foreach($users as $user)
+        @php
+            $lastAttendance = $user->attendances->last();
+        @endphp
         <tr class="hover:bg-gray-50">
             <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center">
@@ -25,23 +28,23 @@
                         <i class="bi bi-person text-gray-500"></i>
                     </div>
                     <div class="ml-4">
-                        <div class="text-sm font-medium text-gray-900">{{ $attend->user->first_name }}
-                            {{ $attend->user->last_name }}
+                        <div class="text-sm font-medium text-gray-900">{{ $user->first_name }}
+                            {{ $user->last_name }}
                         </div>
-                        <div class="text-sm text-gray-500">{{ $attend->user->email }}</div>
+                        <div class="text-sm text-gray-500">{{ $user->email }}</div>
                     </div>
                 </div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-900">{{$attend->user->role}}</div>
+                <div class="text-sm text-gray-900">{{$user->role}}</div>
                 <div class="text-sm text-gray-500">
                     @php
-                        $age = \Carbon\Carbon::parse($attend->user->birthdate)->age;
+                        $age = \Carbon\Carbon::parse($user->birthdate)->age;
                         if ($age < 18) {
                             $ageGroup = "Binhi Youth";
-                        } else if ($age >= 18 && $attend->user->marital_status != "married") {
+                        } else if ($age >= 18 && $user->marital_status != "married") {
                             $ageGroup = "Kadiwa Youth";
-                        } else if ($age >= 18 && $attend->user->marital_status == "married") {
+                        } else if ($age >= 18 && $user->marital_status == "married") {
                             $ageGroup = "Buklod/Married";
                         }
                     @endphp
@@ -49,35 +52,41 @@
                 </div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-900">{{ $attend->created_at->format('M d, Y') }}</div>
-                <div class="text-sm text-gray-500">{{ $attend->event_name }}</div>
+                <div class="text-sm text-gray-900">
+                    {{  $lastAttendance ? $lastAttendance->created_at->format('M d, Y') : 'No record'}}
+                </div>
+                <div class="text-sm text-gray-500">
+                    {{ $lastAttendance ? $lastAttendance->event_occurrence->event->event_name : 'No record'}}
+                </div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center">
                     <div class="w-16 mr-2">
                         <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-primary h-2 rounded-full"
-                                style="width: {{ $attend->user->getAttendanceRate() }}%"></div>
+                            <div class="bg-primary h-2 rounded-full" style="width: {{ $user->getAttendanceRate() }}%">
+                            </div>
                         </div>
                     </div>
-                    <div class="text-sm">{{ $attend->user->getAttendanceRate() }}%</div>
+                    <div class="text-sm">{{ $user->getAttendanceRate() }}%</div>
                 </div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-                @if($attend->user->status == 'partially-active')
+
+                @if($user->status == 'partially-active')
                     <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">Partially
                         Active</span>
-                @elseif($attend->user->status == 'expelled')
+                @elseif($user->status == 'expelled')
                     <span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">Expelled</span>
-                @elseif($attend->user->status == 'active')
+                @elseif($user->status == 'active')
                     <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Active</span>
-                @elseif($attend->user->status == 'inactive')
+                @elseif($user->status == 'inactive')
                     <span class="px-2 py-1 text-xs rounded-full bg-orange-100 text-orange-800">Inactive</span>
-
+                @else
+                    <span class="px-2 py-1 text-xs rounded-full bg-grey-100 text-grey-800">No Record</span>
                 @endif
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <a href="{{ route('admin.attendance.show', $attend->user->id) }}">
+                <a href="{{ route('admin.attendance.show', $user->id) }}">
                     <button class="text-gray-500 hover:text-gray-700">History</button>
                 </a>
             </td>
@@ -87,4 +96,4 @@
     </tbody>
 </table>
 
-<x-pagination :data="$attendance" containerClass="index-attendance-list" />
+<x-pagination :data="$users" />

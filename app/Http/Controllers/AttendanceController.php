@@ -13,27 +13,19 @@ class AttendanceController extends Controller
     {
         $search = $request->input('query');
 
-        $attendance = User::with()
+        $users = User::with('attendances')
+            ->where(function ($query) use ($search) {
+                $query->where('first_name', 'like', "%{$search}%")
+                    ->orWhere('last_name', 'like', "%{$search}%");
+            })
+            ->orderByDesc('updated_at')
+            ->simplePaginate(6);
 
-        // $attendance = Attendance::with(['user', 'event_occurrence'])
-        //     // Filter by user search
-        //     ->whereHas('user', function ($query) use ($search) {
-        //         $query->where('first_name', 'like', "%{$search}%")
-        //             ->orWhere('last_name', 'like', "%{$search}%");
-        //     })
-        //     //get the latest record each user
-        //     ->whereIn('id', function ($query) {
-        //         $query->select(DB::raw('MAX(id)'))
-        //             ->from('attendances')
-        //             ->groupBy('user_id');
-        //     })
-        //     ->orderBy('created_at', 'desc')
-        //     ->simplePaginate(6);
 
         if ($request->ajax()) {
-            return view("admin.attendance.index-attendance-list", compact('attendance'))->render();
+            return view("admin.attendance.index-attendance-list", compact('users'))->render();
         }
-        return view('admin.attendance.index', compact('attendance'));
+        return view('admin.attendance.index', compact('users'));
     }
 
     public function show(Request $request, $id)

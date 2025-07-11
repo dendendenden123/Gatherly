@@ -6,7 +6,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use App\Models\Event;
 use App\Models\Attendance;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
@@ -53,23 +52,24 @@ class User extends Authenticatable
 
     public function getAttendanceRate(): float
     {
-        return 0;
-        // $startOfLastMonth = Carbon::now()->subMonth()->startOfMonth();
-        // $endOfLastMonth = Carbon::now()->subMonth()->endOfMonth();
 
-        // //Get the total number of worship service last month
-        // $monthlyWorshipSericeCount = $this->getDaysCount($startOfLastMonth, $endOfLastMonth);
+        $startOfLastMonth = Carbon::now()->subMonth()->startOfMonth();
+        $endOfLastMonth = Carbon::now()->subMonth()->endOfMonth();
+        //Get the total number of worship service last month
+        $monthlyWorshipSericeCount = $this->getDaysCount($startOfLastMonth, $endOfLastMonth);
 
-        // //Get the number of attended worship service last month
-        // $attendedService = $this->event_occurrences()
-        //     ->where('status', 'present')
-        //     ->whereBetween('service_date', [$startOfLastMonth, $endOfLastMonth])
-        //     ->whereHas('event', function ($query) {
-        //         $query->whereIn('event_type', ["Weekend worship service", "weekdays worship services"]);
-        //     })
-        //     ->count();
+        $attendedService = $this->attendances()
+            ->where("status", "present")
+            ->whereBetween('service_date', [$startOfLastMonth, $endOfLastMonth])
+            ->whereHas('event_occurrence.event', function ($query) {
+                $query->whereIn("event_type", [
+                    "Weekend worship service",
+                    "weekdays worship service"
+                ]);
+            })
+            ->count();
 
-        // return intval(($attendedService / $monthlyWorshipSericeCount) * 100);
+        return intval(($attendedService / $monthlyWorshipSericeCount) * 100);
     }
 
     // Count the total number of Sundays and Thursdays within the specified date range
