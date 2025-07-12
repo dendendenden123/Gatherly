@@ -58,7 +58,7 @@
                     query: searchQuery
                 },
                 success: function (data) {
-                    $(".index-attendance-list").html(data);
+                    $('.index-attendance-list').html(data);
                 }
             });
         }, 1000);

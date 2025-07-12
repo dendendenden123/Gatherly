@@ -96,4 +96,4 @@
     </tbody>
 </table>
 
-<x-pagination :data="$users" />
+<x-pagination :data ="$users" />
