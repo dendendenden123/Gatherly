@@ -18,8 +18,9 @@
     <tbody class="bg-white divide-y divide-gray-200">
         @foreach($users as $user)
         @php
-            $lastAttendance = $user->attendances->last();
+            $lastAttendance = $user->attendances->sortByDesc('id')->first()
         @endphp
+
         <tr class="hover:bg-gray-50">
             <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center">
@@ -72,18 +73,16 @@
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
 
-                @if($user->status == 'partially-active')
-                    <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">Partially
-                        Active</span>
-                @elseif($user->status == 'expelled')
-                    <span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">Expelled</span>
-                @elseif($user->status == 'active')
-                    <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Active</span>
-                @elseif($user->status == 'inactive')
-                    <span class="px-2 py-1 text-xs rounded-full bg-orange-100 text-orange-800">Inactive</span>
+
+
+                @if (is_Null($lastAttendance) || is_Null($lastAttendance->status) || $lastAttendance->status === 'absent')
+                    <span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">Absent</span>
+                @elseif ($lastAttendance->status === 'present')
+                    <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Present</span>
                 @else
-                    <span class="px-2 py-1 text-xs rounded-full bg-grey-100 text-grey-800">No Record</span>
+                    <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">Unknown</span>
                 @endif
+
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <a href="{{ route('admin.attendance.show', $user->id) }}">
@@ -99,3 +98,27 @@
     $containerClass = "index-attendance-list";
 @endphp
 <x-pagination :containerClass="$containerClass" :data="$users" />
+
+<script>
+    //search
+    $(document).on('input change', function (e) {
+        e.preventDefault();
+        $.ajax({
+            url: "/admin/attendance",
+            type: 'GET',
+            data: {
+                query: $('.search-box').val(),
+                start_date: $('#start').val(),
+                end_date: $('.search-box').val(),
+                status: $('#status').val(),
+                event_name: '2022-22-22',
+            },
+            success: function (data) {
+                $('.index-attendance-list').html(data);
+            },
+            error: function (xhr) {
+                console.error(xhr.responseText);
+            }
+        });
+    });
+</script>
