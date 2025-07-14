@@ -45,6 +45,8 @@
     </div>
 @endif
 <script>
+
+    const containerClass = @json($containerClass);
     $(document).on('click', '.pagination a', function (e) {
         e.preventDefault();
         var url = $(this).attr('href');
@@ -58,7 +60,7 @@
                     query: searchQuery
                 },
                 success: function (data) {
-                    $('.index-attendance-list').html(data);
+                    $('.' + containerClass).html(data);
                 }
             });
         }, 1000);

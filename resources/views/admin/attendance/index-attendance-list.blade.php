@@ -95,5 +95,7 @@
 
     </tbody>
 </table>
-
-<x-pagination :data ="$users" />
+@php
+    $containerClass = "index-attendance-list";
+@endphp
+<x-pagination :containerClass="$containerClass" :data="$users" />

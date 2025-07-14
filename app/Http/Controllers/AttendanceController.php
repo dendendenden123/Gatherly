@@ -31,13 +31,12 @@ class AttendanceController extends Controller
     public function show(Request $request, $id)
     {
         $user = User::with('attendances', 'attendances.event_occurrence')->findOrFail($id);
+        $attendances = $user->attendances()->paginate(5);
 
-        // if ($request->ajax()) {
-        //     $attedance = $user->attendances;
-        //     return view('admin.attendance.show-attendance-list', compact('attendance'))->render();
-        // }
+        if ($request->ajax()) {
+            return view('admin.attendance.show-attendance-list', compact('user', 'attendances'))->render();
+        }
 
-
-        return view('admin.attendance.show', compact('user'));
+        return view('admin.attendance.show', compact('user', 'attendances'));
     }
 }
