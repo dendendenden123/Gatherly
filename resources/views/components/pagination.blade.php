@@ -45,7 +45,6 @@
     </div>
 @endif
 <script>
-
     const containerClass = @json($containerClass);
     $(document).on('click', '.pagination a', function (e) {
         e.preventDefault();
@@ -57,8 +56,10 @@
                 url: url,
                 type: 'GET',
                 data: {
-                    query: searchQuery
+                    query: searchQuery,
+                    status: $('#status').val(),
                 },
+                data: $('form').val(),
                 success: function (data) {
                     $('.' + containerClass).html(data);
                 }

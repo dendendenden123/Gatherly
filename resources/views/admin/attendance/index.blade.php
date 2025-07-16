@@ -106,7 +106,28 @@
         </div>
     </div>
 </main>
-
+<script>
+    $(document).on('input change', function (e) {
+        e.preventDefault();
+        $.ajax({
+            url: "/admin/attendance",
+            type: 'GET',
+            data: {
+                query: $('.search-box').val(),
+                start_date: $('#start').val(),
+                end_date: $('.search-box').val(),
+                status: $('#status').val(),
+                event_name: '2022-22-22',
+            },
+            success: function (data) {
+                $('.index-attendance-list').html(data);
+            },
+            error: function (xhr) {
+                console.error(xhr.responseText);
+            }
+        });
+    });
+</script>
 
 
 @endSection
