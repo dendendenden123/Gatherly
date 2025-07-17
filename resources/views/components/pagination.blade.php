@@ -49,17 +49,11 @@
     $(document).on('click', '.pagination a', function (e) {
         e.preventDefault();
         var url = $(this).attr('href');
-        var searchQuery = $('.search-member-form .search-box').val();
-
         setTimeout(function () {
             $.ajax({
                 url: url,
                 type: 'GET',
-                data: {
-                    query: searchQuery,
-                    status: $('#status').val(),
-                },
-                data: $('form').val(),
+                data: $('form').serialize(),
                 success: function (data) {
                     $('.' + containerClass).html(data);
                 }
