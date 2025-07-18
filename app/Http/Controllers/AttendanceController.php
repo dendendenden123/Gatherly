@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use App\Models\Attendance;
 use App\Models\Event;
 use App\Models\User;
@@ -11,43 +12,42 @@ class AttendanceController extends Controller
 {
     public function index(Request $request)
     {
+        $events = Event::all();
         $search = $request->input('search');
-        $start_date = $request->input('start_date');
-        $end_date = $request->input('end_date');
+        $start_date = $request->input('start_date') ? $request->input('start_date') : now()->subYear();
+        $end_date = $request->input('end_date') ? $request->input('end_date') : now();
+        $from = Carbon::parse($start_date);
+        $to = Carbon::parse($end_date);
         $status = $request->input('status') === "*" ? '' : $request->input('status');
         $event_id = $request->input('event_id');
 
         logger($request);
 
-
-        $users = User::with('attendances.event_occurrence.event')
-            ->where(function ($query) use ($search) {
-                $query->where('first_name', 'like', "%{$search}%")
-                    ->orWhere('last_name', 'like', "%{$search}%");
+        $attendances = Attendance::with(['event_occurrence.event', 'user'])
+            ->whereBetween('updated_at', [$from, $to])
+            ->when($status, function ($query) use ($status) {
+                $query->where('status', $status);
             })
-            ->whereHas('attendances', function ($query) use ($status, $start_date, $end_date, $event_id) {
-                $query->when($status, function ($q) use ($status) {
-                    $q->where('status', $status);
+            ->when($status, function ($query) use ($status) {
+                $query->where('status', $status);
+            })
+            ->whereHas('user', function ($query) use ($search) {
+                $query->when($search, function ($q) use ($search) {
+                    $q->where('first_name', 'like', "%{$search}%");
                 });
-
-                $query->when($start_date || $end_date, function ($q) use ($start_date, $end_date) {
-                    $q->where('created_at', [$start_date, $end_date]);
-                });
-
-            })->whereHas('attendances.event_occurrence.event', function ($query) use ($event_id) {
+            })
+            ->whereHas("event_occurrence.event", function ($query) use ($event_id) {
                 $query->when($event_id, function ($q) use ($event_id) {
                     $q->where('id', $event_id);
                 });
             })
-            ->orderByDesc('created_at')
+            ->orderByDesc('updated_at')
             ->simplePaginate(6);
 
-        $events = Event::all();
-
         if ($request->ajax()) {
-            return view("admin.attendance.index-attendance-list", compact('users', 'events'))->render();
+            return view("admin.attendance.index-attendance-list", compact('attendances', 'events'))->render();
         }
-        return view('admin.attendance.index', compact('users', "events"));
+        return view('admin.attendance.index', compact('attendances', "events"));
     }
 
     public function show(Request $request, $id)

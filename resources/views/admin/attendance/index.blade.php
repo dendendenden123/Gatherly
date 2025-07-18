@@ -100,6 +100,9 @@
                     <input type="text" name="search"
                         class="search-box border border-gray-300 rounded-md px-3 py-1 text-sm"
                         placeholder="Search members...">
+                    <button class="bg-primary hover:bg-secondary text-white px-3 py-1 rounded-md text-sm">
+                        <i class="bi bi-plus mr-1"></i> Clear
+                    </button>
 
                 </div>
             </div>

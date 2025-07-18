@@ -16,10 +16,7 @@
         </tr>
     </thead>
     <tbody class="bg-white divide-y divide-gray-200">
-        @foreach($users as $user)
-        @php
-            $lastAttendance = $user->attendances->sortByDesc('id')->first()
-        @endphp
+        @foreach($attendances as $record)
 
         <tr class="hover:bg-gray-50">
             <td class="px-6 py-4 whitespace-nowrap">
@@ -29,23 +26,23 @@
                         <i class="bi bi-person text-gray-500"></i>
                     </div>
                     <div class="ml-4">
-                        <div class="text-sm font-medium text-gray-900">{{ $user->first_name }}
-                            {{ $user->last_name }}
+                        <div class="text-sm font-medium text-gray-900">{{ $record->user->first_name }}
+                            {{$record->user->last_name }}
                         </div>
-                        <div class="text-sm text-gray-500">{{ $user->email }}</div>
+                        <div class="text-sm text-gray-500">{{ $record->user->email }}</div>
                     </div>
                 </div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-900">{{$user->role}}</div>
+                <div class="text-sm text-gray-900">{{$record->user->role}}</div>
                 <div class="text-sm text-gray-500">
                     @php
-                        $age = \Carbon\Carbon::parse($user->birthdate)->age;
+                        $age = \Carbon\Carbon::parse($record->user->birthdate)->age;
                         if ($age < 18) {
                             $ageGroup = "Binhi Youth";
-                        } else if ($age >= 18 && $user->marital_status != "married") {
+                        } else if ($age >= 18 && $record->user->marital_status != "married") {
                             $ageGroup = "Kadiwa Youth";
-                        } else if ($age >= 18 && $user->marital_status == "married") {
+                        } else if ($age >= 18 && $record->user->marital_status == "married") {
                             $ageGroup = "Buklod/Married";
                         }
                     @endphp
@@ -54,30 +51,31 @@
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
                 <div class="text-sm text-gray-900">
-                    {{  $lastAttendance ? $lastAttendance->created_at->format('M d, Y') : 'No record'}}
+                    {{  $record->updated_at->format('M d, Y') ? $record->updated_at->format('M d, Y') : 'No record'}}
                 </div>
                 <div class="text-sm text-gray-500">
-                    {{ $lastAttendance ? $lastAttendance->event_occurrence->event->event_name : 'No record'}}
+                    {{ $record->event_occurrence->event->event_name ? $record->event_occurrence->event->event_name : 'No record'}}
                 </div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center">
                     <div class="w-16 mr-2">
                         <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-primary h-2 rounded-full" style="width: {{ $user->getAttendanceRate() }}%">
+                            <div class="bg-primary h-2 rounded-full"
+                                style="width: {{ $record->user->getAttendanceRate() }}%">
                             </div>
                         </div>
                     </div>
-                    <div class="text-sm">{{ $user->getAttendanceRate() }}%</div>
+                    <div class="text-sm">{{ $record->user->getAttendanceRate() }}%</div>
                 </div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
 
 
 
-                @if (is_Null($lastAttendance) || is_Null($lastAttendance->status) || $lastAttendance->status === 'absent')
+                @if (is_Null($record) || is_Null($record->status) || $record->status === 'absent')
                     <span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">Absent</span>
-                @elseif ($lastAttendance->status === 'present')
+                @elseif ($record->status === 'present')
                     <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Present</span>
                 @else
                     <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">Unknown</span>
@@ -85,7 +83,7 @@
 
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <a href="{{ route('admin.attendance.show', $user->id) }}">
+                <a href="{{ route('admin.attendance.show', $record->id) }}">
                     <button class="text-gray-500 hover:text-gray-700">History</button>
                 </a>
             </td>
@@ -97,4 +95,4 @@
 @php
     $containerClass = "index-attendance-list";
 @endphp
-<x-pagination :containerClass="$containerClass" :data="$users" />
+<x-pagination :containerClass="$containerClass" :data="$attendances" />
