@@ -11,12 +11,8 @@
                     <h1 class="text-xl font-semibold text-gray-900">Attendance History</h1>
                     <p class="text-gray-500">View and manage member attendance records</p>
                 </div>
-                <div class="flex space-x-4">
-                    <button class="bg-primary-green hover:bg-dark-green text-white px-4 py-2 rounded-lg flex items-center">
-                        <i class="fas fa-download mr-2"></i> Export
-                    </button>
-
-                    <img width="10%" src="{{ asset('images/icons/back.png') }}" />
+                <div class="flex space-x-3">
+                    <img class='goto-previous-page size-[40px]' src="{{ asset('images/icons/back.png') }}" />
 
                     <button
                         class="bg-white border border-primary-green text-primary-green hover:bg-light-gray px-4 py-2 rounded-lg flex items-center">
@@ -104,5 +100,13 @@
             @include('admin.attendance.show-attendance-list')
         </div>
     </div>
+
+    <script>
+        $(document).ready(function () {
+            $('.goto-previous-page').on('click', function () {
+                window.history.back();
+            });
+        })
+    </script>
 </main>
 @endSection
