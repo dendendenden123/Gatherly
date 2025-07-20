@@ -13,14 +13,13 @@ class AttendanceController extends Controller
     public function index(Request $request)
     {
         $events = Event::all();
-        $search = $request->input('search');
+        $searchByName = $request->input('search');
         $start_date = $request->input('start_date') ? $request->input('start_date') : now()->subYear();
         $end_date = $request->input('end_date') ? $request->input('end_date') : now();
         $from = Carbon::parse($start_date);
         $to = Carbon::parse($end_date);
         $status = $request->input('status') === "*" ? '' : $request->input('status');
         $event_id = $request->input('event_id');
-
         logger($request);
 
         $attendances = Attendance::with(['event_occurrence.event', 'user'])
@@ -31,9 +30,11 @@ class AttendanceController extends Controller
             ->when($status, function ($query) use ($status) {
                 $query->where('status', $status);
             })
-            ->whereHas('user', function ($query) use ($search) {
-                $query->when($search, function ($q) use ($search) {
-                    $q->where('first_name', 'like', "%{$search}%");
+            ->whereHas('user', function ($query) use ($searchByName) {
+                $query->when($searchByName, function ($q) use ($searchByName) {
+                    $q->whereRaw("CONCAT(first_name, ' ',last_name) LIKE ?", ["%{$searchByName}%"])
+                        ->orWhere('first_name', 'LIKE', "%{$searchByName}%")
+                        ->orWhere('last_name', 'LIKE', "%{$searchByName}%");
                 });
             })
             ->whereHas("event_occurrence.event", function ($query) use ($event_id) {
@@ -60,5 +61,10 @@ class AttendanceController extends Controller
         }
 
         return view('admin.attendance.show', compact('user', 'attendances'));
+    }
+
+    private function findUserByName()
+    {
+
     }
 }

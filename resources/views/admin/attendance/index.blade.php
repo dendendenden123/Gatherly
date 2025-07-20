@@ -7,9 +7,25 @@
 
 @section('header')
 <!-- Header -->
-<header class="bg-white shadow-sm">
+<!-- <header>
     <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
         <h1 class="text-xl font-semibold text-gray-900">Attendance Tracking</h1>
+        <div class="flex items-center space-x-4">
+            <button class="bg-primary hover:bg-secondary text-white px-4 py-2 rounded-md text-sm">
+                <i class="bi bi-plus mr-1"></i> New Record
+            </button>
+        </div>
+    </div>
+</header> -->
+
+<header>
+    <div class="max-w-7xl mx-auto px-4 py-1 sm:px-6 lg:px-8 flex justify-between items-center">
+        <div class="page-tite">
+            <h1 class="text-xl font-semibold text-gray-900">Attendance Tracking</h1>
+            <p class="text-gray-500">Monitor the attendance and engagement in real-time</p>
+        </div>
+
+
         <div class="flex items-center space-x-4">
             <button class="bg-primary hover:bg-secondary text-white px-4 py-2 rounded-md text-sm">
                 <i class="bi bi-plus mr-1"></i> New Record
@@ -95,43 +111,7 @@
     </div>
 
 </main>
-<script>
-    $(document).ready(function () {
-        let ajaxRequest = null;
-        let debounceTimer = null;
 
-        function requestData() {
-            const filterForm = $('.filter-form').serialize();
-            const filterName = $('.filter-name').serialize();
-            const combinedForm = filterForm + '&' + filterName;
-            clearTimeout(debounceTimer);
+@vite("resources/js/admin-attendance-index.js")
 
-            debounceTimer = setTimeout(() => {
-                if (ajaxRequest) {
-                    ajaxRequest.abort();
-                }
-                ajaxRequest = $.ajax({
-                    url: "/admin/attendance",
-                    type: 'GET',
-                    data: combinedForm,
-                    success: function (data) {
-                        $('.index-attendance-list').html(data);
-                    },
-                    error: function (xhr) {
-                        console.error("Error:", xhr.responseText);
-                    }
-                });
-            }, 300)
-
-        }
-
-        $(document).on('input change', '.search-box, .filter-name, .filter-form', requestData);
-        $('.clear-search').on('click', function (e) {
-            e.preventDefault();
-            $(".search-box").val('');
-            requestData();
-        });
-
-    });
-</script>
 @endSection
