@@ -45,19 +45,32 @@
     </div>
 @endif
 <script>
-    const containerClass = @json($containerClass);
-    $(document).on('click', '.pagination a', function (e) {
-        e.preventDefault();
-        var url = $(this).attr('href');
-        setTimeout(function () {
-            $.ajax({
-                url: url,
-                type: 'GET',
-                data: $('form').serialize(),
-                success: function (data) {
-                    $('.' + containerClass).html(data);
+    $(document).ready(() => {
+        const containerClass = @json($containerClass);
+        let ajaxRequest = null;
+        let bouncerTimer = null;
+
+        $(document).on('click', '.pagination a', function (e) {
+            e.preventDefault();
+            var url = $(this).attr('href');
+            clearTimeout(ajaxRequest)
+
+            setTimeout(() => {
+                if (ajaxRequest) {
+                    ajaxRequest.abort()
                 }
+
+                ajaxRequest = $.ajax({
+                    url: url,
+                    type: 'GET',
+                    data: $('form').serialize(),
+                    success: function (data) {
+                        $('.' + containerClass).html(data);
+                    }
+                });
             });
-        }, 1000);
-    });
+        }, 300)
+
+
+    })
 </script>
