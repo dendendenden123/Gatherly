@@ -686,7 +686,8 @@
                     <span>Members</span>
                 </a>
             </div>
-            <div class="nav-item {{ request()->is('admin/attendance') ? 'active' : '' }}">
+            <div
+                class="nav-item {{ request()->is('admin/attendance') || request()->is('admin/attendance/*') ? 'active' : '' }}">
                 <a href="{{ route('admin.attendance') }}" class="text-decoration-none text-reset">
                     <i class="fas fa-calendar-check"></i>
                     <span>Attendance</span>

@@ -17,7 +17,7 @@
     <div class="auth-container">
         <div class="auth-card">
             <a href="#" class="back-link btn btn-link p-0 mb-3 left-align top-2">
-                <img src="{{ asset('images/back.png') }}" alt="Back"
+                <img src="{{ asset('images/icons/back.png') }}" alt="Back"
                     style="height: 20px; vertical-align: middle; margin-right: 6px;">
             </a>
             <h1 class="auth-title">@yield("title")</h1>

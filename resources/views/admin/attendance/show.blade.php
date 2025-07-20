@@ -1,46 +1,31 @@
 @extends("layouts.admin")
 
-@section('header')
-<!-- Header -->
-<header class="bg-white shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
-        <div class="flex items-center">
-            <i class="fas fa-church text-primary-green text-2xl mr-3"></i>
-            <h1 class="text-xl font-semibold text-gray-800">Gatherly</h1>
-        </div>
-        <div class="flex items-center space-x-4">
-            <div class="relative">
-                <img class="h-8 w-8 rounded-full"
-                    src="https://ui-avatars.com/api/?name=John+Doe&background=2ecc71&color=fff" alt="User">
-            </div>
-        </div>
-    </div>
-</header>
-@endSection
-
 @section('content')
 <!-- Main Content -->
 <main class="flex-grow">
     <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
         <!-- Page Header -->
-        <div class="mb-8">
-            <div class="flex justify-between items-center">
-                <div>
-                    <h2 class="text-2xl font-bold text-gray-800">Attendance History</h2>
-                    <p class="text-gray-600">View and manage member attendance records</p>
+        @section('header')
+            <div class="max-w-7xl mx-auto px-4 py-1 sm:px-6 lg:px-8 flex justify-between items-center">
+                <div class="page-tite">
+                    <h1 class="text-xl font-semibold text-gray-900">Attendance History</h1>
+                    <p class="text-gray-500">View and manage member attendance records</p>
                 </div>
-                <div class="flex space-x-3">
-                    <button
-                        class="bg-primary-green hover:bg-dark-green text-white px-4 py-2 rounded-lg flex items-center">
+                <div class="flex space-x-4">
+                    <button class="bg-primary-green hover:bg-dark-green text-white px-4 py-2 rounded-lg flex items-center">
                         <i class="fas fa-download mr-2"></i> Export
                     </button>
+
+                    <img width="10%" src="{{ asset('images/icons/back.png') }}" />
+
                     <button
                         class="bg-white border border-primary-green text-primary-green hover:bg-light-gray px-4 py-2 rounded-lg flex items-center">
                         <i class="fas fa-filter mr-2"></i> Filter
                     </button>
                 </div>
             </div>
-
+        @endsection
+        <div class="mb-8">
             <!-- User Info Card -->
             <div class="mt-6 bg-white rounded-xl shadow-sm p-6">
                 <div class="flex items-center">

@@ -7,17 +7,6 @@
 
 @section('header')
 <!-- Header -->
-<!-- <header>
-    <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
-        <h1 class="text-xl font-semibold text-gray-900">Attendance Tracking</h1>
-        <div class="flex items-center space-x-4">
-            <button class="bg-primary hover:bg-secondary text-white px-4 py-2 rounded-md text-sm">
-                <i class="bi bi-plus mr-1"></i> New Record
-            </button>
-        </div>
-    </div>
-</header> -->
-
 <header>
     <div class="max-w-7xl mx-auto px-4 py-1 sm:px-6 lg:px-8 flex justify-between items-center">
         <div class="page-tite">

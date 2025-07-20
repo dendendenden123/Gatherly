@@ -48,16 +48,20 @@
     $(document).ready(() => {
         const containerClass = @json($containerClass);
         let ajaxRequest = null;
-        let bouncerTimer = null;
+        let debounceTimer = null;
 
         $(document).on('click', '.pagination a', function (e) {
             e.preventDefault();
-            var url = $(this).attr('href');
-            clearTimeout(ajaxRequest)
+            const url = $(this).attr('href');
 
-            setTimeout(() => {
+            // Clear the debounce timer if user clicks again quickly
+            clearTimeout(debounceTimer);
+
+            // Set a small delay before making the request (debounce)
+            debounceTimer = setTimeout(() => {
+                // Abort previous request if still active
                 if (ajaxRequest) {
-                    ajaxRequest.abort()
+                    ajaxRequest.abort();
                 }
 
                 ajaxRequest = $.ajax({
@@ -66,11 +70,14 @@
                     data: $('form').serialize(),
                     success: function (data) {
                         $('.' + containerClass).html(data);
+                    },
+                    error: function (xhr, status, error) {
+                        if (status !== 'abort') {
+                            console.error('Pagination error:', error);
+                        }
                     }
                 });
-            });
-        }, 300)
-
-
-    })
+            }, 300); // debounce delay in ms
+        });
+    });
 </script>
