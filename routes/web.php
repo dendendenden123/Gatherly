@@ -20,4 +20,3 @@ Route::controller(UserController::class)->group(function () {
     Route::post('/register', 'store')->name('register');
     Route::get('/logout', 'logout')->name('logout');
 });
-

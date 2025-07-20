@@ -20,7 +20,6 @@ class AttendanceController extends Controller
         $to = Carbon::parse($end_date);
         $status = $request->input('status') === "*" ? '' : $request->input('status');
         $event_id = $request->input('event_id');
-        logger($request);
 
         $attendances = Attendance::with(['event_occurrence.event', 'user'])
             ->whereBetween('updated_at', [$from, $to])
@@ -53,18 +52,14 @@ class AttendanceController extends Controller
 
     public function show(Request $request, $id)
     {
+        $events = Event::all();
         $user = User::with('attendances', 'attendances.event_occurrence')->findOrFail($id);
         $attendances = $user->attendances()->paginate(5);
 
         if ($request->ajax()) {
-            return view('admin.attendance.show-attendance-list', compact('user', 'attendances'))->render();
+            return view('admin.attendance.show-attendance-list', compact('user', 'attendances', 'events'))->render();
         }
 
-        return view('admin.attendance.show', compact('user', 'attendances'));
-    }
-
-    private function findUserByName()
-    {
-
+        return view('admin.attendance.show', compact('user', 'attendances', 'events'));
     }
 }

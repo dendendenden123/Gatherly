@@ -37,7 +37,7 @@
                 <div class="text-sm text-gray-900">{{$record->user->role}}</div>
                 <div class="text-sm text-gray-500">
                     @php
-                        $age = \Carbon\Carbon::parse($record->user->birthdate)->age;
+                        $age = $record->user->birthdate->age;
                         if ($age < 18) {
                             $ageGroup = "Binhi Youth";
                         } else if ($age >= 18 && $record->user->marital_status != "married") {

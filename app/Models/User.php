@@ -23,6 +23,17 @@ class User extends Authenticatable
     protected $guarded = [];
 
     /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'birthdate' => 'date'
+    ];
+
+    /**
      * The attributes that should be hidden for serialization.
      *
      * @var list<string>
@@ -32,19 +43,6 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
-
     public function attendances()
     {
         return $this->hasMany(Attendance::class);
@@ -52,7 +50,6 @@ class User extends Authenticatable
 
     public function getAttendanceRate(): float
     {
-
         $startOfLastMonth = Carbon::now()->subMonth()->startOfMonth();
         $endOfLastMonth = Carbon::now()->subMonth()->endOfMonth();
         //Get the total number of worship service last month
@@ -72,8 +69,23 @@ class User extends Authenticatable
         return intval(($attendedService / $monthlyWorshipSericeCount) * 100);
     }
 
+    public function getCurrentMonthTotalAttendance($event_id)
+    {
+        $startOfCurrentMonth = Carbon::now()->startOfMonth();
+        $currentDate = Carbon::now();
+
+        $totalAttendance = $this->attendances()
+            ->whereBetween('updated_at', [$startOfCurrentMonth, $currentDate])
+            ->when($event_id, function ($query) use ($event_id) {
+
+            })
+            ->count();
+
+        return $totalAttendance;
+    }
+
     // Count the total number of Sundays and Thursdays within the specified date range
-    public function getDaysCount($start, $end)
+    private function getDaysCount($start, $end)
     {
         $period = CarbonPeriod::create($start, $end);
         $numberWorshipDays = 0;
