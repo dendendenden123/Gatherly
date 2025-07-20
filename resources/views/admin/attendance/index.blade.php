@@ -25,7 +25,7 @@
 <main class="max-w-7xl mx-auto px-1 py-6 sm:px-6 lg:px-8">
     <form class="filter-form">
         <!-- Filters and Summary -->
-        <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
             <!-- Start Date Filter -->
 
             <div class="bg-white p-4 rounded-lg shadow">
@@ -70,42 +70,23 @@
                     @endforeach
                 </select>
             </div>
-    </form>
 
-    <!-- Quick Stats -->
-    <div class="bg-white p-4 rounded-lg shadow flex items-center">
-        <div class="flex-1">
-            <p class="text-sm text-gray-500">Monthly Attendance</p>
-            <h3 class="text-2xl font-bold">78%</h3>
-            <p class="text-xs text-gray-500">+5% from last month</p>
         </div>
-        <div class="relative w-16 h-16">
-            <svg class="w-full h-full" viewBox="0 0 36 36">
-                <circle cx="18" cy="18" r="16" fill="none" stroke="#e5e7eb" stroke-width="3"></circle>
-                <circle cx="18" cy="18" r="16" fill="none" stroke="#2ecc71" stroke-width="3" stroke-dasharray="100"
-                    stroke-dashoffset="22" class="progress-ring__circle"></circle>
-            </svg>
-            <div class="absolute inset-0 flex items-center justify-center">
-                <i class="bi bi-people text-primary text-xl"></i>
-            </div>
-        </div>
-    </div>
-    </div>
+    </form>
 
     <!-- Individual Attendance -->
     <div class="min-h-screen bg-white rounded-lg shadow overflow-hidden">
         <div class="p-4 border-b border-gray-200 flex justify-between items-center">
             <h2 class="text-lg font-semibold">Member Attendance</h2>
             <div class="flex items-center space-x-2">
-                <form class="filter-form">
+                <form class="filter-name">
                     <input type="text" name="search"
                         class="search-box border border-gray-300 rounded-md px-3 py-1 text-sm"
                         placeholder="Search members...">
+                    <button class="clear-search bg-primary hover:bg-secondary text-white px-3 py-1 rounded-md text-sm">
+                        <i class="bi bi-plus mr-1"></i> Clear
+                    </button>
                 </form>
-                <button class="clear-search bg-primary hover:bg-secondary text-white px-3 py-1 rounded-md text-sm">
-                    <i class="bi bi-plus mr-1"></i> Clear
-                </button>
-
             </div>
         </div>
         <div class="index-attendance-list overflow-x-auto">
@@ -115,27 +96,42 @@
 
 </main>
 <script>
-    $(".search-box").on('input change', function () {
-        console.log('typiing')
-        $.ajax({
-            url: "/admin/attendance",
-            type: 'GET',
-            data: $('.filter-form').serialize(),
-            success: function (data) {
-                $('.index-attendance-list').html(data);
-            },
-            error: function (xhr) {
-                console.error("Error:", xhr.responseText);
-            }
+    $(document).ready(function () {
+        let ajaxRequest = null;
+        let debounceTimer = null;
+
+        function requestData() {
+            const filterForm = $('.filter-form').serialize();
+            const filterName = $('.filter-name').serialize();
+            const combinedForm = filterForm + '&' + filterName;
+            clearTimeout(debounceTimer);
+
+            debounceTimer = setTimeout(() => {
+                if (ajaxRequest) {
+                    ajaxRequest.abort();
+                }
+                ajaxRequest = $.ajax({
+                    url: "/admin/attendance",
+                    type: 'GET',
+                    data: combinedForm,
+                    success: function (data) {
+                        $('.index-attendance-list').html(data);
+                    },
+                    error: function (xhr) {
+                        console.error("Error:", xhr.responseText);
+                    }
+                });
+            }, 300)
+
+        }
+
+        $(document).on('input change', '.search-box, .filter-name, .filter-form', requestData);
+        $('.clear-search').on('click', function (e) {
+            e.preventDefault();
+            $(".search-box").val('');
+            requestData();
         });
+
     });
-
-
-    // $('.clear-search').on('click', function (e) {
-    //     e.preventDefault()
-    //     $(".search-box").val('');
-    // })
 </script>
-
-
 @endSection

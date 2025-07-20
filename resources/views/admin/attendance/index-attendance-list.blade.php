@@ -71,8 +71,6 @@
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
 
-
-
                 @if (is_Null($record) || is_Null($record->status) || $record->status === 'absent')
                     <span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">Absent</span>
                 @elseif ($record->status === 'present')
