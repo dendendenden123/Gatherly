@@ -41,7 +41,7 @@ class AttendanceController extends Controller
                     $q->where('id', $event_id);
                 });
             })
-            ->orderByDesc('updated_at')
+            ->orderByDesc('id')
             ->simplePaginate(6);
 
         if ($request->ajax()) {
