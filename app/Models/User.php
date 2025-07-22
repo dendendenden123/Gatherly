@@ -69,21 +69,6 @@ class User extends Authenticatable
         return intval(($attendedService / $monthlyWorshipSericeCount) * 100);
     }
 
-    public function getCurrentMonthTotalAttendance($event_id)
-    {
-        $startOfCurrentMonth = Carbon::now()->startOfMonth();
-        $currentDate = Carbon::now();
-
-        $totalAttendance = $this->attendances()
-            ->whereBetween('updated_at', [$startOfCurrentMonth, $currentDate])
-            ->when($event_id, function ($query) use ($event_id) {
-
-            })
-            ->count();
-
-        return $totalAttendance;
-    }
-
     // Count the total number of Sundays and Thursdays within the specified date range
     private function getDaysCount($start, $end)
     {

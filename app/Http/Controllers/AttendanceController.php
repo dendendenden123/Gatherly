@@ -12,35 +12,19 @@ class AttendanceController extends Controller
 {
     public function index(Request $request)
     {
-        $events = Event::all();
-        $searchByName = $request->input('search');
-        $start_date = $request->input('start_date') ? $request->input('start_date') : now()->subYear();
-        $end_date = $request->input('end_date') ? $request->input('end_date') : now();
-        $from = Carbon::parse($start_date);
-        $to = Carbon::parse($end_date);
-        $status = $request->input('status') === "*" ? '' : $request->input('status');
-        $event_id = $request->input('event_id');
+        $events = Event::select(['id', 'event_name'])->get();
+        $from_date = $request->input('start_date') ?? now()->subYear();
+        $to = $request->input('end_datea') ?? now();
 
-        $attendances = Attendance::with(['event_occurrence.event', 'user'])
-            ->whereBetween('updated_at', [$from, $to])
-            ->when($status, function ($query) use ($status) {
-                $query->where('status', $status);
-            })
-            ->when($status, function ($query) use ($status) {
-                $query->where('status', $status);
-            })
-            ->whereHas('user', function ($query) use ($searchByName) {
-                $query->when($searchByName, function ($q) use ($searchByName) {
-                    $q->whereRaw("CONCAT(first_name, ' ',last_name) LIKE ?", ["%{$searchByName}%"])
-                        ->orWhere('first_name', 'LIKE', "%{$searchByName}%")
-                        ->orWhere('last_name', 'LIKE', "%{$searchByName}%");
-                });
-            })
-            ->whereHas("event_occurrence.event", function ($query) use ($event_id) {
-                $query->when($event_id, function ($q) use ($event_id) {
-                    $q->where('id', $event_id);
-                });
-            })
+        $filters = [
+            'searchByName' => $request->input('search'),
+            'from' => Carbon::parse($from_date),
+            'to' => Carbon::parse($to),
+            'status' => $request->input('status', '') === "*" ? '' : $request->input('status'),
+            'eventId' => $request->input('event_id'),
+        ];
+
+        $attendances = Attendance::filter($filters)
             ->orderByDesc('id')
             ->simplePaginate(6);
 
@@ -52,14 +36,50 @@ class AttendanceController extends Controller
 
     public function show(Request $request, $id)
     {
-        $events = Event::all();
-        $user = User::with('attendances', 'attendances.event_occurrence')->findOrFail($id);
-        $attendances = $user->attendances()->paginate(5);
+        $events = Event::select(['id', 'event_name'])->get();
+        $user = User::find($id)->firstOrFail();
+        $countTotalAttendance = Attendance::filter(['userId' => $id])->count();
+        $percentageDifferentFromLastMonth = self::getPercentageDifferentFromLastMonth($id);
+        $attendances = Attendance::filter(['userId' => $id])->paginate(5);
 
         if ($request->ajax()) {
-            return view('admin.attendance.show-attendance-list', compact('user', 'attendances', 'events'))->render();
+            return view('admin.attendance.show-attendance-list', compact('attendances'))->render();
         }
 
-        return view('admin.attendance.show', compact('user', 'attendances', 'events'));
+        return view('admin.attendance.show', compact(
+            'user',
+            'attendances',
+            'events',
+            'countTotalAttendance',
+            'percentageDifferentFromLastMonth'
+        ));
+    }
+
+    private function getPercentageDifferentFromLastMonth($id)
+    {
+        $countLastMonthAttendance = Attendance::filter([
+            'userId' => $id,
+            'from' => now()->subMonth()->startOfMonth(),
+            'to' => now()->subMonth()->endOfMonth()
+        ])->count();
+
+        $countLastTwoMonthAttendance = Attendance::filter([
+            'userId' => $id,
+            'from' => now()->subMonth(2)->startOfMonth(),
+            'to' => now()->subMonth(2)->endOfMonth()
+        ])->count();
+        if ($countLastTwoMonthAttendance === 0) {
+            return ['value' => 100, 'sign' => 'positive'];
+        }
+        if ($countLastMonthAttendance === 0) {
+            return ['value' => 100, 'sign' => 'negative'];
+        }
+
+        if ($countLastMonthAttendance >= $countLastTwoMonthAttendance) {
+            $countDifference = $countLastMonthAttendance - $countLastTwoMonthAttendance;
+            return ['value' => ($countDifference / $countLastMonthAttendance), 'sign' => 'positive'];
+        }
+        $countDifference = $countLastTwoMonthAttendance - $countLastMonthAttendance;
+        return ['value' => ($countDifference / $countLastTwoMonthAttendance), 'sign' => 'negative'];
     }
 }
