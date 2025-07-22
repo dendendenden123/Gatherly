@@ -78,7 +78,7 @@
             </div>
 
             <!-- Stats Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-8">
                 <!-- Total Attendance -->
                 <div
                     class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-emerald-500 hover:shadow-md transition-shadow">
@@ -98,37 +98,30 @@
                         </div>
                     </div>
                     <div class="mt-4 flex items-center text-sm">
-                        <span class="bg-emerald-100 text-emerald-800 px-2 py-1 rounded-full flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20"
-                                fill="currentColor">
-                                <path fill-rule="evenodd"
-                                    d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                            {{ $percentageDifferentFromLastMonth['value'] }}% growth in the month of
-                            {{ now()->subMonth()->format('F') }}
-                        </span>
-                    </div>
-                </div>
+                        @if($attendanceGrowthRateLastMonth['sign'] === 'positive')
+                            <span class="bg-emerald-100 text-emerald-800 px-2 py-1 rounded-full flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20"
+                                    fill="currentColor">
+                                    <path fill-rule="evenodd"
+                                        d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                                {{ $attendanceGrowthRateLastMonth['value'] }}% growth in the month of
+                                {{ now()->subMonth()->format('F') }}
+                            </span>
+                        @else
+                            <span class="bg-red-100 text-red-800 px-2 py-1 rounded-full flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 transform rotate-180"
+                                    viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd"
+                                        d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z"
+                                        clip-rule="evenodd" />
+                                </svg>
 
-                <!-- Current Streak -->
-                <div
-                    class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-orange-500 hover:shadow-md transition-shadow">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-gray-500 text-sm font-medium">Current Streak</p>
-                            <p class="text-3xl font-bold text-gray-800 mt-1">6</p>
-                        </div>
-                        <div class="bg-orange-100 p-3 rounded-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-orange-600" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M13 10V3L4 14h7v7l9-11h-7z" />
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="mt-4">
-                        <div class="text-sm text-gray-500">Consecutive weeks attended</div>
+                                {{ $attendanceGrowthRateLastMonth['value'] }}% decline in the month of
+                                {{ now()->subMonth()->format('F') }}
+                            </span>
+                        @endif
                     </div>
                 </div>
 
@@ -136,8 +129,10 @@
                 <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-blue-500 hover:shadow-md transition-shadow">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-gray-500 text-sm font-medium">Attendance Rate</p>
-                            <p class="text-3xl font-bold text-gray-800 mt-1">85%</p>
+                            <p class="text-gray-500 text-sm font-medium">Attendance Rate
+                                ({{ now()->subMonth()->format('F') }})
+                            </p>
+                            <p class="text-3xl font-bold text-gray-800 mt-1">{{ $attendanceRateLastMonth }}%</p>
                         </div>
                         <div class="bg-blue-100 p-3 rounded-lg">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none"
@@ -149,35 +144,16 @@
                     </div>
                     <div class="mt-4 flex items-center text-sm">
                         <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20"
-                                fill="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                class="h-4 w-4 mr-1 {{ $attendanceGrowthRateLastMonth['sign'] === 'negative' ? 'rotate-180' : '' }}"
+                                viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd"
                                     d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z"
                                     clip-rule="evenodd" />
                             </svg>
-                            5% vs last quarter
+                            {{ $attendanceGrowthRateLastMonth['value'] }}% compared to
+                            {{ now()->subMonths(2)->format('F') }}
                         </span>
-                    </div>
-                </div>
-
-                <!-- Average Attendance -->
-                <div
-                    class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-purple-500 hover:shadow-md transition-shadow">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-gray-500 text-sm font-medium">Avg. Monthly</p>
-                            <p class="text-3xl font-bold text-gray-800 mt-1">3.2</p>
-                        </div>
-                        <div class="bg-purple-100 p-3 rounded-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M11.933 12.8a1 1 0 000-1.6L6.6 7.2A1 1 0 005 8v8a1 1 0 001.6.8l5.333-4zM19.933 12.8a1 1 0 000-1.6l-5.333-4A1 1 0 0013 8v8a1 1 0 001.6.8l5.333-4z" />
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="mt-4">
-                        <div class="text-sm text-gray-500">Average sessions per month</div>
                     </div>
                 </div>
             </div>
@@ -193,9 +169,9 @@
                         <option>All time</option>
                     </select>
                 </div>
-                <div class="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
+                <canvas id="attendanceChart" class="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
                     <p class="text-gray-400">Attendance chart visualization</p>
-                </div>
+                </canvas>
             </div>
 
             <!-- Attendance Table -->
@@ -204,4 +180,9 @@
             </div>
         </div>
     </main>
+    <script>
+        $(document).ready(function () {
+
+        });
+    </script>
 @endsection

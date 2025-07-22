@@ -38,8 +38,9 @@ class AttendanceController extends Controller
     {
         $events = Event::select(['id', 'event_name'])->get();
         $user = User::find($id)->firstOrFail();
-        $countTotalAttendance = Attendance::filter(['userId' => $id])->count();
-        $percentageDifferentFromLastMonth = self::getPercentageDifferentFromLastMonth($id);
+        $countTotalAttendance = Attendance::filter(['userId' => $id, 'status' => 'present'])->count();
+        $attendanceGrowthRateLastMonth = self::getAttendanceGrowthRateLastMonth($id);
+        $attendanceRateLastMonth = self::getAttendanceRateLastMonth($id);
         $attendances = Attendance::filter(['userId' => $id])->paginate(5);
 
         if ($request->ajax()) {
@@ -51,35 +52,68 @@ class AttendanceController extends Controller
             'attendances',
             'events',
             'countTotalAttendance',
-            'percentageDifferentFromLastMonth'
+            'attendanceGrowthRateLastMonth',
+            'attendanceRateLastMonth'
         ));
     }
 
-    private function getPercentageDifferentFromLastMonth($id)
+    private function getAttendanceGrowthRateLastMonth($user_id)
     {
         $countLastMonthAttendance = Attendance::filter([
-            'userId' => $id,
+            'userId' => $user_id,
+            'status' => 'present',
             'from' => now()->subMonth()->startOfMonth(),
             'to' => now()->subMonth()->endOfMonth()
         ])->count();
 
         $countLastTwoMonthAttendance = Attendance::filter([
-            'userId' => $id,
+            'userId' => $user_id,
+            'status' => 'present',
             'from' => now()->subMonth(2)->startOfMonth(),
             'to' => now()->subMonth(2)->endOfMonth()
         ])->count();
-        if ($countLastTwoMonthAttendance === 0) {
-            return ['value' => 100, 'sign' => 'positive'];
+
+        if ($countLastTwoMonthAttendance === 0 && $countLastMonthAttendance === 0) {
+            return ['value' => 0, 'sign' => 'negative'];
         }
         if ($countLastMonthAttendance === 0) {
             return ['value' => 100, 'sign' => 'negative'];
         }
+        if ($countLastTwoMonthAttendance === 0) {
+            return ['value' => 100, 'sign' => 'positive'];
+        }
 
         if ($countLastMonthAttendance >= $countLastTwoMonthAttendance) {
             $countDifference = $countLastMonthAttendance - $countLastTwoMonthAttendance;
-            return ['value' => ($countDifference / $countLastMonthAttendance), 'sign' => 'positive'];
+            return ['value' => (intval(($countDifference / $countLastMonthAttendance) * 100)), 'sign' => 'positive'];
         }
+
         $countDifference = $countLastTwoMonthAttendance - $countLastMonthAttendance;
-        return ['value' => ($countDifference / $countLastTwoMonthAttendance), 'sign' => 'negative'];
+        return ['value' => (intval(($countDifference / $countLastTwoMonthAttendance) * 100)), 'sign' => 'negative'];
+    }
+
+    private function getAttendanceRateLastMonth($user_id)
+    {
+        $presentCount = Attendance::filter([
+            'userId' => $user_id,
+            'status' => 'present',
+            'from' => now()->subMonth()->startOfMonth(),
+            'to' => now()->subMonth()->endOfMonth()
+        ])->count();
+
+        $absentCount = Attendance::filter([
+            'userId' => $user_id,
+            'status' => 'absent',
+            'from' => now()->subMonth()->startOfMonth(),
+            'to' => now()->subMonth()->endOfMonth()
+        ])->count();
+
+        $total = $presentCount + $absentCount;
+
+        if ($total === 0) {
+            return 0; // Prevent division by zero
+        }
+
+        return intval(($presentCount / $total) * 100);
     }
 }
