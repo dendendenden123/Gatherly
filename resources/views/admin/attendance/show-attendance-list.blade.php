@@ -1,18 +1,6 @@
 <div class="bg-white rounded-xl shadow-sm overflow-hidden">
     <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
         <h3 class="text-lg font-medium text-gray-800">Recent Attendance</h3>
-        <div class="relative">
-            <select
-                class="appearance-none bg-light-gray border-0 text-gray-700 py-2 pl-3 pr-8 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-green">
-                <option>Last 30 days</option>
-                <option>Last 3 months</option>
-                <option>Last 6 months</option>
-                <option>Last year</option>
-            </select>
-            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                <i class="fas fa-chevron-down text-xs"></i>
-            </div>
-        </div>
     </div>
     <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
@@ -46,12 +34,12 @@
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         @php if ($record->status == "present") {
-                        $class = "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100
-                        text-green-800";
-                        } else {
-                        $class = "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100
-                        text-red-800";
-                        }
+                                $class = "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100
+                                                text-green-800";
+                            } else {
+                                $class = "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100
+                                                text-red-800";
+                            }
                         @endphp
                         <span class='{{ $class  }}'>
                             {{$record->status }}
@@ -60,7 +48,7 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{$record->check_in_time }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {{$record->notes ? $record->notes : "-"}}
+                    {{$record->notes ? $record->notes : "-"}}
                     </td>
                 </tr>
                 @endForeach

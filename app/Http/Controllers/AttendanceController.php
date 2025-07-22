@@ -36,6 +36,7 @@ class AttendanceController extends Controller
 
     public function show(Request $request, $id)
     {
+        logger($request->all());
         $events = Event::select(['id', 'event_name'])->get();
         $user = User::find($id)->firstOrFail();
         $countTotalAttendance = Attendance::filter(['userId' => $id, 'status' => 'present'])->count();

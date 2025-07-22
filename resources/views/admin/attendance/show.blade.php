@@ -18,17 +18,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                             </svg>
-                        </button>
 
-                        <select id="service-type" name="event_id"
-                            class="size-[60%] border border-gray-300 rounded-md px-3 py-2 focus:ring-primary focus:border-primary">
-                            <option value="">All Services</option>
-                            @foreach ($events as $event)
-                                <option value="{{ $event->id }}">
-                                    {{ $event->event_name }}
-                                </option>
-                            @endforeach
-                        </select>
+                        </button>
                     </div>
                 </div>
             @endsection
@@ -158,17 +149,61 @@
                 </div>
             </div>
 
-            <!-- Attendance Chart (Placeholder) -->
-            <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
+
+            <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-semibold text-gray-800">Attendance Trend</h3>
-                    <select
-                        class="bg-gray-50 border border-gray-300 text-gray-700 py-1 px-3 rounded-lg focus:ring-emerald-500 focus:border-emerald-500">
-                        <option>Last 6 months</option>
-                        <option>Last year</option>
-                        <option>All time</option>
-                    </select>
+
+                    <form method="GET" id="filter-form" action="{{ route('admin.attendance.show', $user->id) }}">
+                        <!-- filters -->
+                        <div class="flex  justify-end gap-6 mb-6">
+                            <div class="bg-white rounded-lg   max-w-48">
+                                <label for="aggregate"
+                                    class="block text-sm font-medium text-gray-700 mb-1">Aggregation</label>
+                                <select id="aggregate" name="aggregate"
+                                    class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-primary focus:border-primary">
+                                    <option value="monthly"> Monthly</option>
+                                    <option value="weekly"> Weekly</option>
+                                    <option value="yearly"> Yearly</option>
+
+                                </select>
+                            </div>
+
+                            <!-- Start Date Filter -->
+                            <div class="bg-white rounded-lg   max-w-48">
+                                <label for="start_date" class="block text-sm font-medium text-gray-700 mb-1">Start Date
+                                </label>
+
+                                <input type="date" id="start_date" name="start_date"
+                                    class="border border-gray-300 rounded-md px-2 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm text-gray-700" />
+                            </div>
+
+                            <!-- End Date Filter -->
+                            <div class="bg-white rounded-lg   max-w-48">
+                                <label for="end_date" class="block text-sm font-medium text-gray-700 mb-1">End Date </label>
+                                <input type="date" id="end_date" name="end_date"
+                                    class="border border-gray-300 rounded-md px-2 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm text-gray-700" />
+                            </div>
+
+
+                            <!-- Service Type Filter -->
+                            <div class="bg-white rounded-lg  max-w-48">
+                                <label for="service-type" class="block text-sm font-medium text-gray-700 mb-1">Specify
+                                    Event</label>
+                                <select id="service-type" name="event_id"
+                                    class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-primary focus:border-primary">
+                                    <option value="">All Services</option>
+                                    @foreach ($events as $event)
+                                        <option value="{{ $event->id }}">
+                                            {{ $event->event_name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </form>
                 </div>
+                <!-- Attendance Chart (Placeholder) -->
                 <div class="chart-container" style="position: relative; height: 400px; width: 100%;">
                     <canvas id="attendanceChart"></canvas>
                 </div>
@@ -182,13 +217,48 @@
     </main>
     <script>
         $(document).ready(function () {
+            let ajaxRequest = null;
+            let debounceTimer = null;
+
+            //request data
+            function requestData() {
+                const filterForm = $('#filter-form').serialize();
+                clearTimeout(debounceTimer);
+
+                debounceTimer = setTimeout(() => {
+                    if (ajaxRequest) {
+                        ajaxRequest.abort();
+                    }
+                    ajaxRequest = $.ajax({
+                        url: $('#filter-form').attr('action'),
+                        type: "GET",
+                        data: filterForm,
+                        success: function (data) {
+                            // $(".index-attendance-list").html(data);
+
+                            console.log(data)
+                        },
+                        error: function (xhr) {
+                            console.error("Error:", xhr.responseText);
+                        },
+                    });
+                }, 300);
+            }
+
+            //calling the functions
+            $('#filter-form').on("input change",
+                requestData
+            );
+
+
+            //Attendance Trend Chart
             const ctx = document.getElementById('attendanceChart').getContext('2d');
             const attendanceChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: {!! json_encode(['May', 'June', 'July']) !!},
                     datasets: [{
-                        label: 'Attendance Rate',
+                        label: 'Present Rate',
                         data: {!! json_encode([65, 80, 75]) !!},
                         backgroundColor: 'rgba(99, 102, 241, 0.1)',
                         borderColor: 'rgba(99, 102, 241, 1)',
@@ -200,7 +270,22 @@
                         pointHoverRadius: 8,
                         tension: 0.4,
                         fill: true
-                    }]
+                    },
+                    {
+                        label: 'Absent Rate',
+                        data: {!! json_encode([65, 80, 75]) !!},
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        borderColor: 'rgba(241, 99, 99, 1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: 'rgba(241, 99, 99, 1)',
+                        pointBorderColor: 'rgba(241, 99, 99, 1)',
+                        pointBorderWidth: 2,
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        tension: 0.4,
+                        fill: true
+                    }],
+
                 },
                 options: {
                     responsive: true,
