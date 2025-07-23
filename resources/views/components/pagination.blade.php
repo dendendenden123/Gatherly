@@ -69,7 +69,7 @@
                     type: 'GET',
                     data: $('form').serialize(),
                     success: function (data) {
-                        $('.' + containerClass).html(data);
+                        $('.' + containerClass).html(data.list);
                     },
                     error: function (xhr, status, error) {
                         if (status !== 'abort') {

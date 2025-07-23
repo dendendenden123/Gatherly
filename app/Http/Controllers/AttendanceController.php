@@ -18,8 +18,8 @@ class AttendanceController extends Controller
 
         $filters = [
             'searchByName' => $request->input('search'),
-            'from' => Carbon::parse($from_date),
-            'to' => Carbon::parse($to),
+            'start_date' => Carbon::parse($from_date),
+            'end_date' => Carbon::parse($to),
             'status' => $request->input('status', '') === "*" ? '' : $request->input('status'),
             'eventId' => $request->input('event_id'),
         ];
@@ -29,23 +29,35 @@ class AttendanceController extends Controller
             ->simplePaginate(6);
 
         if ($request->ajax()) {
-            return view("admin.attendance.index-attendance-list", compact('attendances', 'events'))->render();
+            $attendancesListView = view("admin.attendance.index-attendance-list", compact('attendances', 'events'))->render();
+
+            return response()->json([
+                'list' => $attendancesListView
+            ]);
         }
         return view('admin.attendance.index', compact('attendances', "events"));
     }
 
     public function show(Request $request, $id)
     {
-        logger($request->all());
         $events = Event::select(['id', 'event_name'])->get();
-        $user = User::find($id)->firstOrFail();
+        $user = User::find($id);
         $countTotalAttendance = Attendance::filter(['userId' => $id, 'status' => 'present'])->count();
         $attendanceGrowthRateLastMonth = self::getAttendanceGrowthRateLastMonth($id);
         $attendanceRateLastMonth = self::getAttendanceRateLastMonth($id);
         $attendances = Attendance::filter(['userId' => $id])->paginate(5);
+        $aggregatedChartData = Attendance::aggregatedChartData([...$request->all(), "userId" => $id]);
+
+        logger('chart', [$aggregatedChartData]);
 
         if ($request->ajax()) {
-            return view('admin.attendance.show-attendance-list', compact('attendances'))->render();
+            $chartView = view('admin.attendance.show-attendance-chart', compact("aggregatedChartData"))->render();
+            $attendanceListView = view('admin.attendance.show-attendance-list', compact('attendances'))->render();
+
+            return response()->json([
+                'chart' => $chartView,
+                'list' => $attendanceListView,
+            ]);
         }
 
         return view('admin.attendance.show', compact(
@@ -54,7 +66,8 @@ class AttendanceController extends Controller
             'events',
             'countTotalAttendance',
             'attendanceGrowthRateLastMonth',
-            'attendanceRateLastMonth'
+            'attendanceRateLastMonth',
+            'aggregatedChartData'
         ));
     }
 
@@ -63,15 +76,15 @@ class AttendanceController extends Controller
         $countLastMonthAttendance = Attendance::filter([
             'userId' => $user_id,
             'status' => 'present',
-            'from' => now()->subMonth()->startOfMonth(),
-            'to' => now()->subMonth()->endOfMonth()
+            'start_date' => now()->subMonth()->startOfMonth(),
+            'end_date' => now()->subMonth()->endOfMonth()
         ])->count();
 
         $countLastTwoMonthAttendance = Attendance::filter([
             'userId' => $user_id,
             'status' => 'present',
-            'from' => now()->subMonth(2)->startOfMonth(),
-            'to' => now()->subMonth(2)->endOfMonth()
+            'start_date' => now()->subMonth(2)->startOfMonth(),
+            'end_date' => now()->subMonth(2)->endOfMonth()
         ])->count();
 
         if ($countLastTwoMonthAttendance === 0 && $countLastMonthAttendance === 0) {
@@ -98,15 +111,15 @@ class AttendanceController extends Controller
         $presentCount = Attendance::filter([
             'userId' => $user_id,
             'status' => 'present',
-            'from' => now()->subMonth()->startOfMonth(),
-            'to' => now()->subMonth()->endOfMonth()
+            'start_date' => now()->subMonth()->startOfMonth(),
+            'end_date' => now()->subMonth()->endOfMonth()
         ])->count();
 
         $absentCount = Attendance::filter([
             'userId' => $user_id,
             'status' => 'absent',
-            'from' => now()->subMonth()->startOfMonth(),
-            'to' => now()->subMonth()->endOfMonth()
+            'start_date' => now()->subMonth()->startOfMonth(),
+            'end_date' => now()->subMonth()->endOfMonth()
         ])->count();
 
         $total = $presentCount + $absentCount;
