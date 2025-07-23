@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Attendance;
@@ -17,11 +16,11 @@ class AttendanceController extends Controller
         $to = $request->input('end_datea') ?? now();
 
         $filters = [
-            'searchByName' => $request->input('search'),
+            'search_by_name' => $request->input('search'),
             'start_date' => Carbon::parse($from_date),
             'end_date' => Carbon::parse($to),
             'status' => $request->input('status', '') === "*" ? '' : $request->input('status'),
-            'eventId' => $request->input('event_id'),
+            'event_id' => $request->input('event_id'),
         ];
 
         $attendances = Attendance::filter($filters)
@@ -47,8 +46,6 @@ class AttendanceController extends Controller
         $attendanceRateLastMonth = self::getAttendanceRateLastMonth($id);
         $attendances = Attendance::filter(['userId' => $id])->paginate(5);
         $aggregatedChartData = Attendance::aggregatedChartData([...$request->all(), "userId" => $id]);
-
-        logger('chart', [$aggregatedChartData]);
 
         if ($request->ajax()) {
             $chartView = view('admin.attendance.show-attendance-chart', compact("aggregatedChartData"))->render();

@@ -85,7 +85,7 @@
             <h2 class="text-lg font-semibold">Member Attendance</h2>
             <div class="flex items-center space-x-2">
                 <form class="filter-name">
-                    <input type="text" name="search"
+                    <input type="text" name="search_by_name"
                         class="search-box border border-gray-300 rounded-md px-3 py-1 text-sm"
                         placeholder="Search members...">
                     <button class="clear-search bg-primary hover:bg-secondary text-white px-3 py-1 rounded-md text-sm">

@@ -28,9 +28,9 @@ class Attendance extends Model
     {
         $from = $filters['start_date'] ?? now()->subCentury();
         $to = $filters['end_date'] ?? now();
-        $userId = $filters['userId'] ?? null;
+        $userId = $filters['user_id'] ?? null;
         $eventId = $filters['event_id'] ?? null;
-        $searchByName = $filters['searchByName'] ?? null;
+        $searchByName = $filters['search_by_name'] ?? null;
         $status = $filters['status'] ?? null;
 
         return $query->with(['event_occurrence.event', 'user'])
