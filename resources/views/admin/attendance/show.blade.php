@@ -8,8 +8,8 @@
             @section('header')
                 <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
                     <div>
-                        <h1 class="text-2xl font-bold text-gray-800">Attendance History</h1>
-                        <p class="text-gray-500 mt-1">Detailed attendance records and analytics</p>
+                        <h1 class="text-2xl text-xl font-bold text-gray-800">Attendance History</h1>
+                        <p class="text-gray-500  tex-lg mt-1">Detailed attendance records and analytics</p>
                     </div>
                     <div class="flex space-x-3">
                         <button onclick="window.history.back()" class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
@@ -28,13 +28,13 @@
             <div class="mb-8">
                 <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                     <div class="p-6 flex items-center">
-                        <img class="h-20 w-20 rounded-full ring-4 ring-emerald-100"
+                        <img class="h-sm w-sm rounded-full ring-4 ring-emerald-100 "
                             src="https://ui-avatars.com/api/?name={{ urlencode($user->first_name . ' ' . $user->last_name) }}&background=10b981&color=fff"
                             alt="User avatar">
                         <div class="ml-6">
-                            <h3 class="text-2xl font-semibold text-gray-800">{{ $user->first_name }} {{ $user->last_name }}
+                            <h3 class="text-sm font-semibold text-gray-800">{{ $user->first_name }} {{ $user->last_name }}
                             </h3>
-                            <p class="text-gray-500 mt-1">Member since: {{ $user->created_at->format('F Y') }}</p>
+                            <p class="text-gray-500 mt-1 text-sm">Member since: {{ $user->created_at->format('F Y') }}</p>
                             <div class="flex mt-3 space-x-2">
                                 <span
                                     class="bg-emerald-50 text-emerald-700 text-xs font-medium px-3 py-1 rounded-full">{{ $user->status }}</span>
@@ -45,11 +45,11 @@
                         <div class="ml-auto flex space-x-4">
                             <div class="text-center px-4 py-2">
                                 <p class="text-gray-500 text-sm">Age</p>
-                                <p class="text-lg font-semibold text-gray-800">{{ $user->birthdate->age }}</p>
+                                <p class="text-sm font-semibold text-gray-800">{{ $user->birthdate->age }}</p>
                             </div>
                             <div class="text-center px-4 py-2">
                                 <p class="text-gray-500 text-sm">Group</p>
-                                <p class="text-lg font-semibold text-gray-800">
+                                <p class="text-sm font-semibold text-gray-800">
                                     @php
                                         $age = $user->birthdate->age;
                                         if ($age < 18) {
@@ -76,7 +76,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-500 text-sm font-medium">Total Attendance</p>
-                            <p class="text-3xl font-bold text-gray-800 mt-1">
+                            <p class="text-lg font-bold text-gray-800 mt-1">
                                 {{ $countTotalAttendance }}
                             </p>
                         </div>
@@ -101,7 +101,7 @@
                                 {{ now()->subMonth()->format('F') }}
                             </span>
                         @else
-                            <span class="bg-red-100 text-red-800 px-2 py-1 rounded-full flex items-center">
+                            <span class="bg-red-100 text-red-800 text-sm px-2 py-1 rounded-full flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 transform rotate-180"
                                     viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd"
@@ -123,7 +123,7 @@
                             <p class="text-gray-500 text-sm font-medium">Attendance Rate
                                 ({{ now()->subMonth()->format('F') }})
                             </p>
-                            <p class="text-3xl font-bold text-gray-800 mt-1">{{ $attendanceRateLastMonth }}%</p>
+                            <p class="text-lg font-bold text-gray-800 mt-1">{{ $attendanceRateLastMonth }}%</p>
                         </div>
                         <div class="bg-blue-100 p-3 rounded-lg">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none"
@@ -134,7 +134,7 @@
                         </div>
                     </div>
                     <div class="mt-4 flex items-center text-sm">
-                        <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full flex items-center">
+                        <span class="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full flex items-center">
                             <svg xmlns="http://www.w3.org/2000/svg"
                                 class="h-4 w-4 mr-1 {{ $attendanceGrowthRateLastMonth['sign'] === 'negative' ? 'rotate-180' : '' }}"
                                 viewBox="0 0 20 20" fill="currentColor">

@@ -55,13 +55,8 @@ class Attendance extends Model
             });
     }
 
-    public function scopeAggregatedChartData($query, $filters)
+    public static function getAggregatedChartData($filters)
     {
-        $from = Carbon::parse($filters['start_date'] ?? now()->subCentury());
-        $to = Carbon::parse($filters['end_date'] ?? now());
-        $eventId = $filters['event_id'] ?? null;
-        $userId = $filters['user_id'] ?? null;
-        $status = $filters['status'] ?? null;
         $aggregate = $filters['aggregate'] ?? 'monthly';
         $weekly = Null;
         $monthly = Null;
@@ -75,21 +70,7 @@ class Attendance extends Model
             $monthly = true;
         }
 
-        return $query->with(['event_occurrence.event', 'user'])
-            ->whereBetween('updated_at', [$from, $to])
-            ->when($status, function ($query) use ($status) {
-                $query->where('status', $status);
-            })
-            ->when($eventId, function ($query) use ($eventId) {
-                $query->whereHas('event_occurrence.event', function ($q) use ($eventId) {
-                    $q->where('id', $eventId);
-                });
-            })
-            ->when($userId, function ($query) use ($userId) {
-                $query->whereHas('user', function ($q) use ($userId) {
-                    $q->where('id', $userId);
-                });
-            })
+        return static::filter($filters)
             ->when($weekly, function ($query) {
                 $query->selectRaw("YEAR(updated_at) as year, WEEK(updated_at, 1) as week, COUNT(*) as total")
                     ->groupBy('year', 'week')

@@ -46,10 +46,11 @@ class AttendanceController extends Controller
         $attendanceGrowthRateLastMonth = self::getAttendanceGrowthRateLastMonth($id);
         $attendanceRateLastMonth = self::getAttendanceRateLastMonth($id);
         $attendances = Attendance::filter([...$request->all(), 'user_id' => $id])->paginate(5);
-        $aggregatedChartData = Attendance::aggregatedChartData([...$request->all(), 'user_id' => $id]);
+        $aggregatedChartDataForAttended = Attendance::getAggregatedChartData([...$request->all(), 'status' => 'present', 'user_id' => $id]);
+        $aggregatedChartDataForAbsent = Attendance::getAggregatedChartData([...$request->all(), 'status' => 'absent', 'user_id' => $id]);
 
         if ($request->ajax()) {
-            $chartView = view('admin.attendance.show-attendance-chart', compact("aggregatedChartData"))->render();
+            $chartView = view('admin.attendance.show-attendance-chart', compact('aggregatedChartDataForAttended', 'aggregatedChartDataForAbsent'))->render();
             $attendanceListView = view('admin.attendance.show-attendance-list', compact('attendances'))->render();
 
             return response()->json([
@@ -65,7 +66,9 @@ class AttendanceController extends Controller
             'countTotalAttendance',
             'attendanceGrowthRateLastMonth',
             'attendanceRateLastMonth',
-            'aggregatedChartData'
+            'aggregatedChartDataForAttended',
+            'aggregatedChartDataForAbsent'
+
         ));
     }
 

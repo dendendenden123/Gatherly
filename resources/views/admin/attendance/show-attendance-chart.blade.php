@@ -1,5 +1,8 @@
-<div id="aggregatedChartData" data-chart='@json($aggregatedChartData)'></div>
+<div id='aggregatedChartData' data-present='@json($aggregatedChartDataForAttended)'
+    data-absent='@json($aggregatedChartDataForAbsent)'>
+</div>
 <canvas id="attendanceChart"></canvas>
+
 <script>
     let attendanceChartInstance = null;
     // Get chart data from PHP
@@ -10,25 +13,43 @@
         }
 
         // Read updated chart data from hidden element
-        const rawData = document.getElementById("aggregatedChartData").dataset.chart;
-        const aggregatedChartData = JSON.parse(rawData);
+        const absentData = document.getElementById('aggregatedChartData').dataset.absent;
+        const presentData = document.getElementById('aggregatedChartData').dataset.present;
+        const aggregatedChartDataForAbsent = JSON.parse(absentData);
+        const aggregatedChartDataForPresent = JSON.parse(presentData);
 
         const ctx = document.getElementById('attendanceChart').getContext('2d');
-        const labels = aggregatedChartData.map(item => item.label);
-        const dataValues = aggregatedChartData.map(item => item.value);
+        const presentlabels = aggregatedChartDataForPresent.map(item => item.label);
+        const presentdataValues = aggregatedChartDataForPresent.map(item => item.value);
+
+        const absentlabels = aggregatedChartDataForAbsent.map(item => item.label);
+        const absentdataValues = aggregatedChartDataForAbsent.map(item => item.value);
 
         attendanceChartInstance = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: labels,
+                labels: presentlabels,
                 datasets: [{
-                    label: 'Present Rate',
-                    data: dataValues,
+                    label: 'Present',
+                    data: presentdataValues,
                     backgroundColor: 'rgba(99, 102, 241, 0.1)',
                     borderColor: 'rgba(99, 102, 241, 1)',
                     borderWidth: 3,
                     pointBackgroundColor: '#fff',
                     pointBorderColor: 'rgba(99, 102, 241, 1)',
+                    pointBorderWidth: 2,
+                    pointRadius: 6,
+                    pointHoverRadius: 8,
+                    tension: 0.4,
+                    fill: true
+                }, {
+                    label: 'Absent',
+                    data: absentdataValues,
+                    backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                    borderColor: 'rgba(235, 21, 60, 1)',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: 'gba(235, 21, 60, 1)',
                     pointBorderWidth: 2,
                     pointRadius: 6,
                     pointHoverRadius: 8,
@@ -45,7 +66,7 @@
                         labels: {
                             font: {
                                 family: "'Inter', sans-serif",
-                                size: 14,
+                                size: 12,
                                 weight: '500'
                             },
                             padding: 20,
@@ -69,7 +90,7 @@
                         displayColors: false,
                         callbacks: {
                             label: function (context) {
-                                return context.parsed.y + '% attendance';
+                                return context.parsed.y + '';
                             }
                         }
                     }
@@ -87,7 +108,7 @@
                                 family: "'Inter', sans-serif",
                                 size: 12
                             },
-                            callback: value => value + '%'
+                            callback: value => value + ''
                         }
                     },
                     x: {
