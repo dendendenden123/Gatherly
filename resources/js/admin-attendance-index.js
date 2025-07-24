@@ -18,7 +18,7 @@ $(document).ready(function () {
                 type: "GET",
                 data: combinedForm,
                 success: function (data) {
-                    $(".index-attendance-list").html(data);
+                    $(".index-attendance-list").html(data.list);
                 },
                 error: function (xhr) {
                     console.error("Error:", xhr.responseText);

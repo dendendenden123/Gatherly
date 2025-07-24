@@ -11,9 +11,10 @@ class AttendanceController extends Controller
 {
     public function index(Request $request)
     {
+        logger($request->all());
         $events = Event::select(['id', 'event_name'])->get();
         $from_date = $request->input('start_date') ?? now()->subYear();
-        $to = $request->input('end_datea') ?? now();
+        $to = $request->input('end_date') ?? now();
 
         $filters = [
             'search_by_name' => $request->input('search'),
@@ -41,11 +42,11 @@ class AttendanceController extends Controller
     {
         $events = Event::select(['id', 'event_name'])->get();
         $user = User::find($id);
-        $countTotalAttendance = Attendance::filter(['userId' => $id, 'status' => 'present'])->count();
+        $countTotalAttendance = Attendance::filter(['user_id' => $id, 'status' => 'present'])->count();
         $attendanceGrowthRateLastMonth = self::getAttendanceGrowthRateLastMonth($id);
         $attendanceRateLastMonth = self::getAttendanceRateLastMonth($id);
-        $attendances = Attendance::filter(['userId' => $id])->paginate(5);
-        $aggregatedChartData = Attendance::aggregatedChartData([...$request->all(), "userId" => $id]);
+        $attendances = Attendance::filter([...$request->all(), 'user_id' => $id])->paginate(5);
+        $aggregatedChartData = Attendance::aggregatedChartData([...$request->all(), 'user_id' => $id]);
 
         if ($request->ajax()) {
             $chartView = view('admin.attendance.show-attendance-chart', compact("aggregatedChartData"))->render();
@@ -71,14 +72,14 @@ class AttendanceController extends Controller
     private function getAttendanceGrowthRateLastMonth($user_id)
     {
         $countLastMonthAttendance = Attendance::filter([
-            'userId' => $user_id,
+            'user_id' => $user_id,
             'status' => 'present',
             'start_date' => now()->subMonth()->startOfMonth(),
             'end_date' => now()->subMonth()->endOfMonth()
         ])->count();
 
         $countLastTwoMonthAttendance = Attendance::filter([
-            'userId' => $user_id,
+            'user_id' => $user_id,
             'status' => 'present',
             'start_date' => now()->subMonth(2)->startOfMonth(),
             'end_date' => now()->subMonth(2)->endOfMonth()
@@ -106,14 +107,14 @@ class AttendanceController extends Controller
     private function getAttendanceRateLastMonth($user_id)
     {
         $presentCount = Attendance::filter([
-            'userId' => $user_id,
+            'user_id' => $user_id,
             'status' => 'present',
             'start_date' => now()->subMonth()->startOfMonth(),
             'end_date' => now()->subMonth()->endOfMonth()
         ])->count();
 
         $absentCount = Attendance::filter([
-            'userId' => $user_id,
+            'user_id' => $user_id,
             'status' => 'absent',
             'start_date' => now()->subMonth()->startOfMonth(),
             'end_date' => now()->subMonth()->endOfMonth()

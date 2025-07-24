@@ -60,7 +60,7 @@ class Attendance extends Model
         $from = Carbon::parse($filters['start_date'] ?? now()->subCentury());
         $to = Carbon::parse($filters['end_date'] ?? now());
         $eventId = $filters['event_id'] ?? null;
-        $userId = $filters['userId'] ?? null;
+        $userId = $filters['user_id'] ?? null;
         $status = $filters['status'] ?? null;
         $aggregate = $filters['aggregate'] ?? 'monthly';
         $weekly = Null;
