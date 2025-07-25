@@ -7,30 +7,11 @@ use App\Models\User;
 
 class UserController extends Controller
 {
-    public function showLoginForm()
+    public function index(Request $request)
     {
-        return view('auth.login');
-    }
-    public function showRegisterForm()
-    {
-        return view('auth.register');
-    }
+        $users = User::query()->orderByDesc('updated_at')->simplePaginate(5);
 
-    public function login(Request $request)
-    {
-        $credentials = $request->only('email', 'password');
-
-        if (auth()->attempt($credentials)) {
-            $user = auth()->user();
-
-            if ($user->role === 'admin' || $user->role === 'Minister') {
-                return redirect()->route('admin.dashboard');
-            }
-            return redirect()->route('member.dashboard');
-
-        } else {
-            return response()->json(['error' => 'Invalid credentials'], 401);
-        }
+        return view('admin.members', compact('users'));
     }
     public function store(Request $request)
     {
@@ -70,6 +51,32 @@ class UserController extends Controller
         // Regenerate CSRF token
         request()->session()->regenerateToken();
         return redirect()->route('landing_page');
+    }
+
+    public function showLoginForm()
+    {
+        return view('auth.login');
+    }
+    public function showRegisterForm()
+    {
+        return view('auth.register');
+    }
+
+    public function login(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
+
+        if (auth()->attempt($credentials)) {
+            $user = auth()->user();
+
+            if ($user->role === 'admin' || $user->role === 'Minister') {
+                return redirect()->route('admin.dashboard');
+            }
+            return redirect()->route('member.dashboard');
+
+        } else {
+            return response()->json(['error' => 'Invalid credentials'], 401);
+        }
     }
 
 }

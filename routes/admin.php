@@ -21,6 +21,11 @@ Route::get('/admin/reports', function () {
     return view('admin.reports');
 })->name('admin.reports');
 
+//Users Routes
+Route::controller(UserController::class)->group(function () {
+    Route::get('/admin/members', 'index')->name('admin.members');
+});
+
 
 // Attendance Routes
 Route::controller(AttendanceController::class)->group(function () {
@@ -42,6 +47,7 @@ Route::controller(OfficerController::class)->group(function () {
 //Events Routes
 Route::controller(EventController::class)->group(function () {
     Route::get('/admin/events', 'index')->name('admin.events.index');
+    Route::get('/admin/events/create', 'create')->name('admin.events.create');
 });
 
 //Engagements Routes
