@@ -7,11 +7,20 @@ use App\Models\Event;
 
 class EventController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $events = Event::with('event_occurrences')->orderByDesc('id')->simplePaginate(5);
+        logger($request);
+        $events = Event::filter($request->all())->orderByDesc('id')->simplePaginate(5);
         $totalEvents = Event::query()->count();
         $upcomingEvents = Event::filter(['end_date' => now()->addMonth(), 'status' => 'upcoming'])->count();
+
+        if ($request->ajax()) {
+            $eventsListView = view('admin.events.index-events-list', compact('events'))->render();
+
+            return response()->json([
+                'list' => $eventsListView
+            ]);
+        }
 
         return view('admin.events.index', compact(
             'events',

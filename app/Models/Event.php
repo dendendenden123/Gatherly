@@ -27,13 +27,15 @@ class Event extends Model
         $repeat = $filters['repeat'] ?? null;
         $status = $filters['status'] ?? null;
 
-        return $query->whereBetween('updated_at', [$start, $end])
+        return $query->with('event_occurrences')
+            ->whereBetween('updated_at', [$start, $end])
             ->when($eventId, function ($query) use ($eventId) {
                 $query->where('id', $eventId);
             })
             ->when($eventName, function ($query) use ($eventName) {
-                $query->where('event_name', $eventName);
+                $query->where('event_name', 'like', '%' . $eventName . '%');
             })
+
             ->when($eventType, function ($query) use ($eventType) {
                 $query->where('event_type', $eventType);
             })
