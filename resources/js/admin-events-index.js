@@ -2,25 +2,31 @@ $(document).ready(function () {
     let ajaxRequest = null;
     let debounceTimer = null;
     let filterForm = $(".filter-form");
-    let deleteButton = $(".delete-btn");
 
-    //request data
-    function requestDataList(data, endpoint, Hmtlcontainer, type = "GET") {
+    // Request data
+    function requestDataList(attr) {
+        const data = attr.data;
+        const endpoint = attr.endpoint;
+        const dynamicHtmlContainer = attr.container;
+        const type = attr.type || "GET";
+
         clearTimeout(debounceTimer);
 
         debounceTimer = setTimeout(() => {
             if (ajaxRequest) {
                 ajaxRequest.abort();
             }
+
             ajaxRequest = $.ajax({
                 url: endpoint,
                 type: type,
                 data: data,
                 success: function (data) {
-                    $("." + Hmtlcontainer).html(data.list);
-                    console.log(data.list);
+                    if (!dynamicHtmlContainer) {
+                        return data;
+                    }
 
-                    return data;
+                    $("." + dynamicHtmlContainer).html(data.list);
                 },
                 error: function (xhr) {
                     console.error("Error:", xhr.responseText);
@@ -29,35 +35,45 @@ $(document).ready(function () {
         }, 300);
     }
 
-    //delete event
-    deleteButton.on("click", (e) => {
-        let requestDelete = requestDataList(
-            $(".delete-form").serialize(),
-            $(".delete-form").attr("action"),
-            "index-events-list",
-            "POST"
-        );
+    // Delete event
 
-        if (!requestDelete) {
-            Swal.fire({
-                title: "Failed!",
-                text: "Deletion is failed.",
-                icon: "failed",
-                confirmButtonText: "Great",
-            });
-        }
-
+    $(".delete-btn").on("click", function (e) {
         e.preventDefault();
-        let eventId = e.currentTarget.id;
-        $("#" + eventId).remove();
+        const formDelete = $(this).closest("form");
+        const eventId = formDelete.attr("id");
+
+        Swal.fire({
+            title: "Are you sure?",
+            text: "This action cannot be undone.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "Cancel",
+        }).then((result) => {
+            if (!result.isConfirmed) {
+                return;
+            }
+
+            $deletionRequest = requestDataList({
+                data: formDelete.serialize(),
+                endpoint: formDelete.attr("action"),
+                container: "index-events-list",
+                type: "POST",
+            });
+
+            $(`#event-${eventId}`).remove();
+            Swal.fire("Deleted!", "The event has been deleted.", "success");
+        });
     });
 
-    //filtering
+    // Filtering
     filterForm.on("click input change", () => {
-        requestDataList(
-            filterForm.serialize(),
-            filterForm.attr("action"),
-            "index-events-list"
-        );
+        requestDataList({
+            data: filterForm.serialize(),
+            endpoint: filterForm.attr("action"),
+            container: "index-events-list",
+        });
     });
 });
