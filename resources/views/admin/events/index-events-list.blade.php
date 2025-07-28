@@ -12,7 +12,7 @@
 
     <tbody>
         @foreach($events as $event)
-            <tr data-event-id="{{ $event->id }}">
+            <tr id="{{ $event->id }}">
                 <td>
                     <div class="event-name">{{ $event->event_name }}</div>
                     <div class="event-description">{{ Str::limit($event->event_description, 50) }}</div>
@@ -47,9 +47,14 @@
                         <button class="action-btn edit-btn" onclick="editEvent({{ $event->id }})">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="action-btn delete-btn" id="delete-{{ $event->id }}">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                        <form method="POST" class="delete-form" action="{{ route('admin.events.destroy') }}">
+                            @csrf
+                            <input type="number" name="event_id" value="{{ $event->id }}" style="display: none;">
+
+                            <button class="action-btn delete-btn" type="submit" name="event_id" id="{{ $event->id }}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
                     </div>
                 </td>
             </tr>

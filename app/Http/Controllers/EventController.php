@@ -33,4 +33,33 @@ class EventController extends Controller
     {
         return view('admin.events.create');
     }
+
+    public function destroy(Request $request)
+    {
+        logger($request->all());
+        $validated = $request->validate([
+            'event_id' => 'required|exists:events,id'
+        ]);
+
+        try {
+            $event = Event::findOrFail($validated['event_id']);
+            $event->delete();
+
+            return response()->json([
+                'success' => 'Event deleted successfully.'
+            ], 200);
+
+        } catch (\Exception $e) {
+            // 3. Log the error and return error response
+            \Log::error('Error deleting event', [
+                'event_id' => $validated['event_id'],
+                'message' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'error' => 'Failed to delete event.'
+            ], 500);
+        }
+    }
+
 }

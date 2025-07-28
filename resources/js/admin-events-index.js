@@ -5,7 +5,7 @@ $(document).ready(function () {
     let deleteButton = $(".delete-btn");
 
     //request data
-    function requestDataList(data, endpoint, Hmtlcontainer) {
+    function requestDataList(data, endpoint, Hmtlcontainer, type = "GET") {
         clearTimeout(debounceTimer);
 
         debounceTimer = setTimeout(() => {
@@ -14,11 +14,13 @@ $(document).ready(function () {
             }
             ajaxRequest = $.ajax({
                 url: endpoint,
-                type: "GET",
+                type: type,
                 data: data,
                 success: function (data) {
                     $("." + Hmtlcontainer).html(data.list);
                     console.log(data.list);
+
+                    return data;
                 },
                 error: function (xhr) {
                     console.error("Error:", xhr.responseText);
@@ -27,11 +29,30 @@ $(document).ready(function () {
         }, 300);
     }
 
-    deleteButton.on("click", () => {
-        let event_id = deleteButton.attr("id");
-        console.log(event_id);
+    //delete event
+    deleteButton.on("click", (e) => {
+        let requestDelete = requestDataList(
+            $(".delete-form").serialize(),
+            $(".delete-form").attr("action"),
+            "index-events-list",
+            "POST"
+        );
+
+        if (!requestDelete) {
+            Swal.fire({
+                title: "Failed!",
+                text: "Deletion is failed.",
+                icon: "failed",
+                confirmButtonText: "Great",
+            });
+        }
+
+        e.preventDefault();
+        let eventId = e.currentTarget.id;
+        $("#" + eventId).remove();
     });
 
+    //filtering
     filterForm.on("click input change", () => {
         requestDataList(
             filterForm.serialize(),
