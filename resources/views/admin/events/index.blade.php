@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 @section('styles')
-      @vite('resources/js/admin-events-index.js')
+    @vite('resources/js/admin-events-index.js')
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -493,13 +493,4 @@
         </div>
 
     </div>
-
-    <!-- Add Event Button -->
-    <!-- <a href="{{ route('admin.events.create') }}">
-               <div class="add-event-btn" id="addEventBtn">
-                <i class="fas fa-plus"></i>
-                </div>
-        </a> -->
-
-
 @endsection

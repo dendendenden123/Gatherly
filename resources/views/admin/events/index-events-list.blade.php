@@ -60,4 +60,5 @@
             </tr>
         @endforeach
     </tbody>
+    @vite('resources/js/admin-events-index.js')
 </table>

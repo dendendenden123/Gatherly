@@ -9,7 +9,6 @@ $(document).ready(function () {
         const endpoint = attr.endpoint;
         const dynamicHtmlContainer = attr.container;
         const type = attr.type || "GET";
-
         clearTimeout(debounceTimer);
 
         debounceTimer = setTimeout(() => {
@@ -27,6 +26,7 @@ $(document).ready(function () {
                     }
 
                     $("." + dynamicHtmlContainer).html(data.list);
+                    console.log(data.list);
                 },
                 error: function (xhr) {
                     console.error("Error:", xhr.responseText);
@@ -36,11 +36,10 @@ $(document).ready(function () {
     }
 
     // Delete event
-
     $(".delete-btn").on("click", function (e) {
         e.preventDefault();
         const formDelete = $(this).closest("form");
-        const eventId = formDelete.attr("id");
+        alert(formDelete);
 
         Swal.fire({
             title: "Are you sure?",
@@ -56,14 +55,13 @@ $(document).ready(function () {
                 return;
             }
 
-            $deletionRequest = requestDataList({
+            deletionRequest = requestDataList({
                 data: formDelete.serialize(),
                 endpoint: formDelete.attr("action"),
                 container: "index-events-list",
                 type: "POST",
             });
 
-            $(`#event-${eventId}`).remove();
             Swal.fire("Deleted!", "The event has been deleted.", "success");
         });
     });

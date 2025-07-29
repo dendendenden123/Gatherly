@@ -38,12 +38,15 @@ class EventController extends Controller
         $validated = $request->validate([
             'event_id' => 'required|exists:events,id'
         ]);
+
+        $event = Event::findOrFail($validated['event_id']);
+        $event->delete();
         $events = Event::filter($request->all())->orderByDesc('id')->simplePaginate(5);
+        $totalEvents = Event::query()->count();
+        $upcomingEvents = Event::filter(['end_date' => now()->addMonth(), 'status' => 'upcoming'])->count();
+
 
         try {
-            $event = Event::findOrFail($validated['event_id']);
-            $event->delete();
-
             if ($request->ajax()) {
                 $eventsListView = view('admin.events.index-events-list', compact('events'))->render();
 
@@ -51,6 +54,12 @@ class EventController extends Controller
                     'list' => $eventsListView
                 ]);
             }
+
+            return view('admin.events.index', compact(
+                'events',
+                'totalEvents',
+                'upcomingEvents'
+            ));
 
         } catch (\Exception $e) {
             \Log::error('Error deleting event', [
