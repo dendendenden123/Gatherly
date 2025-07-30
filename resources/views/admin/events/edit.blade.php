@@ -46,7 +46,7 @@
                         <!-- Event Name -->
                         <div>
                             <label for="eventName" class="block text-sm font-medium text-gray-700">Event Name *</label>
-                            <input type="text" name="eventName" id="eventName" required
+                            <input type="text" name="eventName" id="eventName" value="{{ $event->event_name }}" required
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                         </div>
 
@@ -55,7 +55,9 @@
                             <label for="eventDescription"
                                 class="block text-sm font-medium text-gray-700">Description</label>
                             <textarea id="eventDescription" name="eventDescription" rows="3"
-                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                                    {{ $event->event_description}}
+                                       </textarea>
                         </div>
 
                         <!-- Event Type and Status -->
@@ -69,7 +71,7 @@
                                     <option value="">Select a type</option>
                                     <option value="service">Worship Service</option>
                                     <option value="meeting">Meeting</option>
-                                    <option value="class">Class/Study</option>
+                                    <option value="class" default>Class/Study</option>
                                     <option value="social">Social Event</option>
                                     <option value="outreach">Outreach</option>
                                 </select>

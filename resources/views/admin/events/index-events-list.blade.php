@@ -43,7 +43,7 @@
                 </td>
                 <td>
                     <div class="actions">
-                        <button class="action-btn edit-btn" onclick="editEvent({{ $event->id }})">
+                        <button class="action-btn edit-btn" data-url="{{ route('admin.events.edit', $event->id) }}">
                             <i class="fas fa-edit"></i>
                         </button>
 

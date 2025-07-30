@@ -27,22 +27,31 @@ $(document).ready(function () {
         }, 300);
     });
 
-    $(".delete-btn").on("click", (e) => {
-        e.preventDefault();
-        const form = e.currentTarget.closest("form");
+    //delete button
+    $(".delete-btn")
+        .off("click")
+        .on("click", (e) => {
+            e.preventDefault();
+            const form = e.currentTarget.closest("form");
 
-        Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to undo this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
-            confirmButtonText: "Yes, delete it!",
-        }).then((result) => {
-            if (result.isConfirmed) {
-                form.submit();
-            }
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to undo this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, delete it!",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
         });
+
+    //edit button
+    $(".edit-btn").on("click", (e) => {
+        const url = $(e.currentTarget).data("url");
+        window.location.replace(url);
     });
 });
