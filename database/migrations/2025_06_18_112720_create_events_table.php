@@ -14,14 +14,24 @@ return new class extends Migration {
             $table->id();
             $table->string('event_name');
             $table->text('event_description')->nullable();
-            $table->enum("event_type", ["Weekend worship service", "weekdays worship service", "volunteer", "meeting", "evangelical"])->default("Weekend worship service");
+            $table->enum("event_type", [
+                "Baptism",
+                "Charity Event",
+                "Christian Family Organization (CFO) activity",
+                "Evangelical Mission",
+                "Inauguration of New Chapels/ Structure",
+                "Meeting",
+                "Panata",
+                "Weddings",
+                "Worship Service"
+            ])->default("Meeting");
             $table->date("start_date");
             $table->date("end_date")->nullable();
             $table->time("start_time");
             $table->time("end_time")->nullable();
             $table->string("location");
             $table->integer("number_Volunteer_needed")->nullable();
-            $table->enum("repeat", ["once", "weekly", "monthly", "yearly"])->default("once");
+            $table->enum("repeat", ["once", 'daily', "weekly", "monthly", "yearly"])->default("once");
             $table->enum("status", ["upcoming", "ongoing", "completed", "cancelled"])->default("upcoming");
             $table->boolean("reminder_sent")->default(false);
             $table->timestamps();

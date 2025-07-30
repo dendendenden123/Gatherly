@@ -49,6 +49,7 @@ Route::controller(EventController::class)->group(function () {
     Route::get('/admin/events', 'index')->name('admin.events.index');
     Route::get('/admin/events/create', 'create')->name('admin.events.create');
     Route::get('admin/events/edit/{id}', 'edit')->name('admin.events.edit');
+    Route::put('admin/events/update/{id}', 'update')->name('admin.events.update');
     Route::delete('/admin/events/destroy/{id}', 'destroy')->name('admin.events.destroy');
 });
 

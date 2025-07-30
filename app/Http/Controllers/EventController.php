@@ -39,6 +39,33 @@ class EventController extends Controller
         return view('admin.events.edit', compact('event'));
     }
 
+    public function update(Request $request, $id)
+    {
+
+        try {
+            $validated = $request->validate([
+                'event_name' => 'required|string|max:255',
+                'event_description' => 'nullable|string',
+                'event_type' => 'required|string|max:100',
+                'status' => 'required|in:upcoming,completed,cancelled',
+                'start_date' => 'required|date',
+                'start_time' => 'required|date_format:H:i:s',
+                'end_date' => 'required|date|after_or_equal:start_date',
+                'end_time' => 'required|date_format:H:i:s',
+                'location' => 'required|string|max:255',
+                'number_Volunteer_needed' => 'required|integer|min:1',
+                'repeat' => 'nullable|in:daily,weekly,monthly,yearly',
+            ]);
+
+            Event::findOrFail($id)->update($validated);
+
+            return redirect()->back()->with(['success' => 'Event updated successfully']);
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->withErrors(['error' => 'Failed to update event: ' . $e->getMessage()]);
+        }
+
+    }
+
     public function destroy($id)
     {
         $Event = Event::findOrFail($id);

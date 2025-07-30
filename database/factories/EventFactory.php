@@ -20,11 +20,15 @@ class EventFactory extends Factory
             'event_name' => $this->faker->sentence(3),
             'event_description' => $this->faker->optional()->paragraph(),
             'event_type' => $this->faker->randomElement([
-                'Weekend worship service',
-                'weekdays worship service',
-                'volunteer',
-                'meeting',
-                'evangelical'
+                "Baptism",
+                "Charity Event",
+                "Christian Family Organization (CFO) activity",
+                "Evangelical Mission",
+                "Inauguration of New Chapels/ Structure",
+                "Meeting",
+                "Panata",
+                "Weddings",
+                "Worship Service"
             ]),
             'start_date' => $this->faker->date(),
             'end_date' => $this->faker->optional()->date(),

@@ -39,14 +39,37 @@
             </div>
 
             <!-- Form -->
-            <form id="eventForm" class="divide-y divide-gray-200">
+            <form method="POST" action="{{ route('admin.events.update', $event->id) }}" id="eventForm"
+                class="divide-y divide-gray-200">
+                @csrf
+                @method('PUT')
+                @if (session('success'))
+                    <script>
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: '{{ session('success') }}',
+                            confirmButtonColor: '#3085d6',
+                        });
+                    </script>
+                @elseif(session('error'))
+                    <script>
+                        Swal.fire({
+                            icon: 'Failed',
+                            title: 'Failed!',
+                            text: '{{ session('error') }}',
+                            confirmButtonColor: '#d63030ff',
+                        });
+                    </script>
+                @endif
+
                 <!-- Basic Information -->
                 <div class="px-6 py-5 space-y-6">
                     <div class="grid grid-cols-1 gap-6">
                         <!-- Event Name -->
                         <div>
                             <label for="eventName" class="block text-sm font-medium text-gray-700">Event Name *</label>
-                            <input type="text" name="eventName" id="eventName" value="{{ $event->event_name }}" required
+                            <input type="text" name="event_name" id="eventName" value="{{ $event->event_name }}" required
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                         </div>
 
@@ -54,10 +77,10 @@
                         <div>
                             <label for="eventDescription"
                                 class="block text-sm font-medium text-gray-700">Description</label>
-                            <textarea id="eventDescription" name="eventDescription" rows="3"
+                            <textarea id="eventDescription" name="event_description" rows="3"
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                                    {{ $event->event_description}}
-                                       </textarea>
+                                                                                                                                                                                                                                                                                                                                                      {{ $event->event_description}}
+                                                                                                                                                                                                                                                                                                                                                   </textarea>
                         </div>
 
                         <!-- Event Type and Status -->
@@ -66,22 +89,45 @@
                             <div>
                                 <label for="eventType" class="block text-sm font-medium text-gray-700">Event Type
                                     *</label>
-                                <select id="eventType" name="eventType" required
+                                <select id="eventType" name="event_type" required
                                     class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                     <option value="">Select a type</option>
-                                    <option value="service">Worship Service</option>
-                                    <option value="meeting">Meeting</option>
-                                    <option value="class" default>Class/Study</option>
-                                    <option value="social">Social Event</option>
-                                    <option value="outreach">Outreach</option>
+                                    <option value="Baptism" {{ $event->event_type == "Baptism" ? 'selected' : ''}}>
+                                        Baptism
+                                    </option>
+                                    <option value="Charity Event" {{ $event->event_type == "Charity Event" ? 'selected' : ''}}>
+                                        Charity Event
+                                    </option>
+                                    <option value="Christian Family Organization (CFO) activity" {{ $event->event_type == "Christian Family Organization (CFO) activity" ? 'selected' : ''}}>
+                                        Christian Family Organization (CFO) activity
+                                    </option>
+                                    <option value="Evangelical Mission">Evangelical Mission
+
+                                    </option>
+                                    <option value="Inauguration of New Chapels/ Structure" {{ $event->event_type == "Inauguration of New Chapels/ Structure" ? 'selected' : ''}}>
+                                        Inauguration of New Chapels/Structure
+                                    </option>
+                                    <option value="Meeting" {{ $event->event_type == "Meeting" ? 'selected' : ''}}>
+                                        Meeting
+                                    </option>
+                                    <option value="Panata" {{ $event->event_type == "Panata" ? 'selected' : ''}}>
+                                        Panata
+                                    </option>
+                                    <option value="Weddings" {{ $event->event_type == "Weddings" ? 'selected' : ''}}>
+                                        Weddings
+                                    </option>
+                                    <option value="Worship Service" {{ $event->event_type == "Worship Service" ? 'selected' : '' }}>
+                                        Worship Service
+                                    </option>
                                 </select>
+
                             </div>
 
                             <!-- Event Status -->
                             <div>
                                 <label for="eventStatus" class="block text-sm font-medium text-gray-700">Status
                                     *</label>
-                                <select id="eventStatus" name="eventStatus" required
+                                <select id="eventStatus" name="status" required
                                     class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                     <option value="upcoming">Upcoming</option>
                                     <option value="ongoing">Ongoing</option>
@@ -101,28 +147,28 @@
                         <!-- Start Date -->
                         <div>
                             <label for="startDate" class="block text-sm font-medium text-gray-700">Start Date *</label>
-                            <input type="date" name="startDate" id="startDate" required
+                            <input type="date" name="start_date" id="startDate" value="{{ $event->start_date }}" required
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                         </div>
 
                         <!-- Start Time -->
                         <div>
                             <label for="startTime" class="block text-sm font-medium text-gray-700">Start Time *</label>
-                            <input type="time" name="startTime" id="startTime" required
+                            <input type="time" name="start_time" id="startTime" value="{{ $event->start_time }}" required
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                         </div>
 
                         <!-- End Date -->
                         <div>
                             <label for="endDate" class="block text-sm font-medium text-gray-700">End Date</label>
-                            <input type="date" name="endDate" id="endDate"
+                            <input type="date" name="end_date" id="endDate" value="{{ $event->end_date }}"
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                         </div>
 
                         <!-- End Time -->
                         <div>
                             <label for="endTime" class="block text-sm font-medium text-gray-700">End Time</label>
-                            <input type="time" name="endTime" id="endTime"
+                            <input type="time" name="end_time" id="endTime" value="{{ $event->end_time }}"
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                         </div>
                     </div>
@@ -134,7 +180,7 @@
                         <!-- Location -->
                         <div>
                             <label for="location" class="block text-sm font-medium text-gray-700">Location</label>
-                            <input type="text" name="location" id="location"
+                            <input type="text" name="location" id="location" value="{{ $event->location }}"
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                         </div>
 
@@ -142,7 +188,8 @@
                         <div>
                             <label for="volunteersNeeded" class="block text-sm font-medium text-gray-700">Volunteers
                                 Needed</label>
-                            <input type="number" name="volunteersNeeded" id="volunteersNeeded" min="0"
+                            <input type="number" name="number_Volunteer_needed" id="volunteersNeeded" min="0"
+                                value="{{ $event->number_Volunteer_needed }}"
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                         </div>
                     </div>
@@ -152,8 +199,8 @@
                 <div class="px-6 py-5 space-y-6">
                     <div class="relative flex items-start">
                         <div class="flex items-center h-5">
-                            <input id="isRecurring" name="isRecurring" type="checkbox"
-                                class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                            <input id="isRecurring" type="checkbox"
+                                class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded" {{ $event->repeat != 'once' ? 'checked' : ''  }}>
                         </div>
                         <div class="ml-3 text-sm">
                             <label for="isRecurring" class="font-medium text-gray-700">Recurring Event</label>
@@ -162,17 +209,21 @@
                     </div>
 
                     <!-- Recurring Options (hidden by default) -->
-                    <div id="recurringOptions" class="hidden space-y-6 bg-gray-50 p-4 rounded-md">
+                    <div id="recurringOptions"
+                        class="{{ $event->repeat != 'once' ? '' : 'hidden'  }} space-y-6 bg-gray-50 p-4 rounded-md">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Frequency -->
                             <div>
                                 <label for="repeatFrequency"
                                     class="block text-sm font-medium text-gray-700">Frequency</label>
-                                <select id="repeatFrequency" name="repeatFrequency"
+                                <select id="repeatFrequency" name="repeat"
                                     class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                    <option value="daily">Daily</option>
-                                    <option value="weekly">Weekly</option>
-                                    <option value="monthly">Monthly</option>
+                                    <option value="once" {{ $event->repeat == 'once' ? 'selected' : ''}}>Once</option>
+                                    <option value="daily" {{ $event->repeat == 'daily' ? 'selected' : ''}}>Daily</option>
+                                    <option value="weekly" {{ $event->repeat == 'weekly' ? 'selected' : ''}}>Weekly</option>
+                                    <option value="monthly" {{ $event->repeat == 'monthly' ? 'selected' : ''}}>Monthly
+                                    </option>
+                                    <option value="yearly" {{ $event->repeat == 'yearly' ? 'selected' : ''}}>yearly</option>
                                 </select>
                             </div>
 
@@ -180,7 +231,7 @@
                             <div>
                                 <label for="repeatUntil" class="block text-sm font-medium text-gray-700">Repeat
                                     Until</label>
-                                <input type="date" name="repeatUntil" id="repeatUntil"
+                                <input type="date" name="repeatUntil" id="repeatUntil" value="{{ $event->end_date }}"
                                     class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                             </div>
                         </div>
@@ -189,60 +240,20 @@
 
                 <!-- Form Actions -->
                 <div class="px-6 py-4 bg-gray-50 text-right">
-                    <button type="button"
-                        class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Cancel
-                    </button>
+                    <a href="{{ route('admin.events.index') }}">
+                        <button type="button"
+                            class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Cancel
+                        </button>
+                    </a>
                     <button type="submit"
                         class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         <i class="fas fa-save mr-2"></i> Save Event
                     </button>
+
                 </div>
             </form>
         </div>
     </div>
     </div>
-
-    <script>
-        // Toggle recurring options
-        document.getElementById('isRecurring').addEventListener('change', function () {
-            const recurringOptions = document.getElementById('recurringOptions');
-            if (this.checked) {
-                recurringOptions.classList.remove('hidden');
-            } else {
-                recurringOptions.classList.add('hidden');
-            }
-        });
-
-        // Form submission
-        document.getElementById('eventForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-
-            // Collect form data
-            const formData = {
-                eventName: document.getElementById('eventName').value,
-                eventDescription: document.getElementById('eventDescription').value,
-                eventType: document.getElementById('eventType').value,
-                eventStatus: document.getElementById('eventStatus').value,
-                startDate: document.getElementById('startDate').value,
-                startTime: document.getElementById('startTime').value,
-                endDate: document.getElementById('endDate').value,
-                endTime: document.getElementById('endTime').value,
-                location: document.getElementById('location').value,
-                volunteersNeeded: document.getElementById('volunteersNeeded').value,
-                isRecurring: document.getElementById('isRecurring').checked,
-                repeatFrequency: document.getElementById('isRecurring').checked ?
-                    document.getElementById('repeatFrequency').value : null,
-                repeatUntil: document.getElementById('isRecurring').checked ?
-                    document.getElementById('repeatUntil').value : null
-            };
-
-            // Here you would typically make an AJAX call to your backend
-            console.log('Form data:', formData);
-            alert('Event created successfully!');
-
-            // Redirect to events list or show success message
-            // window.location.href = '/admin/events';
-        });
-    </script>
 @endsection
