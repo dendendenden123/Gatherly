@@ -1,14 +1,14 @@
 $(document).ready(function () {
+    $.get("/admin/events", (data) => {
+        console.log(data);
+    });
+
     let ajaxRequest = null;
     let debounceTimer = null;
     let filterForm = $(".filter-form");
 
-    // Request data
-    function requestDataList(attr) {
-        const data = attr.data;
-        const endpoint = attr.endpoint;
-        const dynamicHtmlContainer = attr.container;
-        const type = attr.type || "GET";
+    // Filtering
+    filterForm.on("click input change", () => {
         clearTimeout(debounceTimer);
 
         debounceTimer = setTimeout(() => {
@@ -17,15 +17,11 @@ $(document).ready(function () {
             }
 
             ajaxRequest = $.ajax({
-                url: endpoint,
-                type: type,
-                data: data,
+                url: filterForm.attr("action"),
+                type: "GET",
+                data: filterForm.serialize(),
                 success: function (data) {
-                    if (!dynamicHtmlContainer) {
-                        return data;
-                    }
-
-                    $("." + dynamicHtmlContainer).html(data.list);
+                    $(".index-events-list").html(data.list);
                     console.log(data.list);
                 },
                 error: function (xhr) {
@@ -33,45 +29,55 @@ $(document).ready(function () {
                 },
             });
         }, 300);
+    });
+
+    function bindDeleteButtons() {
+        $(".delete-btn")
+            .off("click")
+            .on("click", function () {
+                const id = $(this).data("id");
+                const url = $(this).data("url");
+
+                if (confirm("Are you sure you want to delete this item?")) {
+                    $.ajax({
+                        url: url,
+                        type: "DELETE",
+                        data: {
+                            _token: $('meta[name="csrf-token"]').attr(
+                                "content"
+                            ),
+                        },
+                        success: function (data) {
+                            alert("success");
+                            $("#event-" + id).remove();
+                            // Optionally, reload current page if needed
+                            fetchData(window.location.href);
+                        },
+                        error: function () {
+                            alert("Error deleting item.");
+                        },
+                    });
+                }
+            });
     }
 
-    // Delete event
-    $(".delete-btn").on("click", function (e) {
+    // Function to handle pagination clicks using AJAX
+    function fetchData(url) {
+        $.get(url, function (data) {
+            $(".index-events-list").html(
+                $(data).find(".index-events-list").html()
+            );
+            $("#pagination").html($(data).find("#pagination").html());
+            bindDeleteButtons(); // Rebind events
+        });
+    }
+
+    // Handle pagination link clicks
+    $(document).on("click", "#pagination a", function (e) {
         e.preventDefault();
-        const formDelete = $(this).closest("form");
-        alert(formDelete);
-
-        Swal.fire({
-            title: "Are you sure?",
-            text: "This action cannot be undone.",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
-            confirmButtonText: "Yes, delete it!",
-            cancelButtonText: "Cancel",
-        }).then((result) => {
-            if (!result.isConfirmed) {
-                return;
-            }
-
-            deletionRequest = requestDataList({
-                data: formDelete.serialize(),
-                endpoint: formDelete.attr("action"),
-                container: "index-events-list",
-                type: "POST",
-            });
-
-            Swal.fire("Deleted!", "The event has been deleted.", "success");
-        });
+        let url = $(this).attr("href");
+        fetchData(url);
     });
 
-    // Filtering
-    filterForm.on("click input change", () => {
-        requestDataList({
-            data: filterForm.serialize(),
-            endpoint: filterForm.attr("action"),
-            container: "index-events-list",
-        });
-    });
+    bindDeleteButtons(); // Initial bind
 });

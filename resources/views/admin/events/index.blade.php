@@ -1,6 +1,5 @@
 @extends('layouts.admin')
 @section('styles')
-    @vite('resources/js/admin-events-index.js')
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -493,4 +492,5 @@
         </div>
 
     </div>
+    @vite('resources/js/admin-events-index.js')
 @endsection

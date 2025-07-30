@@ -48,7 +48,7 @@ Route::controller(OfficerController::class)->group(function () {
 Route::controller(EventController::class)->group(function () {
     Route::get('/admin/events', 'index')->name('admin.events.index');
     Route::get('/admin/events/create', 'create')->name('admin.events.create');
-    Route::post('/admin/events/destroy', 'destroy')->name('admin.events.destroy');
+    Route::delete('/admin/events/destroy/{id}', 'destroy')->name('admin.events.destroy');
 });
 
 //Engagements Routes
