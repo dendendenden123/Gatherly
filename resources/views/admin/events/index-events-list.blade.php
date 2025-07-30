@@ -14,7 +14,7 @@
         @foreach($events as $event)
             <tr id="event-{{ $event->id }}">
                 <td>
-                    <div class="event-name">{{ $event->ent_name }}</div>
+                    <div class="event-name">{{ $event->event_name }}</div>
                     <div class="event-description">{{ Str::limit($event->event_description, 50) }}</div>
                 </td>
                 <td>
@@ -46,12 +46,28 @@
                         <button class="action-btn edit-btn" onclick="editEvent({{ $event->id }})">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="action-btn delete-btn" data-id="{{ $event->id }}"
-                            data-url="{{ route('admin.events.destroy', $event->id) }}">
-                            <i class="fas fa-trash"></i>
-                        </button>
+
+                        <form method="POST" class="form-deletion" action="{{ route('admin.events.destroy', $event->id) }}"
+                            data-form-id={{ $event->id  }}>
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="action-btn delete-btn">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+
                     </div>
                 </td>
+                @if (session('success'))
+                    <script>
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: '{{ session('success') }}',
+                            confirmButtonColor: '#3085d6',
+                        });
+                    </script>
+                @endif
             </tr>
         @endforeach
     </tbody>

@@ -33,14 +33,18 @@ class EventController extends Controller
         return view('admin.events.create');
     }
 
+    public function edit($id)
+    {
+        return view('admin.events.edit');
+    }
+
     public function destroy($id)
     {
         $Event = Event::findOrFail($id);
+        logger($Event);
         $Event->delete();
 
-        logger('success deleting event');
-
-        return response()->json(['message' => 'Deleted successfully']);
+        return redirect()->route('admin.events.index')->with(['success' => 'Event deleted succesfully']);
     }
 
 }

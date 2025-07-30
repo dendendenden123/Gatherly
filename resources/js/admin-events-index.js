@@ -1,8 +1,4 @@
 $(document).ready(function () {
-    $.get("/admin/events", (data) => {
-        console.log(data);
-    });
-
     let ajaxRequest = null;
     let debounceTimer = null;
     let filterForm = $(".filter-form");
@@ -31,53 +27,22 @@ $(document).ready(function () {
         }, 300);
     });
 
-    function bindDeleteButtons() {
-        $(".delete-btn")
-            .off("click")
-            .on("click", function () {
-                const id = $(this).data("id");
-                const url = $(this).data("url");
-
-                if (confirm("Are you sure you want to delete this item?")) {
-                    $.ajax({
-                        url: url,
-                        type: "DELETE",
-                        data: {
-                            _token: $('meta[name="csrf-token"]').attr(
-                                "content"
-                            ),
-                        },
-                        success: function (data) {
-                            alert("success");
-                            $("#event-" + id).remove();
-                            // Optionally, reload current page if needed
-                            fetchData(window.location.href);
-                        },
-                        error: function () {
-                            alert("Error deleting item.");
-                        },
-                    });
-                }
-            });
-    }
-
-    // Function to handle pagination clicks using AJAX
-    function fetchData(url) {
-        $.get(url, function (data) {
-            $(".index-events-list").html(
-                $(data).find(".index-events-list").html()
-            );
-            $("#pagination").html($(data).find("#pagination").html());
-            bindDeleteButtons(); // Rebind events
-        });
-    }
-
-    // Handle pagination link clicks
-    $(document).on("click", "#pagination a", function (e) {
+    $(".delete-btn").on("click", (e) => {
         e.preventDefault();
-        let url = $(this).attr("href");
-        fetchData(url);
-    });
+        const form = e.currentTarget.closest("form");
 
-    bindDeleteButtons(); // Initial bind
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to undo this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    });
 });
