@@ -24,12 +24,12 @@ return new class extends Migration {
                 "Panata",
                 "Weddings",
                 "Worship Service"
-            ])->default("Meeting");
-            $table->date("start_date");
+            ]);
+            $table->date("start_date")->nullable();
             $table->date("end_date")->nullable();
-            $table->time("start_time");
+            $table->time("start_time")->nullable();
             $table->time("end_time")->nullable();
-            $table->string("location");
+            $table->string("location")->nullable();
             $table->integer("number_Volunteer_needed")->nullable();
             $table->enum("repeat", ["once", 'daily', "weekly", "monthly", "yearly"])->default("once");
             $table->enum("status", ["upcoming", "ongoing", "completed", "cancelled"])->default("upcoming");

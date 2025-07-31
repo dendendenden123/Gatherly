@@ -48,10 +48,4 @@ $(document).ready(function () {
                 }
             });
         });
-
-    //edit button
-    $(".edit-btn").on("click", (e) => {
-        const url = $(e.currentTarget).data("url");
-        window.location.replace(url);
-    });
 });

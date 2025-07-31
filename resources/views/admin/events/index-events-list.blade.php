@@ -43,9 +43,11 @@
                 </td>
                 <td>
                     <div class="actions">
-                        <button class="action-btn edit-btn" data-url="{{ route('admin.events.edit', $event->id) }}">
-                            <i class="fas fa-edit"></i>
-                        </button>
+                        <a href="{{ route('admin.events.edit', $event->id) }}">
+                            <button class="action-btn edit-btn">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </a>
 
                         <form method="POST" class="form-deletion" action="{{ route('admin.events.destroy', $event->id) }}"
                             data-form-id={{ $event->id  }}>

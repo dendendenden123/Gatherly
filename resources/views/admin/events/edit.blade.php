@@ -78,9 +78,8 @@
                             <label for="eventDescription"
                                 class="block text-sm font-medium text-gray-700">Description</label>
                             <textarea id="eventDescription" name="event_description" rows="3"
-                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                                                                                                                                                                                                                                                                                                                                      {{ $event->event_description}}
-                                                                                                                                                                                                                                                                                                                                                   </textarea>
+                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                required>{{ $event->event_description}}</textarea>
                         </div>
 
                         <!-- Event Type and Status -->
@@ -89,7 +88,7 @@
                             <div>
                                 <label for="eventType" class="block text-sm font-medium text-gray-700">Event Type
                                     *</label>
-                                <select id="eventType" name="event_type" required
+                                <select id="eventType" name="event_type"
                                     class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                     <option value="">Select a type</option>
                                     <option value="Baptism" {{ $event->event_type == "Baptism" ? 'selected' : ''}}>
@@ -127,7 +126,7 @@
                             <div>
                                 <label for="eventStatus" class="block text-sm font-medium text-gray-700">Status
                                     *</label>
-                                <select id="eventStatus" name="status" required
+                                <select id="eventStatus" name="status"
                                     class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                     <option value="upcoming">Upcoming</option>
                                     <option value="ongoing">Ongoing</option>
@@ -147,14 +146,14 @@
                         <!-- Start Date -->
                         <div>
                             <label for="startDate" class="block text-sm font-medium text-gray-700">Start Date *</label>
-                            <input type="date" name="start_date" id="startDate" value="{{ $event->start_date }}" required
+                            <input type="date" name="start_date" id="startDate" value="{{ $event->start_date }}"
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                         </div>
 
                         <!-- Start Time -->
                         <div>
                             <label for="startTime" class="block text-sm font-medium text-gray-700">Start Time *</label>
-                            <input type="time" name="start_time" id="startTime" value="{{ $event->start_time }}" required
+                            <input type="time" name="start_time" id="startTime" value="{{ $event->start_time }}"
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                         </div>
 
@@ -231,7 +230,7 @@
                             <div>
                                 <label for="repeatUntil" class="block text-sm font-medium text-gray-700">Repeat
                                     Until</label>
-                                <input type="date" name="repeatUntil" id="repeatUntil" value="{{ $event->end_date }}"
+                                <input type="date" id="repeatUntil" value="{{ $event->end_date }}"
                                     class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                             </div>
                         </div>
@@ -248,12 +247,22 @@
                     </a>
                     <button type="submit"
                         class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        <i class="fas fa-save mr-2"></i> Save Event
+                        <i class="fas fa-save mr-2"></i> Update Event
                     </button>
 
                 </div>
             </form>
         </div>
     </div>
-    </div>
+    <script>
+        // Toggle recurring options
+        document.getElementById('isRecurring').addEventListener('change', function () {
+            const recurringOptions = document.getElementById('recurringOptions');
+            if (this.checked) {
+                recurringOptions.classList.remove('hidden');
+            } else {
+                recurringOptions.classList.add('hidden');
+            }
+        });
+    </script>
 @endsection

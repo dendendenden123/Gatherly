@@ -33,6 +33,33 @@ class EventController extends Controller
         return view('admin.events.create');
     }
 
+    public function store(Request $request)
+    {
+        logger($request->all());
+        try {
+            $validated = $request->validate([
+                'event_name' => 'required|string|max:255',
+                'event_description' => 'required|string',
+                'event_type' => 'required|string|max:100',
+                'status' => 'required|in:upcoming,completed,cancelled',
+                'start_date' => 'nullable|date',
+                'start_time' => 'nullable|date_format:H:i:s',
+                'end_date' => 'nullable|date|after_or_equal:start_date',
+                'end_time' => 'nullable|date_format:H:i:s',
+                'location' => 'nullable|string|max:255',
+                'number_Volunteer_needed' => 'nullable|integer|min:1',
+                'repeat' => 'nullable|in:once,daily,weekly,monthly,yearly',
+            ]);
+
+            Event::create($validated);
+
+            return redirect()->back()->with(['success' => 'Event createad successfully']);
+        } catch (\Exception $e) {
+            \Log::error('Failed to create event. ', [$e]);
+            return redirect()->back()->withInput()->with(['error' => 'Failed to create event: ' . $e->getMessage()]);
+        }
+    }
+
     public function edit($id)
     {
         $event = Event::findOrFail($id);
@@ -41,29 +68,29 @@ class EventController extends Controller
 
     public function update(Request $request, $id)
     {
-
+        logger($request->all());
         try {
             $validated = $request->validate([
                 'event_name' => 'required|string|max:255',
-                'event_description' => 'nullable|string',
+                'event_description' => 'required|string',
                 'event_type' => 'required|string|max:100',
                 'status' => 'required|in:upcoming,completed,cancelled',
-                'start_date' => 'required|date',
-                'start_time' => 'required|date_format:H:i:s',
-                'end_date' => 'required|date|after_or_equal:start_date',
-                'end_time' => 'required|date_format:H:i:s',
-                'location' => 'required|string|max:255',
-                'number_Volunteer_needed' => 'required|integer|min:1',
-                'repeat' => 'nullable|in:daily,weekly,monthly,yearly',
+                'start_date' => 'nullable|date',
+                'start_time' => 'nullable|date_format:H:i:s',
+                'end_date' => 'nullable|date|after_or_equal:start_date',
+                'end_time' => 'nullable|date_format:H:i:s',
+                'location' => 'nullable|string|max:255',
+                'number_Volunteer_needed' => 'nullable|integer|min:1',
+                'repeat' => 'nullable|in:once,daily,weekly,monthly,yearly',
             ]);
 
             Event::findOrFail($id)->update($validated);
 
             return redirect()->back()->with(['success' => 'Event updated successfully']);
         } catch (\Exception $e) {
-            return redirect()->back()->withInput()->withErrors(['error' => 'Failed to update event: ' . $e->getMessage()]);
+            \Log::error('Failed to Update event. ', [$e]);
+            return redirect()->back()->withInput()->with(['error' => 'Failed to update event: ' . $e->getMessage()]);
         }
-
     }
 
     public function destroy($id)
