@@ -481,10 +481,6 @@
                         <input type="text" placeholder="Search events..." id="searchInput" name='event_name'>
                     </form>
                 </div>
-                <button class="filter-btn">
-                    <i class="fas fa-filter"></i>
-                    Filter
-                </button>
             </div>
         </div>
         <div class='index-events-list'>
