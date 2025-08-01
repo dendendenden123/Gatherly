@@ -66,4 +66,40 @@ $(document).ready(function () {
                 $(this).text("Deselect All");
             }
         });
+
+    $(".bulk-delete-submit-btn").on("click", function () {
+        const selectedIds = $(".bulk-delete-checkbox:checked")
+            .map(function () {
+                return $(this).data("id");
+            })
+            .get();
+
+        if (!selectedIds.length > 0) {
+            return null;
+        }
+
+        clearTimeout(debounceTimer);
+
+        debounceTimer = setTimeout(() => {
+            if (ajaxRequest) {
+                ajaxRequest.abort();
+            }
+
+            ajaxRequest = $.ajax({
+                url: "/admin/events/bulkDelete",
+                type: "DELETE",
+                data: {
+                    ids: selectedIds,
+                    _token: "{{ csrf_token() }}",
+                },
+                success: function (data) {
+                    $(".index-events-list").html(data.list);
+                    console.log(data.list);
+                },
+                error: function (xhr) {
+                    console.error("Error:", xhr.responseText);
+                },
+            });
+        }, 300);
+    });
 });

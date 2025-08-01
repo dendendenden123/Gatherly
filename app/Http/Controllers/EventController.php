@@ -102,4 +102,12 @@ class EventController extends Controller
         return redirect()->route('admin.events.index')->with(['success' => 'Event deleted succesfully']);
     }
 
+    public function bulkDestroy(Request $request)
+    {
+        logger($request->all());
+        $validated = $request->validate([
+            'event_ids' => 'integer|exists:events,id'
+        ]);
+    }
+
 }

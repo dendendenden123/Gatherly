@@ -51,11 +51,12 @@
 
     <!-- Events Table -->
     <div class="events-container">
+
         <div class="events-header">
             <h2 class="events-title">All Events</h2>
             <div class="search-filter">
-                <button type="submit" form="bulkDeleteForm"
-                    class="bulk-delete-btn flex items-center px-3 py-1  text-gray-500 rounded text-lg">
+                <button type="submit"
+                    class="bulk-delete-submit-btn flex items-center px-3 py-1  text-gray-500 rounded text-lg">
                     <i class="fas fa-trash mr-1"></i> Delete
                 </button>
                 <div class="search-box">
@@ -70,7 +71,6 @@
         <div class='index-events-list'>
             @include('admin.events.index-events-list')
         </div>
-
     </div>
     @vite('resources/js/admin-events-index.js')
 @endsection

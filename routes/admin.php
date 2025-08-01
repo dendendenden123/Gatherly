@@ -52,6 +52,7 @@ Route::controller(EventController::class)->group(function () {
     Route::get('admin/events/edit/{id}', 'edit')->name('admin.events.edit');
     Route::put('admin/events/update/{id}', 'update')->name('admin.events.update');
     Route::delete('/admin/events/destroy/{id}', 'destroy')->name('admin.events.destroy');
+    Route::delete('/admin/events/bulkDestroy', 'bulkDestroy')->name('admin.events.bulkDestroy');
 });
 
 //Engagements Routes
