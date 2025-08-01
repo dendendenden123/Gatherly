@@ -1,7 +1,7 @@
 <table class="events-table">
     <thead>
         <tr>
-            <th>Select</th>
+            <th class="cursor-pointer" id='select-all-button'>Select All</th>
             <th>Event Name</th>
             <th>Type</th>
             <th>Date & Time</th>
@@ -14,7 +14,7 @@
     <tbody>
         @foreach($events as $event)
             <tr id="event-{{ $event->id }}">
-                <td><input type="checkbox"></td>
+                <td><input type="checkbox" class="bulk-delete-checkbox" data-id="{{ $event->id  }}"></td>
                 <td>
                     <div class="event-name">{{ $event->event_name }}</div>
                     <div class="event-description">{{ Str::limit($event->event_description, 50) }}</div>

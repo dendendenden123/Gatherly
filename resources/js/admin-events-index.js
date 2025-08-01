@@ -2,6 +2,7 @@ $(document).ready(function () {
     let ajaxRequest = null;
     let debounceTimer = null;
     let filterForm = $(".filter-form");
+    let bulkDeleteCheckBox = $(".bulk-delete-checkbox");
 
     // Filtering
     filterForm.on("click input change", () => {
@@ -47,5 +48,22 @@ $(document).ready(function () {
                     form.submit();
                 }
             });
+        });
+
+    //select all delete button
+    $("#select-all-button")
+        .off("click")
+        .on("click", function () {
+            let allChecked =
+                bulkDeleteCheckBox.length ==
+                $(".bulk-delete-checkbox:checked").length;
+
+            if (allChecked) {
+                bulkDeleteCheckBox.prop("checked", false);
+                $(this).text("Select All");
+            } else {
+                bulkDeleteCheckBox.prop("checked", true);
+                $(this).text("Deselect All");
+            }
         });
 });
