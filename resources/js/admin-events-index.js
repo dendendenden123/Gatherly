@@ -1,11 +1,18 @@
 $(document).ready(function () {
+    // === Setup ===
     let ajaxRequest = null;
     let debounceTimer = null;
-    let filterForm = $(".filter-form");
-    let bulkDeleteCheckBox = $(".bulk-delete-checkbox");
+    const filterForm = $(".filter-form");
+    const bulkDeleteCheckBox = $(".bulk-delete-checkbox");
+    const bulkDeletesSubmitBtn = $(".bulk-delete-submit-btn");
 
-    // Filtering
-    filterForm.on("click input change", () => {
+    // === Event Listeners ===
+    bulkDeletesSubmitBtn.on("click", bulkDelete);
+    filterForm.on("click input change", filterList);
+    selectAllButton;
+
+    // === Functions ===
+    function filterList() {
         clearTimeout(debounceTimer);
 
         debounceTimer = setTimeout(() => {
@@ -19,14 +26,13 @@ $(document).ready(function () {
                 data: filterForm.serialize(),
                 success: function (data) {
                     $(".index-events-list").html(data.list);
-                    console.log(data.list);
                 },
                 error: function (xhr) {
                     console.error("Error:", xhr.responseText);
                 },
             });
         }, 300);
-    });
+    }
 
     //delete button
     $(".delete-btn")
@@ -67,7 +73,7 @@ $(document).ready(function () {
             }
         });
 
-    $(".bulk-delete-submit-btn").on("click", function () {
+    function bulkDelete() {
         const selectedIds = $(".bulk-delete-checkbox:checked")
             .map(function () {
                 return $(this).data("id");
@@ -78,28 +84,52 @@ $(document).ready(function () {
             return null;
         }
 
-        clearTimeout(debounceTimer);
-
-        debounceTimer = setTimeout(() => {
-            if (ajaxRequest) {
-                ajaxRequest.abort();
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to undo this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+            if (!result.isConfirmed) {
+                return;
             }
 
-            ajaxRequest = $.ajax({
-                url: "/admin/events/bulkDelete",
-                type: "DELETE",
-                data: {
-                    ids: selectedIds,
-                    _token: "{{ csrf_token() }}",
-                },
-                success: function (data) {
-                    $(".index-events-list").html(data.list);
-                    console.log(data.list);
-                },
-                error: function (xhr) {
-                    console.error("Error:", xhr.responseText);
-                },
-            });
-        }, 300);
-    });
+            clearTimeout(debounceTimer);
+
+            debounceTimer = setTimeout(() => {
+                if (ajaxRequest) {
+                    ajaxRequest.abort();
+                }
+
+                ajaxRequest = $.ajax({
+                    url: "/admin/events/bulkDestroy",
+                    headers: {
+                        "X-CSRF-TOKEN": document.querySelector(
+                            'meta[name="csrf-token"]'
+                        ).content,
+                        "Content-Type": "application/json",
+                    },
+                    type: "DELETE",
+                    data: JSON.stringify({
+                        ids: selectedIds,
+                    }),
+                    success: function (data) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Success!",
+                            text: data.success,
+                            confirmButtonColor: "#3085d6",
+                        });
+                        location.reload();
+                    },
+                    error: function (xhr) {
+                        console.error("Error:", xhr.responseText);
+                    },
+                });
+            }, 300);
+        });
+    }
 });

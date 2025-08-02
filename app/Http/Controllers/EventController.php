@@ -99,15 +99,26 @@ class EventController extends Controller
         logger($Event);
         $Event->delete();
 
-        return redirect()->route('admin.events.index')->with(['success' => 'Event deleted succesfully']);
+        return redirect()->route('admin.events.index')->with(['success' => '']);
     }
 
     public function bulkDestroy(Request $request)
     {
-        logger($request->all());
-        $validated = $request->validate([
-            'event_ids' => 'integer|exists:events,id'
-        ]);
-    }
 
+        $validated = $request->validate([
+            'ids' => 'required|array',
+        ]);
+
+        logger($validated['ids']);
+
+        try {
+            Event::whereIn('id', $validated['ids'])->delete();
+            return response()->json(['success' => "Event deleted succesfully"]);
+
+        } catch (\Exception $e) {
+            \Log::error('Failed to delete events:', [$e]);
+            return response()->json(['error' => "Failed to delete events"]);
+
+        }
+    }
 }
