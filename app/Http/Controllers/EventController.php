@@ -28,9 +28,17 @@ class EventController extends Controller
         ));
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        return view('admin.events.create');
+
+        $existingEvents = Event::query()->select('id', 'event_name', 'start_date', 'end_date')->get();
+
+        logger($existingEvents);
+        if ($request->ajax()) {
+            return response()->json(['data' => $existingEvents]);
+        }
+
+        return view('admin.events.create', compact('existingEvents'));
     }
 
     public function store(Request $request)
