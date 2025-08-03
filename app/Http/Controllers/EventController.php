@@ -32,8 +32,6 @@ class EventController extends Controller
     {
 
         $existingEvents = Event::query()->select('id', 'event_name', 'start_date', 'end_date')->get();
-
-        logger($existingEvents);
         if ($request->ajax()) {
             return response()->json(['data' => $existingEvents]);
         }
@@ -46,7 +44,7 @@ class EventController extends Controller
         logger($request->all());
         try {
             $validated = $request->validate([
-                'event_name' => 'required|string|max:255',
+                'event_name' => 'req uired|string|max:255',
                 'event_description' => 'required|string',
                 'event_type' => 'required|string|max:100',
                 'status' => 'required|in:upcoming,completed,cancelled',
@@ -60,6 +58,7 @@ class EventController extends Controller
             ]);
 
             Event::create($validated);
+            logger('event store successfully');
 
             return redirect()->back()->with(['success' => 'Event createad successfully']);
         } catch (\Exception $e) {
