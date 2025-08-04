@@ -210,12 +210,25 @@
                 <!-- Date & Time -->
                 <div class="px-6 py-5 space-y-6">
                     <h3 class="text-lg font-medium leading-6 text-gray-900">Date & Time</h3>
-                    <div id='calendar' data-events="{{ $existingEvents }}"></div>
+                    <div id='calendar' data-events="@json($existingEvents)"></div>
 
                     <!-- Modal (hidden by default) -->
                     <div id="myModal"
                         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
                         <div class="bg-white rounded-lg p-6 w-96 shadow-lg relative">
+                            <!-- Start Date -->
+                            <div>
+                                <label for="startTime" class="block text-sm font-medium text-gray-700">Start Date *</label>
+                                <input type="date" name="start_date" id="startDate" value="{{ old('start_date') }}"
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                            </div>
+
+                            <!-- End Date -->
+                            <div>
+                                <label for="endTime" class="block text-sm font-medium text-gray-700">End Date</label>
+                                <input type="date" name="end_date" id="endDate" value="{{ old('end_date') }}"
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                            </div>
                             <!-- Start Time -->
                             <div>
                                 <label for="startTime" class="block text-sm font-medium text-gray-700">Start Time *</label>
@@ -247,7 +260,7 @@
                             Cancel
                         </button>
                     </a>
-                    <button type="submit" id="submitForm"
+                    <button id="submitForm" type="submit"
                         class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         <i class="fas fa-save mr-2"></i> Save Event
                     </button>

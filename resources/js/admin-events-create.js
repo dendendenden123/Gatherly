@@ -1,20 +1,11 @@
 $(document).ready(() => {
-    let eventData = $("#calendar").data("events");
-
-    console.log(
-        eventData.map((arr) => {
-            return {
-                title: arr.event_name,
-                start: arr.start_date,
-                end: arr.end_date,
-            };
-        })
-    );
-
     //===SET UP====
     let ajaxRequest = null;
     let debounceTimer = null;
     const timeModal = $("#myModal");
+    const eventData = $("#calendar").data("events");
+
+    console.log(eventData);
 
     //===EVENT LISTENER===
     showCalendarEvent();
@@ -45,48 +36,31 @@ $(document).ready(() => {
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: "dayGridMonth",
             selectable: true,
-            events: eventData.map((arr) => {
-                return {
-                    title: arr.event_name,
-                    start: arr.start_date,
-                    end: arr.end_date,
-                };
-            }),
-
-            // events: getEvent(),
+            events: getEvent(),
             select: function (info) {
+                $("#startDate").val(info.startStr);
+                $("#endDate").val(info.endStr);
+
                 showTimeModal();
-                $("#submitForm").on("click", storeEvent(info));
             },
         });
         calendar.render();
     }
 
     function getEvent() {
-        return [
-            {
-                id: 1,
-                title: "Evengilical MIssion <br> hello",
-                start: "2025-08-07",
-                end: "2025-08-10",
-            },
-            {
-                id: 2,
-                title: "Evengilical MIssion <br> hello",
-                start: "2025-08-07",
-                end: "2025-08-10",
-            },
-        ];
+        return eventData.map((arr) => ({
+            title: arr.event_name,
+            start: arr.start_date,
+            end: arr.end_date,
+        }));
     }
 
-    console.log(getEvent());
-
-    function storeEvent(info) {
+    async function storeEvent(start_date, end_date) {
         const eventForm = $("#eventForm").serializeArray();
 
         eventForm.push(
-            { name: "start_date", value: info.startStr },
-            { name: "end_date", value: info.endStr }
+            { name: "start_date", value: start_date },
+            { name: "end_date", value: end_date }
         );
 
         clearTimeout(debounceTimer);
@@ -107,15 +81,7 @@ $(document).ready(() => {
                 type: "POST",
                 data: eventForm,
                 success: function (data) {
-                    // Swal.fire({
-                    //     icon: "success",
-                    //     title: "Success!",
-                    //     text: data.success,
-                    //     confirmButtonColor: "#3085d6",
-                    // });
-                    // location.reload();
-
-                    console.log(data);
+                    console.log("events created successfully");
                 },
                 error: function (xhr) {
                     console.error1("Error:", xhr.responseText);

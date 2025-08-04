@@ -11,7 +11,6 @@ class AttendanceController extends Controller
 {
     public function index(Request $request)
     {
-        logger($request->all());
         $events = Event::select(['id', 'event_name'])->get();
         $from_date = $request->input('start_date') ?? now()->subYear();
         $to = $request->input('end_date') ?? now();

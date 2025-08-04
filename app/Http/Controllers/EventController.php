@@ -30,7 +30,10 @@ class EventController extends Controller
 
     public function create(Request $request)
     {
-        $existingEvents = Event::query()->select('id', 'event_name', 'start_date', 'end_date')->get();
+        $existingEvents = Event::select('id', 'event_name')
+            ->with(['event_occurrences'])
+            ->get();
+
         if ($request->ajax()) {
             return response()->json(['data' => $existingEvents]);
         }
@@ -40,16 +43,15 @@ class EventController extends Controller
 
     public function store(Request $request)
     {
-        logger($request->all());
         try {
             $validated = $request->validate([
                 'event_name' => 'req uired|string|max:255',
                 'event_description' => 'required|string',
                 'event_type' => 'required|string|max:100',
                 'status' => 'required|in:upcoming,ongoing,completed,cancelled',
-                'start_date' => 'nullable|date',
+                'start_date' => 'required|date',
                 'start_time' => 'nullable|date_format:H:i',
-                'end_date' => 'nullable|date|after_or_equal:start_date',
+                'end_date' => 'required|date|after_or_equal:start_date',
                 'end_time' => 'nullable|date_format:H:i',
                 'location' => 'nullable|string|max:255',
                 'number_Volunteer_needed' => 'nullable|integer|min:1',
@@ -57,8 +59,6 @@ class EventController extends Controller
             ]);
 
             Event::create($validated);
-            logger('event store successfully');
-
             return redirect()->back()->with(['success' => 'Event created successfully']);
         } catch (\Exception $e) {
             \Log::error('Failed to create event. ', [$e]);
@@ -74,16 +74,15 @@ class EventController extends Controller
 
     public function update(Request $request, $id)
     {
-        logger($request->all());
         try {
             $validated = $request->validate([
                 'event_name' => 'required|string|max:255',
                 'event_description' => 'required|string',
                 'event_type' => 'required|string|max:100',
                 'status' => 'required|in:upcoming,completed,cancelled',
-                'start_date' => 'nullable|date',
+                'start_date' => 'required|date',
                 'start_time' => 'nullable|date_format:H:i:s',
-                'end_date' => 'nullable|date|after_or_equal:start_date',
+                'end_date' => 'required|date|after_or_equal:start_date',
                 'end_time' => 'nullable|date_format:H:i:s',
                 'location' => 'nullable|string|max:255',
                 'number_Volunteer_needed' => 'nullable|integer|min:1',
@@ -102,7 +101,6 @@ class EventController extends Controller
     public function destroy($id)
     {
         $Event = Event::findOrFail($id);
-        logger($Event);
         $Event->delete();
 
         return redirect()->route('admin.events.index')->with(['success' => '']);
@@ -114,8 +112,6 @@ class EventController extends Controller
         $validated = $request->validate([
             'ids' => 'required|array',
         ]);
-
-        logger($validated['ids']);
 
         try {
             Event::whereIn('id', $validated['ids'])->delete();
