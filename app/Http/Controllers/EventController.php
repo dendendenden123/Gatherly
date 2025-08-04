@@ -30,7 +30,6 @@ class EventController extends Controller
 
     public function create(Request $request)
     {
-
         $existingEvents = Event::query()->select('id', 'event_name', 'start_date', 'end_date')->get();
         if ($request->ajax()) {
             return response()->json(['data' => $existingEvents]);
@@ -47,11 +46,11 @@ class EventController extends Controller
                 'event_name' => 'req uired|string|max:255',
                 'event_description' => 'required|string',
                 'event_type' => 'required|string|max:100',
-                'status' => 'required|in:upcoming,completed,cancelled',
+                'status' => 'required|in:upcoming,ongoing,completed,cancelled',
                 'start_date' => 'nullable|date',
-                'start_time' => 'nullable|date_format:H:i:s',
+                'start_time' => 'nullable|date_format:H:i',
                 'end_date' => 'nullable|date|after_or_equal:start_date',
-                'end_time' => 'nullable|date_format:H:i:s',
+                'end_time' => 'nullable|date_format:H:i',
                 'location' => 'nullable|string|max:255',
                 'number_Volunteer_needed' => 'nullable|integer|min:1',
                 'repeat' => 'nullable|in:once,daily,weekly,monthly,yearly',
@@ -60,10 +59,10 @@ class EventController extends Controller
             Event::create($validated);
             logger('event store successfully');
 
-            return redirect()->back()->with(['success' => 'Event createad successfully']);
+            return redirect()->back()->with(['success' => 'Event created successfully']);
         } catch (\Exception $e) {
             \Log::error('Failed to create event. ', [$e]);
-            return redirect()->back()->withInput()->with(['error' => 'Failed to create event: ' . $e->getMessage()]);
+            return redirect()->back()->with(['error' => 'Failed to create event: ' . $e->getMessage()]);
         }
     }
 

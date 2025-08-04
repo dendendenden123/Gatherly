@@ -10,6 +10,7 @@ export default defineConfig({
                 "resources/js/app.js",
                 "resources/js/admin-attendance-index.js",
                 "resources/js/admin-events-index.js",
+                "resources/js/admin-events-create.js",
             ],
             refresh: true,
         }),

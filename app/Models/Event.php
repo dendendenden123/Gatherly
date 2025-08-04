@@ -46,4 +46,9 @@ class Event extends Model
                 $query->where('status', $status);
             });
     }
+
+    public static function getEventSummary()
+    {
+        return self::with('event_occurrences')->select('event_name', 'repeat', 'start_date', 'end_date')->get();
+    }
 }

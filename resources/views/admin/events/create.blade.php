@@ -54,7 +54,7 @@
                 @elseif(session('error'))
                     <script>
                         Swal.fire({
-                            icon: 'Failed',
+                            icon: 'Error',
                             title: 'Failed!',
                             text: '{{ session('error') }}',
                             confirmButtonColor: '#d63030ff',
@@ -210,23 +210,33 @@
                 <!-- Date & Time -->
                 <div class="px-6 py-5 space-y-6">
                     <h3 class="text-lg font-medium leading-6 text-gray-900">Date & Time</h3>
-                    <div id='calendar' wire:ignore></div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div id='calendar' data-events="{{ $existingEvents }}"></div>
 
-                        <!-- Start Time -->
-                        <div>
-                            <label for="startTime" class="block text-sm font-medium text-gray-700">Start Time *</label>
-                            <input type="time" name="start_time" id="startTime" value="{{ old('start_time') }}"
-                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                        </div>
+                    <!-- Modal (hidden by default) -->
+                    <div id="myModal"
+                        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+                        <div class="bg-white rounded-lg p-6 w-96 shadow-lg relative">
+                            <!-- Start Time -->
+                            <div>
+                                <label for="startTime" class="block text-sm font-medium text-gray-700">Start Time *</label>
+                                <input type="time" name="start_time" id="startTime" value="{{ old('start_time') }}"
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            </div>
 
-                        <!-- End Time -->
-                        <div>
-                            <label for="endTime" class="block text-sm font-medium text-gray-700">End Time</label>
-                            <input type="time" name="end_time" id="endTime" value="{{ old('end_time') }}"
-                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <!-- End Time -->
+                            <div>
+                                <label for="endTime" class="block text-sm font-medium text-gray-700">End Time</label>
+                                <input type="time" name="end_time" id="endTime" value="{{ old('end_time') }}"
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            </div>
+                            <button
+                                class="closeModal absolute top-2 right-2 text-gray-500 hover:text-black text-xl">&times;</button>
+                            <button class="closeModal mt-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                                Confirm
+                            </button>
                         </div>
                     </div>
+                    <!-- end of line -->
                 </div>
 
                 <!-- Form Actions -->
@@ -237,7 +247,7 @@
                             Cancel
                         </button>
                     </a>
-                    <button type="submit"
+                    <button type="submit" id="submitForm"
                         class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         <i class="fas fa-save mr-2"></i> Save Event
                     </button>
@@ -246,92 +256,6 @@
             </form>
         </div>
     </div>
-    <script>
-        //===SET UP====
-        let ajaxRequest = null;
-        let debounceTimer = null;
+    @vite('resources/js/admin-events-create.js')
 
-        //===FUNCTIONS===
-
-        //===FUNCTION TRIGGER
-
-        // Toggle recurring options
-        document.getElementById('isRecurring').addEventListener('change', function () {
-            const recurringOptions = document.getElementById('recurringOptions');
-            if (this.checked) {
-                recurringOptions.classList.remove('hidden');
-            } else {
-                recurringOptions.classList.add('hidden');
-            }
-        });
-
-
-
-        document.addEventListener('livewire:initialized', () => {
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                selectable: true,
-                events: [
-                    {
-                        id: 1,
-                        title: 'Evengilical MIssion <br> hello',
-                        start: '2025-08-07',
-                        end: '2025-08-10',
-                        color: 'orange'
-                    },
-                    {
-                        id: 2,
-                        title: 'Evengilical MIssion <br> hello',
-                        start: '2025-08-07',
-                        end: '2025-08-10',
-                        color: 'blue'
-                    }
-                ],
-                select: function (info) {
-                    console.log(info)
-                    let title = prompt('What is the title?')
-                    storeEvent(info)
-                }
-            });
-            calendar.render();
-        })
-
-        function storeEvent(info) {
-            const eventForm = $('#eventForm').serializeArray()
-            eventForm.push({ name: 'start_date', value: info.startStr }, { name: 'end_date', value: info.endStr })
-            clearTimeout(debounceTimer);
-
-            debounceTimer = setTimeout(() => {
-                if (ajaxRequest) {
-                    ajaxRequest.abort();
-                }
-
-                ajaxRequest = $.ajax({
-                    url: "/admin/events/store",
-                    headers: {
-                        "X-CSRF-TOKEN": document.querySelector(
-                            'meta[name="csrf-token"]'
-                        ).content,
-                        "Content-Type": "application/x-www-form-urlencoded",
-                    },
-                    type: "POST",
-                    data: eventForm,
-                    success: function (data) {
-                        Swal.fire({
-                            icon: "success",
-                            title: "Success!",
-                            text: data.success,
-                            confirmButtonColor: "#3085d6",
-                        });
-                        location.reload();
-                    },
-                    error: function (xhr) {
-                        console.error1("Error:", xhr.responseText);
-                    }
-                });
-            }, 300);
-
-        }
-    </script>
 @endsection

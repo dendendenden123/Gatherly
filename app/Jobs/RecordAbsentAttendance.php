@@ -34,8 +34,6 @@ class RecordAbsentAttendance implements ShouldQueue
 
         //Record all absent attendance
         foreach ($this->event_occurrences as $eventOccurrence) {
-
-            $event = Event::find($eventOccurrence)->firstOrFail();
             $presentUserId = Attendance::where("occurrence_id", $eventOccurrence->id)->pluck('user_id');
             $absentUsersId = $allUsersId->diff($presentUserId);
 
