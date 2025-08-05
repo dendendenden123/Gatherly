@@ -35,7 +35,7 @@ class Event extends Model
 
                 case 'daily':
                     $days = $startDate->diffInDays($endDate);
-                    for ($i = 1; $i <= $days; $i++) {
+                    for ($i = 0; $i <= $days; $i++) {
                         EventOccurrence::create([
                             'event_id' => $model->id,
                             'occurrence_date' => $startDate->copy()->addDays($i),
@@ -46,7 +46,7 @@ class Event extends Model
 
                 case 'weekly':
                     $weeks = $startDate->diffInWeeks($endDate);
-                    for ($i = 1; $i <= $weeks; $i++) {
+                    for ($i = 0; $i <= $weeks; $i++) {
                         EventOccurrence::create([
                             'event_id' => $model->id,
                             'occurrence_date' => $startDate->copy()->addWeeks($i),
@@ -57,7 +57,7 @@ class Event extends Model
 
                 case 'monthly':
                     $months = $startDate->diffInMonths($endDate);
-                    for ($i = 1; $i <= $months; $i++) {
+                    for ($i = 0; $i <= $months; $i++) {
                         EventOccurrence::create([
                             'event_id' => $model->id,
                             'occurrence_date' => $startDate->copy()->addMonths($i),
@@ -67,7 +67,7 @@ class Event extends Model
                     break;
                 case 'yearly':
                     $years = $startDate->diffInYears($endDate);
-                    for ($i = 1; $i <= $years; $i++) {
+                    for ($i = 0; $i <= $years; $i++) {
                         EventOccurrence::create([
                             'event_id' => $model->id,
                             'occurrence_date' => $startDate->copy()->addYears($i),

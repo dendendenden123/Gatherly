@@ -118,7 +118,8 @@
                     <span>Officers</span>
                 </a>
             </div>
-            <div class="nav-item {{ request()->is('admin/events/*') ? 'active' : '' }}">
+            <div
+                class="nav-item {{ request()->is('admin/events') || request()->is('admin/events/*') ? 'active' : '' }}">
                 <a href="{{ route('admin.events.index') }}" class="text-decoration-none text-reset">
                     <i class="fas fa-calendar-alt"></i>
                     <span>Events</span>

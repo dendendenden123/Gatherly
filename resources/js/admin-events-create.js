@@ -5,8 +5,6 @@ $(document).ready(() => {
     const timeModal = $("#myModal");
     const eventData = $("#calendar").data("events");
 
-    console.log(eventData);
-
     //===EVENT LISTENER===
     showCalendarEvent();
     $("#isRecurring").on("change", toggleRecurringOption);
@@ -48,11 +46,14 @@ $(document).ready(() => {
     }
 
     function getEvent() {
-        return eventData.map((arr) => ({
-            title: arr.event_name,
-            start: arr.start_date,
-            end: arr.end_date,
-        }));
+        return eventData.flatMap((item) =>
+            item.event_occurrences.map((occurrence) => ({
+                title: item.event_name,
+                start: occurrence.occurrence_date,
+                end: occurrence.occurrence_date,
+                ...occurrence,
+            }))
+        );
     }
 
     async function storeEvent(start_date, end_date) {

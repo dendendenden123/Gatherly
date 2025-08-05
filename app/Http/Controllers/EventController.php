@@ -9,6 +9,7 @@ class EventController extends Controller
 {
     public function index(Request $request)
     {
+        logger($request->all());
         $events = Event::filter($request->all())->orderByDesc('id')->simplePaginate(5);
         $totalEvents = Event::query()->count();
         $upcomingEvents = Event::filter(['end_date' => now()->addMonth(), 'status' => 'upcoming'])->count();
