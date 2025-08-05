@@ -4,7 +4,8 @@
             <th class="cursor-pointer" id='select-all-button'>Select All</th>
             <th>Event Name</th>
             <th>Type</th>
-            <th>Date & Time</th>
+            <th>Frequency</th>
+            <th>Created at</th>
             <th>Location</th>
             <th>Status</th>
             <th>Actions</th>
@@ -20,12 +21,16 @@
                     <div class="event-description">{{ Str::limit($event->event_description, 50) }}</div>
                 </td>
                 <td>
-                    <span class="event-type">{{ $event->event_type }}</span>
+                    <span class=" text-sm">{{ $event->event_type }}</span>
+                </td>
+                <td>
+                    <span class="event-frequency text-sm">
+                        {{ ucfirst($event->repeat) }}
+                    </span>
                 </td>
                 <td>
                     <div class="event-datetime">
-                        <span class="event-date">{{ \Carbon\Carbon::parse($event->start_date)->format('M d, Y') }}</span>
-                        <span class="event-time">{{ $event->start_time }} - {{ $event->end_time }}</span>
+                        <span class=" text-sm">{{ $event->created_at}}</span>
                     </div>
                 </td>
                 <td>{{ $event->location }}</td>

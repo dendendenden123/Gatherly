@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\EventOccurrence;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\EventOccurrence;
+
 
 class Event extends Model
 {
@@ -12,6 +14,11 @@ class Event extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    public function getCreatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->format('M d, Y');
+    }
 
     public function event_occurrences()
     {
@@ -21,8 +28,8 @@ class Event extends Model
     protected static function booted()
     {
         static::created(function ($model) {
-            $startDate = \Carbon\Carbon::parse($model->start_date);
-            $endDate = \Carbon\Carbon::parse($model->end_date);
+            $startDate = Carbon::parse($model->start_date);
+            $endDate = Carbon::parse($model->end_date);
 
             switch ($model->repeat) {
                 case 'once':

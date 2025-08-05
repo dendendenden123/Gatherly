@@ -9,7 +9,6 @@ $(document).ready(function () {
     // === Event Listeners ===
     bulkDeletesSubmitBtn.on("click", bulkDelete);
     filterForm.on("click input change", filterList);
-    selectAllButton;
 
     // === Functions ===
     function filterList() {

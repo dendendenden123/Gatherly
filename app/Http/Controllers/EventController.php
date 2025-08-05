@@ -31,9 +31,7 @@ class EventController extends Controller
 
     public function create(Request $request)
     {
-        $existingEvents = Event::select('id', 'event_name')
-            ->with(['event_occurrences'])
-            ->get();
+        $existingEvents = Event::with(['event_occurrences'])->get();
 
         if ($request->ajax()) {
             return response()->json(['data' => $existingEvents]);

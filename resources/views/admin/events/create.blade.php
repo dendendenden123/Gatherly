@@ -231,6 +231,54 @@
                 </div>
             </form>
         </div>
+
+        <div id="viewEvent"
+            class="hidden fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-300 ease-in-out">
+            <div class="bg-white rounded-xl p-8 w-full max-w-md shadow-2xl relative overflow-hidden">
+                <!-- Decorative accent bar -->
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-green-500"></div>
+
+                <div class="space-y-5">
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-2">Event Details</h3>
+
+                    <div class="grid grid-cols-1 gap-4">
+                        <div class="flex flex-col">
+                            <span class="text-sm font-medium text-gray-500">Event name</span>
+                            <span id='viewEventName' class="text-gray-800 font-medium mt-1">Annual Conference</span>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <span class="text-sm font-medium text-gray-500">Description</span>
+                            <span id='viewEventDescription' class=" text-gray-600 mt-1">Our yearly gathering of industry leaders
+                                and innovators</span>
+                        </div>
+
+                        <div class="flex items-center">
+                            <span class="text-sm font-medium text-gray-500 w-28">Status</span>
+                            <span id='viewEventStatus' 
+                                class=" px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Active</span>
+                        </div>
+
+                        <div class="flex items-center">
+                            <span class="text-sm font-medium text-gray-500 w-28">Start Time</span>
+                            <span class="text-gray-800">May 15, 2023 • 9:00 AM</span>
+                        </div>
+
+                        <div class="flex items-center">
+                            <span class="text-sm font-medium text-gray-500 w-28">End Time</span>
+                            <span class="text-gray-800">May 17, 2023 • 5:00 PM</span>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 flex justify-end">
+                        <button
+                            class="closeViewEventModal px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-sm">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     @vite('resources/js/admin-events-create.js')
 

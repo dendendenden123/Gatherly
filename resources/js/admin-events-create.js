@@ -1,14 +1,14 @@
 $(document).ready(() => {
     //===SET UP====
-    let ajaxRequest = null;
-    let debounceTimer = null;
     const timeModal = $("#myModal");
     const eventData = $("#calendar").data("events");
+    console.log(eventData);
 
     //===EVENT LISTENER===
     showCalendarEvent();
     $("#isRecurring").on("change", toggleRecurringOption);
     $(".closeModal").on("click", hideTimeModal);
+    $(".closeViewEventModal").on("click", closeViewEventModal);
 
     //===FUNCTIONS===
     function showTimeModal() {
@@ -35,6 +35,10 @@ $(document).ready(() => {
             initialView: "dayGridMonth",
             selectable: true,
             events: getEvent(),
+            eventClick: function (info) {
+                console.log(viewEvent(info));
+                $("#viewEvent").removeClass("hidden");
+            },
             select: function (info) {
                 $("#startDate").val(info.startStr);
                 $("#endDate").val(info.endStr);
@@ -49,6 +53,9 @@ $(document).ready(() => {
         return eventData.flatMap((item) =>
             item.event_occurrences.map((occurrence) => ({
                 title: item.event_name,
+                description: item.event_description,
+                type: item.event_type,
+                location: item.location,
                 start: occurrence.occurrence_date,
                 end: occurrence.occurrence_date,
                 ...occurrence,
@@ -56,38 +63,11 @@ $(document).ready(() => {
         );
     }
 
-    async function storeEvent(start_date, end_date) {
-        const eventForm = $("#eventForm").serializeArray();
+    function viewEvent(info) {
+        return info.event;
+    }
 
-        eventForm.push(
-            { name: "start_date", value: start_date },
-            { name: "end_date", value: end_date }
-        );
-
-        clearTimeout(debounceTimer);
-
-        debounceTimer = setTimeout(() => {
-            if (ajaxRequest) {
-                ajaxRequest.abort();
-            }
-
-            ajaxRequest = $.ajax({
-                url: "/admin/events/store",
-                headers: {
-                    "X-CSRF-TOKEN": document.querySelector(
-                        'meta[name="csrf-token"]'
-                    ).content,
-                    "Content-Type": "application/x-www-form-urlencoded",
-                },
-                type: "POST",
-                data: eventForm,
-                success: function (data) {
-                    console.log("events created successfully");
-                },
-                error: function (xhr) {
-                    console.error1("Error:", xhr.responseText);
-                },
-            });
-        }, 300);
+    function closeViewEventModal() {
+        $("#viewEvent").addClass("hidden");
     }
 });

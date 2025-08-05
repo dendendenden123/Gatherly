@@ -30,6 +30,13 @@ class EventFactory extends Factory
                 "Weddings",
                 "Worship Service"
             ]),
+            'repeat' => $this->faker->randomElement([
+                "once",
+                'daily',
+                "weekly",
+                "monthly",
+                "yearly"
+            ]),
             'start_date' => $this->faker->date(),
             'end_date' => $this->faker->optional()->date(),
             'start_time' => $this->faker->time(),
