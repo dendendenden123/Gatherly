@@ -107,7 +107,6 @@ class EventController extends Controller
 
     public function bulkDestroy(Request $request)
     {
-
         $validated = $request->validate([
             'ids' => 'required|array',
         ]);

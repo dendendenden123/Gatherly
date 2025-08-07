@@ -249,24 +249,41 @@
 
                         <div class="flex flex-col">
                             <span class="text-sm font-medium text-gray-500">Description</span>
-                            <span id='viewEventDescription' class=" text-gray-600 mt-1">Our yearly gathering of industry leaders
+                            <span id='viewEventDescription' class=" text-gray-600 mt-1">Our yearly gathering of industry
+                                leaders
                                 and innovators</span>
                         </div>
 
                         <div class="flex items-center">
                             <span class="text-sm font-medium text-gray-500 w-28">Status</span>
-                            <span id='viewEventStatus' 
+                            <span id='viewEventStatus'
                                 class=" px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Active</span>
                         </div>
 
                         <div class="flex items-center">
-                            <span class="text-sm font-medium text-gray-500 w-28">Start Time</span>
-                            <span class="text-gray-800">May 15, 2023 • 9:00 AM</span>
+                            <span class="text-sm font-medium text-gray-500 w-28">Location</span>
+                            <span class="text-gray-800"><span id='viewEventLocation'><i>NA</i></span>
                         </div>
 
                         <div class="flex items-center">
-                            <span class="text-sm font-medium text-gray-500 w-28">End Time</span>
-                            <span class="text-gray-800">May 17, 2023 • 5:00 PM</span>
+                            <span class="text-sm font-medium text-gray-500 w-28">Date</span>
+                            <span class="text-gray-800"><span id='viewEventDate'><i>NA</i></span>
+                        </div>
+
+                        <div class="flex items-center">
+                            <span class="text-sm font-medium text-gray-500 w-28">Start at</span>
+                            <span class="text-gray-800"><span id='viewEventStartTime'><i>NA</i></span>
+                        </div>
+
+                        <div class="flex items-center">
+                            <span class="text-sm font-medium text-gray-500 w-28">End at</span>
+                            <span class="text-gray-800"><span id='viewEventEndTime'><i>NA</i></span></span>
+                        </div>
+
+                        <div class="flex items-center">
+                            <span class="text-sm font-medium text-gray-500 w-28">Event Duration</span>
+                            <span class="text-gray-800"><span id='viewEventStartDate'></span> - <span
+                                    id='viewEventEndDate'></span> | <span id='viewEventRepeat'></span></span>
                         </div>
                     </div>
 
