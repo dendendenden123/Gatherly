@@ -47,6 +47,7 @@ Route::controller(OfficerController::class)->group(function () {
 //Events Routes
 Route::controller(EventController::class)->group(function () {
     Route::get('/admin/events', 'index')->name('admin.events.index');
+    Route::get('/admin/events/show/{id}', 'show')->name('admin.events.show');
     Route::get('/admin/events/create', 'create')->name('admin.events.create');
     Route::post('admin/events/store', 'store')->name('admin.events.store');
     Route::get('admin/events/edit/{id}', 'edit')->name('admin.events.edit');
