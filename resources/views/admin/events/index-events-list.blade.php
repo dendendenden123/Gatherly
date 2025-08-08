@@ -19,7 +19,9 @@
                 <td>
                     <div class="event-name"><a
                             href="{{ route('admin.events.show', $event->id) }}">{{ $event->event_name }}</a></div>
-                    <div class="event-description">{{ Str::limit($event->event_description, 50) }}</div>
+                    <div class="event-description"> <a
+                            href="{{ route('admin.events.show', $event->id) }}">{{ Str::limit($event->event_description, 50) }}</a>
+                    </div>
                 </td>
                 <td>
                     <span class=" text-sm">{{ $event->event_type }}</span>

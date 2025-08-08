@@ -29,7 +29,13 @@ class EventController extends Controller
     public function show(Request $request, $id)
     {
         $event = Event::findOrFail($id)->first();
-        $eventOccurrences = EventOccurrence::where('event_id', $id)->get();
+        $eventOccurrences = EventOccurrence::where('event_id', $id)->orderByDesc('id')->simplePaginate(5);
+        if ($request->ajax()) {
+            $showEventsListView = view('admin.events.show-events-list', compact('eventOccurrences'))->render();
+            return response()->json([
+                'list' => $showEventsListView,
+            ]);
+        }
         return view('admin.events.show', compact('event', 'eventOccurrences'));
     }
 
