@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
@@ -16,9 +17,8 @@ class AuthAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-
-        $user = auth()->user();
-        if (auth()->check() && $user->role != 'Minister') {
+        $user = User::with('officers')->find(auth()->id());
+        if (auth()->check() && !$user->officers->contains('role', 1)) {
             return redirect()->route('logout');
         }
         return $next($request);

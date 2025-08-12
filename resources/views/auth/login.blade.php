@@ -4,8 +4,9 @@
 @section("form-action", route('login'))
 
 @section("form-fields")
+
     <x-form.field label="Email" name="email" type="email" placeholder="you@example.com" :error="$errors->first('email')" />
-    <x-form.field label="Password" name="password" type="password" placeholder="••••••••"
+    <x-form.field label="Password" name="password" type="password" placeholder="••••••••" value="password"
         :error="$errors->first('password')" />
 @endsection
 

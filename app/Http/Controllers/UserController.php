@@ -67,9 +67,10 @@ class UserController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (auth()->attempt($credentials)) {
-            $user = auth()->user();
+            $getUserid = auth()->id();
+            $user = User::with('officers')->findOrFail($getUserid);
 
-            if ($user->role === 'admin' || $user->role === 'Minister') {
+            if ($user->officers->contains('role', 1)) {
                 return redirect()->route('admin.dashboard');
             }
             return redirect()->route('member.dashboard');

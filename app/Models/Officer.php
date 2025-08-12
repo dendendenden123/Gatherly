@@ -9,4 +9,9 @@ class Officer extends Model
 {
     /** @use HasFactory<\Database\Factories\OfficerFactory> */
     use HasFactory;
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

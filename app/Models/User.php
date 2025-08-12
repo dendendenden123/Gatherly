@@ -48,6 +48,19 @@ class User extends Authenticatable
         return $this->hasMany(Attendance::class);
     }
 
+    public function officers()
+    {
+        return $this->hasMany(Officer::class);
+    }
+    protected static function booted()
+    {
+        static::created(function ($user) {
+            Officer::create([
+                'user_id' => $user->id
+            ]);
+        });
+    }
+
     public function getAttendanceRate(): float
     {
         $startOfLastMonth = Carbon::now()->subMonth()->startOfMonth();

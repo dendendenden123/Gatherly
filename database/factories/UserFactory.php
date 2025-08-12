@@ -24,7 +24,6 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'role' => $this->faker->randomElement(['Minister', 'Finance', 'SCAN', 'Deacon', 'Kalihim', 'Choir', 'None']),
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
             'middle_name' => $this->faker->firstName(),
