@@ -30,6 +30,7 @@ Route::controller(UserController::class)->group(function () {
 // Attendance Routes
 Route::controller(AttendanceController::class)->group(function () {
     Route::get('/admin/attendance', 'index')->name('admin.attendance');
+    Route::get('/admin/attendance/checkIn', 'checkIn')->name('admin.attendance.checkIn');
     Route::get('/admin/attendance/{id}', 'show')->name('admin.attendance.show');
 });
 
@@ -47,13 +48,13 @@ Route::controller(OfficerController::class)->group(function () {
 //Events Routes
 Route::controller(EventController::class)->group(function () {
     Route::get('/admin/events', 'index')->name('admin.events.index');
-    Route::get('/admin/events/show/{id}', 'show')->name('admin.events.show');
     Route::get('/admin/events/create', 'create')->name('admin.events.create');
     Route::post('admin/events/store', 'store')->name('admin.events.store');
+    Route::delete('/admin/events/bulkDestroy', 'bulkDestroy')->name('admin.events.bulkDestroy');
+    Route::delete('/admin/events/destroy/{id}', 'destroy')->name('admin.events.destroy');
+    Route::get('/admin/events/show/{id}', 'show')->name('admin.events.show');
     Route::get('admin/events/edit/{id}', 'edit')->name('admin.events.edit');
     Route::put('admin/events/update/{id}', 'update')->name('admin.events.update');
-    Route::delete('/admin/events/destroy/{id}', 'destroy')->name('admin.events.destroy');
-    Route::delete('/admin/events/bulkDestroy', 'bulkDestroy')->name('admin.events.bulkDestroy');
 });
 
 //Engagements Routes

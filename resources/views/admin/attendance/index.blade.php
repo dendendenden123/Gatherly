@@ -16,10 +16,13 @@
 
 
         <div class="flex items-center space-x-4">
-            <button class="bg-primary hover:bg-secondary text-white px-4 py-2 rounded-md text-sm">
-                <i class="bi bi-plus mr-1"></i> New Record
-            </button>
+            <a href="{{ route('admin.attendance.checkIn') }}">
+                <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm flex items-center">
+                    <i class="bi bi-plus mr-1"></i> Record Attendance
+                </button>
+            </a>
         </div>
+
     </div>
 </header>
 @endSection

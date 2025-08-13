@@ -71,6 +71,28 @@ class AttendanceController extends Controller
         ));
     }
 
+    public function checkIn()
+    {
+        $events = Event::with([
+            'event_occurrences' => function ($query) {
+                $query->whereBetween('occurrence_date', [
+                    Carbon::today()->startOfDay(),
+                    Carbon::today()->endOfDay()
+                ])->where('attendance_checked', 0)
+                    ->select('id', 'event_id', 'start_time');
+            }
+        ])->whereHas('event_occurrences', function ($query) {
+            $query->whereBetween('occurrence_date', [
+                Carbon::today()->startOfDay(),
+                Carbon::today()->endOfDay()
+            ]);
+        })->select('id', 'event_name')
+            ->get();
+
+
+        return view('admin.attendance.check-in', compact('events'));
+    }
+
     private function getAttendanceGrowthRateLastMonth($user_id)
     {
         $countLastMonthAttendance = Attendance::filter([

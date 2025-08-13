@@ -23,6 +23,12 @@ class EventOccurrence extends Model
     {
         return $this->hasMany(Attendance::class);
     }
+
+
+    public function getStartTimeFormattedAttribute()
+    {
+        return Carbon::createFromFormat('H:i:s', $this->start_time)->format('h:i A');
+    }
 }
 
 

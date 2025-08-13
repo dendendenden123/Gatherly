@@ -11,6 +11,7 @@ export default defineConfig({
                 "resources/js/admin-attendance-index.js",
                 "resources/js/admin-events-index.js",
                 "resources/js/admin-events-create.js",
+                "resources/js/admin-attendance-check-in.js",
             ],
             refresh: true,
         }),

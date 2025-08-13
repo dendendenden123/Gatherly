@@ -52,7 +52,6 @@
 
         $(document).on('click', '.pagination a', function (e) {
             e.preventDefault();
-            console.log('loaded')
             const url = $(this).attr('href');
 
             // Clear the debounce timer if user clicks again quickly

@@ -15,10 +15,15 @@ class Event extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'start_time' => 'datetime',
+    ];
+
     public function getCreatedAtAttribute($value)
     {
         return Carbon::parse($value)->format('M d, Y');
     }
+
 
     public function event_occurrences()
     {
