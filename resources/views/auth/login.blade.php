@@ -4,10 +4,12 @@
 @section("form-action", route('login'))
 
 @section("form-fields")
-
     <x-form.field label="Email" name="email" type="email" placeholder="you@example.com" :error="$errors->first('email')" />
     <x-form.field label="Password" name="password" type="password" placeholder="••••••••" value="password"
         :error="$errors->first('password')" />
+    @if(session('error'))
+        <label class="text-red-500">Invalid Credentials</label>
+    @endif
 @endsection
 
 @section("form-button-text")

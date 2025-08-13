@@ -65,19 +65,16 @@ class UserController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
-
-        if (auth()->attempt($credentials)) {
-            $getUserid = auth()->id();
-            $user = User::with('officers')->findOrFail($getUserid);
-
-            if ($user->officers->contains('role', 1)) {
-                return redirect()->route('admin.dashboard');
-            }
-            return redirect()->route('member.dashboard');
-
-        } else {
-            return response()->json(['error' => 'Invalid credentials'], 401);
+        if (!auth()->attempt($credentials)) {
+            return redirect()->back()->with('error', 'Invalid Credentials');
         }
+
+        $getUserid = auth()->id();
+        $user = User::with('officers')->findOrFail($getUserid);
+        if ($user->officers->contains('role', 1)) {
+            return redirect()->route('admin.dashboard');
+        }
+        return redirect()->route('member.dashboard');
     }
 
 }
