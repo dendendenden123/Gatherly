@@ -6,6 +6,8 @@ use Carbon\Carbon;
 use App\Models\Attendance;
 use App\Models\Event;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
+
 
 class AttendanceController extends Controller
 {
@@ -71,9 +73,31 @@ class AttendanceController extends Controller
         ));
     }
 
-    public function checkIn()
+    public function checkIn(Request $request)
     {
-        $events = Event::with([
+        $todaysScheduleEvent = self::getTodaysScheduledEvents();
+        $autoCorrectNames = self::getFilterByNameId($request['member-search']);
+
+        if ($request->ajax()) {
+            return response()->json(['data' => $autoCorrectNames]);
+        }
+
+        return view('admin.attendance.check-in', compact('todaysScheduleEvent'));
+    }
+
+    private function getFilterByNameId($nameOrId)
+    {
+        return User::where(DB::raw("CONCAT(first_name, ' ', middle_name, ' ', last_name)"), 'like', "%{$nameOrId}%")
+            ->orWhere('first_name', 'like', "%{$nameOrId}%")
+            ->orWhere('middle_name', 'like', "%{$nameOrId}%")
+            ->orWhere('last_name', 'like', "%{$nameOrId}%")
+            ->orWhere('id', 'like', "%{$nameOrId}%")
+            ->get();
+    }
+
+    private function getTodaysScheduledEvents()
+    {
+        return Event::with([
             'event_occurrences' => function ($query) {
                 $query->whereBetween('occurrence_date', [
                     Carbon::today()->startOfDay(),
@@ -88,9 +112,6 @@ class AttendanceController extends Controller
             ]);
         })->select('id', 'event_name')
             ->get();
-
-
-        return view('admin.attendance.check-in', compact('events'));
     }
 
     private function getAttendanceGrowthRateLastMonth($user_id)

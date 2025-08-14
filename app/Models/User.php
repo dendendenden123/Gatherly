@@ -48,6 +48,18 @@ class User extends Authenticatable
         return $this->hasMany(Attendance::class);
     }
 
+    public function getFullNameAttribute()
+    {
+        $names = array_filter([
+            ucfirst($this->first_name),
+            $this->middle_name ? ucfirst($this->middle_name) : null,
+            ucfirst($this->last_name),
+        ]);
+
+        return implode(' ', $names);
+    }
+
+
     public function officers()
     {
         return $this->hasMany(Officer::class);
@@ -60,6 +72,7 @@ class User extends Authenticatable
             ]);
         });
     }
+
 
     public function getAttendanceRate(): float
     {

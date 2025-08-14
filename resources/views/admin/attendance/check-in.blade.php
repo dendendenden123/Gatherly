@@ -40,7 +40,7 @@
                     <select
                         class="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent">
                         <option>Sunday Service (9:00 AM)</option>
-                        @foreach ($events as $event)
+                        @foreach ($todaysScheduleEvent as $event)
                             <option>{{  $event->event_name }}
                                 ({{ $event->event_occurrences->last()->StartTimeFormatted}})
                             </option>
@@ -62,9 +62,12 @@
                         <label for="member-search" class="block text-sm font-medium text-gray-700 mb-1">Search
                             Members</label>
                         <div class="relative">
-                            <input type="text" id="member-search" placeholder="Enter name or member ID"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                                oninput="showResults(this.value)">
+                            <form method="GET" action="{{ route('admin.attendance.checkIn') }}">
+                                <input type="text" id="member-search" name="member-search"
+                                    placeholder="Enter name or member ID"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                    oninput="()=>{showResults(this.value)}">
+                            </form>
                             <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">
@@ -79,22 +82,8 @@
                                 <!-- Sample results - these would be dynamically generated in a real app -->
                                 <div
                                     class="px-4 py-2 hover:bg-light-gray cursor-pointer border-b border-gray-100 flex justify-between">
-                                    <span>Denvir de Jesus</span>
-                                    <span class="text-gray-500 font-mono">24234</span>
-                                </div>
-                                <div
-                                    class="px-4 py-2 hover:bg-light-gray cursor-pointer border-b border-gray-100 flex justify-between">
-                                    <span>Sarah Johnson</span>
-                                    <span class="text-gray-500 font-mono">24235</span>
-                                </div>
-                                <div
-                                    class="px-4 py-2 hover:bg-light-gray cursor-pointer border-b border-gray-100 flex justify-between">
-                                    <span>Michael Brown</span>
-                                    <span class="text-gray-500 font-mono">24236</span>
-                                </div>
-                                <div class="px-4 py-2 hover:bg-light-gray cursor-pointer flex justify-between">
-                                    <span>Emily Davis</span>
-                                    <span class="text-gray-500 font-mono">24237</span>
+                                    <span><i>No Found</i></span>
+                                    <span class="text-gray-500 font-mono"><i>NA</i></span>
                                 </div>
                             </div>
                         </div>
@@ -127,13 +116,15 @@
                         </div>
 
                         <!-- Member Info -->
-                        <div class="flex-grow">
-                            <h3 class="text-lg font-semibold text-gray-800">Michael Johnson</h3>
+                        <div id="selected-member" class="flex-grow">
+                            <h3 id='name-selected' class="text-lg font-semibold text-gray-800">Michael Johnson</h3>
                             <div class="grid grid-cols-2 gap-2 text-sm text-gray-600 mt-1">
-                                <div>Member ID: <span class="font-medium">C-20458</span></div>
-                                <div>Family: <span class="font-medium">Johnson</span></div>
-                                <div>Last attended: <span class="font-medium">Oct 10, 2023</span></div>
-                                <div>Status: <span class="font-medium text-primary">Active</span></div>
+                                <div>Member ID: <span id='id-selected' class="font-medium">C-20458</span></div>
+                                <div>Family: <span id='kapisanan-selected' class="font-medium">Johnson</span></div>
+                                <div>Last attended: <span id='last-attended-selected' class="font-medium">Oct 10,
+                                        2023</span></div>
+                                <div>Status: <span id='status-selected' class="font-medium text-primary">Active</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -229,84 +220,6 @@
         </div>
     </div>
 </body>
-<script>
-    let ajaxRequest = null;
-    let debounceTimer = null;
-
-    $('#member-search').on('change input', () => {
-        console.log('hello')
-    })
-
-    function showResults(searchTerm) {
-        const resultsContainer = document.getElementById("autocomplete-results");
-
-        if (searchTerm.length > 0) {
-            resultsContainer.classList.remove("hidden");
-        } else {
-            resultsContainer.classList.add("hidden");
-        }
-    }
-
-    // Close dropdown when clicking outside
-    document.addEventListener("click", function (event) {
-        const searchContainer = document.querySelector(".relative");
-        if (!searchContainer.contains(event.target)) {
-            document.getElementById("autocomplete-results").classList.add("hidden");
-        }
-    });
-
-    // Handle selection from dropdown
-    document
-        .getElementById("autocomplete-results")
-        .addEventListener("click", function (event) {
-            const selectedItem = event.target.closest(
-                'div[class*="hover:bg-light-gray"]'
-            );
-            if (selectedItem) {
-                const memberName =
-                    selectedItem.querySelector("span:first-child").textContent;
-                const memberId =
-                    selectedItem.querySelector("span:last-child").textContent;
-                document.getElementById("member-search").value = memberName;
-                document
-                    .getElementById("autocomplete-results")
-                    .classList.add("hidden");
-
-                // In a real app, you would now load the member details
-                console.log(`Selected: ${memberName} (${memberId})`);
-            }
-        });
-
-    function sendRequest() {
-        e.preventDefault();
-        const url = $(this).attr('href');
-
-        // Clear the debounce timer if user clicks again quickly
-        clearTimeout(debounceTimer);
-
-        // Set a small delay before making the request (debounce)
-        debounceTimer = setTimeout(() => {
-            // Abort previous request if still active
-            if (ajaxRequest) {
-                ajaxRequest.abort();
-            }
-
-            ajaxRequest = $.ajax({
-                url: url,
-                type: 'GET',
-                data: $('form').serialize(),
-                success: function (data) {
-                    $('.' + containerClass).html(data.list);
-                },
-                error: function (xhr, status, error) {
-                    if (status !== 'abort') {
-                        console.error('Pagination error:', error);
-                    }
-                }
-            });
-        }, 300); // debounce delay in ms
-    }
-
-</script>
+@vite("resources/js/admin-attendance-check-in.js")
 
 </html>
