@@ -77,9 +77,11 @@ class AttendanceController extends Controller
     {
         $todaysScheduleEvent = self::getTodaysScheduledEvents();
         $autoCorrectNames = self::getFilterByNameId($request['member-search']);
+        $attendance = Attendance::query()->orderByDesc('id')->paginate(5);
 
         if ($request->ajax()) {
-            return response()->json(['data' => $autoCorrectNames]);
+            $recent
+            return response()->json(['autoCorrctNameList' => $autoCorrectNames]);
         }
 
         return view('admin.attendance.check-in', compact('todaysScheduleEvent'));

@@ -33,21 +33,17 @@ function closeDropDown(event) {
 }
 
 function handleSelectionClick(event) {
-    const $selectedItem = $(event.target).closest(
-        'div[class*="hover:bg-light-gray"]'
-    );
-
-    if ($selectedItem.length) {
-        const memberName = $selectedItem.find("span:first-child").text();
-        const memberId = $selectedItem.find("span:last-child").text();
-
-        $("#member-search").val(memberName);
+    const selectedItem = $(event.target).closest(".nameList");
+    const memberData = selectedItem.data("member-data");
+    const fullName = selectedItem
+        .find(".full_name")
+        .text()
+        .trim()
+        .replace(/\s+/g, " ");
+    if (selectedItem.length) {
+        $("#member-search").val(fullName);
+        showInfoSelectedMember(memberData);
         $("#autocomplete-results").addClass("hidden");
-
-        console.log("member data", $selectedItem.data("member-data"));
-
-        // In a real app, you would now load the member details
-        console.log(`Selected: ${memberName} (${memberId})`);
     }
 }
 
@@ -66,15 +62,23 @@ function sendRequest(e) {
             type: "GET",
             data: $("form").serialize(),
             success: function (data) {
-                let arrList = data.data || []; // declare the variable safely
-                $("#autocomplete-results").empty(); // no arguments needed
+                let arrList = data.autoCorrctNameList || [];
+                $("#autocomplete-results").empty();
                 arrList.forEach((item) => {
                     $("#autocomplete-results").append(`
-                <div class="px-4 py-2 hover:bg-light-gray cursor-pointer border-b border-gray-100 flex justify-between">
-                    <span data-member-data='${item}' >${item.first_name} ${item.middle_name} ${item.last_name}</span>
-                    <span class="text-gray-500 font-mono">${item.id}</span>
-                </div>
-            `);
+                            <div class="nameList px-4 py-2 hover:bg-light-gray cursor-pointer border-b border-gray-100 flex justify-between" data-member-data='
+                                 ${JSON.stringify(item)}
+                            '>
+                                <span class='full_name'>
+                                    ${item.first_name}
+                                    ${item.middle_name}
+                                    ${item.last_name}
+                                </span>
+                                <span class="text-gray-500 font-mono">
+                                    ${item.id}
+                                </span>
+                            </div>
+                `);
                 });
 
                 showResults($("#member-search").val());
@@ -86,4 +90,21 @@ function sendRequest(e) {
             },
         });
     }, 100); // debounce delay in ms
+}
+
+function showInfoSelectedMember(memberData) {
+    const data = JSON.parse(memberData);
+    const fullName = `${data.first_name} ${data.middle_name} ${data.last_name}`;
+    const dateObj = new Date(data.birthdate);
+    const birthdateFormatted = dateObj.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    });
+
+    $("#name-selected").text(fullName);
+    $("#id-selected").text(data.id);
+    $("#birthdate-selected").text(birthdateFormatted);
+    $("#phone-selected").text(data.phone);
+    $("#email-selected").text(data.email);
 }

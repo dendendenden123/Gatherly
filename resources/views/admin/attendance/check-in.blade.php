@@ -120,10 +120,10 @@
                             <h3 id='name-selected' class="text-lg font-semibold text-gray-800">Michael Johnson</h3>
                             <div class="grid grid-cols-2 gap-2 text-sm text-gray-600 mt-1">
                                 <div>Member ID: <span id='id-selected' class="font-medium">C-20458</span></div>
-                                <div>Family: <span id='kapisanan-selected' class="font-medium">Johnson</span></div>
-                                <div>Last attended: <span id='last-attended-selected' class="font-medium">Oct 10,
-                                        2023</span></div>
-                                <div>Status: <span id='status-selected' class="font-medium text-primary">Active</span>
+                                <div>Birthdate: <span id='birthdate-selected' class="font-medium">January 1, 1999</span>
+                                </div>
+                                <div>Email: <span id='email-selected' class="font-medium">user@gmail.com</span></div>
+                                <div>Phone: <span id='phone-selected' class="font-medium text-primary">09*****</span>
                                 </div>
                             </div>
                         </div>
@@ -149,74 +149,8 @@
         </div>
 
         <!-- Recent Check-Ins Section -->
-        <div class="mt-8">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">Recent Check-Ins</h3>
-            <div class="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100">
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th scope="col"
-                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Name</th>
-                                <th scope="col"
-                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Time</th>
-                                <th scope="col"
-                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Type</th>
-                                <th scope="col"
-                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Recorded By</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        <div class="flex-shrink-0 h-10 w-10">
-                                            <img class="h-10 w-10 rounded-full"
-                                                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=40&h=40&q=80"
-                                                alt="">
-                                        </div>
-                                        <div class="ml-4">
-                                            <div class="text-sm font-medium text-gray-900">Sarah Williams</div>
-                                            <div class="text-sm text-gray-500">C-20459</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Today, 8:52 AM</td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span
-                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Regular</span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Pastor Mark</td>
-                            </tr>
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        <div class="flex-shrink-0 h-10 w-10">
-                                            <img class="h-10 w-10 rounded-full"
-                                                src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=40&h=40&q=80"
-                                                alt="">
-                                        </div>
-                                        <div class="ml-4">
-                                            <div class="text-sm font-medium text-gray-900">David Chen</div>
-                                            <div class="text-sm text-gray-500">Guest</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Today, 8:47 AM</td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span
-                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Guest</span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Volunteer Amy</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        <div id="check-in-recent-attendance-list" class="mt-8">
+            @include('admin.attendance.check-in-recent-attendance-list')
         </div>
     </div>
 </body>
