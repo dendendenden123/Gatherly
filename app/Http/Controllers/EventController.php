@@ -57,7 +57,7 @@ class EventController extends Controller
                 'event_type' => 'required|string|max:100',
                 'status' => 'required|in:upcoming,ongoing,completed,cancelled',
                 'start_date' => 'required|date',
-                'start_time' => 'nullable|date_format:H:i',
+                'start_time' => 'required|date_format:H:i',
                 'end_date' => 'required|date|after_or_equal:start_date',
                 'end_time' => 'nullable|date_format:H:i',
                 'location' => 'nullable|string|max:255',

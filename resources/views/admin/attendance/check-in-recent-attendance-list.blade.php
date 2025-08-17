@@ -12,56 +12,41 @@
                         Time</th>
                     <th scope="col"
                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Type</th>
-                    <th scope="col"
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Recorded By</th>
+                        Status</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-                <tr>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0 h-10 w-10">
-                                <img class="h-10 w-10 rounded-full"
-                                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=40&h=40&q=80"
-                                    alt="">
+                @foreach ($attendance as $record)
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-10 w-10">
+                                    <img class="h-10 w-10 rounded-full"
+                                        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=40&h=40&q=80"
+                                        alt="">
+                                </div>
+                                <div class="ml-4">
+                                    <div id="" class="text-sm font-medium text-gray-900">{{ $record->user->first_name }}
+                                        {{ $record->user->middle_name }} {{ $record->user->last_name }}
+                                    </div>
+                                    <div class="text-sm text-gray-500">{{  $record->formatted_created_at}}</div>
+                                </div>
                             </div>
-                            <div class="ml-4">
-                                <div id="" class="text-sm font-medium text-gray-900">Sarah Williams</div>
-                                <div class="text-sm text-gray-500">C-20459</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Today, 8:52 AM</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span
-                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Regular</span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Pastor Mark</td>
-                </tr>
-                <tr>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0 h-10 w-10">
-                                <img class="h-10 w-10 rounded-full"
-                                    src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=40&h=40&q=80"
-                                    alt="">
-                            </div>
-                            <div class="ml-4">
-                                <div class="text-sm font-medium text-gray-900">David Chen</div>
-                                <div class="text-sm text-gray-500">Guest</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Today, 8:47 AM</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span
-                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Guest</span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Volunteer Amy</td>
-                </tr>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $record->formatted_check_in_time }}
+                        </td>
+                        <td
+                            class="px-6 py-4 whitespace-nowrap text-sm font-medium {{ $record->status == 'present' ? 'text-green-600' : 'text-red-600' }}">
+                            {{ $record->status }}
+                        </td>
+
+                    </tr>
+                @endforeach
             </tbody>
         </table>
     </div>
+    @php
+        $containerClass = "check-in-recent-attendance-list";
+    @endphp
+    <x-pagination :containerClass="$containerClass" :data="$attendance" />
 </div>

@@ -27,6 +27,9 @@ class EventOccurrence extends Model
 
     public function getStartTimeFormattedAttribute()
     {
+        if (!$this->start_time) {
+            return 'NA';
+        }
         return Carbon::createFromFormat('H:i:s', $this->start_time)->format('h:i A');
     }
 }

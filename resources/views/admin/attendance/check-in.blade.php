@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Church Attendance | Check-In</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
@@ -37,15 +38,27 @@
             <div class="bg-primary px-6 py-4 flex justify-between items-center">
                 <h2 class="text-xl font-semibold text-white">Record Attendance</h2>
                 <div class="relative w-64">
-                    <select
+                    <select id="eventNameSelection"
                         class="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent">
-                        <option>Sunday Service (9:00 AM)</option>
-                        @foreach ($todaysScheduleEvent as $event)
-                            <option>{{  $event->event_name }}
-                                ({{ $event->event_occurrences->last()->StartTimeFormatted}})
-                            </option>
-                        @endforeach
+
+                        @if($todaysScheduleEvent->isEmpty())
+                            <option>No schedule event for today</option>
+                        @else
+                            <option>Select Event</option>
+                            @foreach ($todaysScheduleEvent as $event)
+                                <option value="{{ optional($event->event_occurrences->last())->id }}">
+                                    {{ $event->event_name }}
+                                    ({{ optional($event->event_occurrences->last())->StartTimeFormatted }})
+                                </option>
+                            @endforeach
+                        @endif
                     </select>
+
+                    @if($todaysScheduleEvent->isEmpty())
+                        <a href="{{ route('admin.events.create') }}" class="text-blue-500 hover:underline">Create New
+                            One</a>
+                    @endif
+
                     <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                         <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                             <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
@@ -119,7 +132,7 @@
                         <div id="selected-member" class="flex-grow">
                             <h3 id='name-selected' class="text-lg font-semibold text-gray-800">Michael Johnson</h3>
                             <div class="grid grid-cols-2 gap-2 text-sm text-gray-600 mt-1">
-                                <div>Member ID: <span id='id-selected' class="font-medium">C-20458</span></div>
+                                <div>Member ID: <span id='id-selected' class="font-medium">0</span></div>
                                 <div>Birthdate: <span id='birthdate-selected' class="font-medium">January 1, 1999</span>
                                 </div>
                                 <div>Email: <span id='email-selected' class="font-medium">user@gmail.com</span></div>
@@ -134,22 +147,32 @@
                 <div class="flex justify-end space-x-3">
                     <button
                         class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary">
-                        Cancel
+                        Event Done
                     </button>
-                    <button
-                        class="px-4 py-2 border border-transparent rounded-md shadow-sm text-white bg-secondary hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 flex items-center">
+                    <button id="absent-attendnace-btn" action="{{ route('admin.attendance.store') }}"
+                        class="px-4 py-2 rounded-lg bg-red-500 text-white flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        Absent
+                    </button>
+
+                    <button id="present-attendnace-btn" action="{{ route('admin.attendance.store') }}"
+                        class=" px-4 py-2 border border-transparent rounded-md shadow-sm text-white bg-secondary hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                         </svg>
-                        Confirm Check-In
+                        Present
                     </button>
                 </div>
             </div>
         </div>
 
         <!-- Recent Check-Ins Section -->
-        <div id="check-in-recent-attendance-list" class="mt-8">
+        <div class="check-in-recent-attendance-list mt-8">
             @include('admin.attendance.check-in-recent-attendance-list')
         </div>
     </div>

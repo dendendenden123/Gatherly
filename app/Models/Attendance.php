@@ -14,6 +14,11 @@ class Attendance extends Model
     protected $guarded = [];
     protected $table = "attendances";
 
+    protected $casts = [
+        'check_in_time' => 'datetime',
+        'created_at' => 'datetime',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -22,6 +27,18 @@ class Attendance extends Model
     public function event_occurrence()
     {
         return $this->belongsTo(EventOccurrence::class);
+    }
+
+    public function getFormattedCreatedAtAttribute()
+    {
+        return $this->created_at->format('M d Y');
+    }
+
+    public function getFormattedCheckInTimeAttribute()
+    {
+        return $this->check_in_time->format('h:i A');
+
+
     }
 
     public function scopeFilter($query, $filters)

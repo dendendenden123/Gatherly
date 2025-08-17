@@ -39,8 +39,34 @@ class AttendanceController extends Controller
         return view('admin.attendance.index', compact('attendances', "events"));
     }
 
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'user_id' => ['required', 'integer', 'exists:users,id'],
+            'event_occurrence_id' => ['required', 'integer', 'exists:event_occurrences,id'],
+            'service_date' => ['nullable', 'date'],
+            'check_in_time' => ['nullable', 'date_format:H:i:s'],
+            'check_out_time' => ['nullable', 'date_format:H:i:s', 'after:check_in_time'],
+            'attendance_method' => ['nullable', 'string'],
+            'biometric_data_id' => ['nullable', 'integer'],
+            'recorded_by' => ['nullable', 'integer', 'exists:users,id'],
+            'status' => ['required', 'string', 'in:present,absent,late,excused'],
+            'notes' => ['nullable', 'string', 'max:500'],
+        ]);
+        $validated['service_date'] = now();
+        $validated['check_in_time'] = now()->format('H:i');
+        $isUserAlreadyRecorded = self::isUserAlreadyRecorded($validated['user_id'], $validated['event_occurrence_id']);
+        if ($isUserAlreadyRecorded) {
+            return response()->json('User already has record for this event');
+        }
+
+        Attendance::create($validated);
+        return response()->json('Attendance record successfully');
+    }
+
     public function show(Request $request, $id)
     {
+        logger($request->all());
         $events = Event::select(['id', 'event_name'])->get();
         $user = User::find($id);
         $countTotalAttendance = Attendance::filter(['user_id' => $id, 'status' => 'present'])->count();
@@ -77,14 +103,17 @@ class AttendanceController extends Controller
     {
         $todaysScheduleEvent = self::getTodaysScheduledEvents();
         $autoCorrectNames = self::getFilterByNameId($request['member-search']);
-        $attendance = Attendance::query()->orderByDesc('id')->paginate(5);
+        $attendance = Attendance::with('user')->orderByDesc('created_at')->paginate(5);
 
         if ($request->ajax()) {
-            $recent
-            return response()->json(['autoCorrctNameList' => $autoCorrectNames]);
+            $recentAttendance = view('admin.attendance.check-in', compact('todaysScheduleEvent', 'attendance'))->render();
+            return response()->json([
+                'autoCorrctNameList' => $autoCorrectNames,
+                'list' => $recentAttendance,
+            ]);
         }
 
-        return view('admin.attendance.check-in', compact('todaysScheduleEvent'));
+        return view('admin.attendance.check-in', compact('todaysScheduleEvent', 'attendance'));
     }
 
     private function getFilterByNameId($nameOrId)
@@ -174,5 +203,10 @@ class AttendanceController extends Controller
         }
 
         return intval(($presentCount / $total) * 100);
+    }
+
+    private function isUserAlreadyRecorded($userId, $eventOccurenceId)
+    {
+        return Attendance::where('event_occurrence_id', $eventOccurenceId)->where('user_id', $userId)->exists();
     }
 }

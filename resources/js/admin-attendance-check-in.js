@@ -14,6 +14,14 @@ $(document).on("click", (event) => {
     closeDropDown(event);
 });
 
+$("#present-attendnace-btn").on("click", () => {
+    recordMemberAttendance("present");
+});
+
+$("#absent-attendnace-btn").on("click", () => {
+    recordMemberAttendance("absent");
+});
+
 //===Functions===
 function showResults(searchTerm) {
     const resultsContainer = document.getElementById("autocomplete-results");
@@ -107,4 +115,52 @@ function showInfoSelectedMember(memberData) {
     $("#birthdate-selected").text(birthdateFormatted);
     $("#phone-selected").text(data.phone);
     $("#email-selected").text(data.email);
+}
+
+function recordMemberAttendance(status) {
+    const userId = $("#id-selected").text();
+    const event_occurence_id = $("#eventNameSelection").val();
+
+    if (
+        !userId ||
+        userId == "0" ||
+        !event_occurence_id ||
+        event_occurence_id.length == 0
+    ) {
+        alert("Please select both a user and an event.");
+        return;
+    }
+
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+        if (ajaxRequest) {
+            ajaxRequest.abort();
+        }
+
+        ajaxRequest = $.ajax({
+            url: $("#present-attendnace-btn").attr("action"),
+            headers: {
+                "X-CSRF-TOKEN": document.querySelector(
+                    'meta[name="csrf-token"]'
+                ).content,
+                "Content-Type": "application/json",
+            },
+            type: "POST",
+            data: JSON.stringify({
+                user_id: userId,
+                event_occurrence_id: event_occurence_id,
+                status: status,
+            }),
+            success: function (data) {
+                alert(data);
+                location.reload();
+            },
+            error: function (xhr, status, error) {
+                if (status !== "abort") {
+                    console.error("Attendance error:", error);
+                    console.log("Response text:", xhr.responseText);
+                }
+            },
+        });
+    }, 100);
 }
