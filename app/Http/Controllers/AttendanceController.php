@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\EventOccurrence;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Attendance;
@@ -41,27 +42,50 @@ class AttendanceController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'user_id' => ['required', 'integer', 'exists:users,id'],
-            'event_occurrence_id' => ['required', 'integer', 'exists:event_occurrences,id'],
-            'service_date' => ['nullable', 'date'],
-            'check_in_time' => ['nullable', 'date_format:H:i:s'],
-            'check_out_time' => ['nullable', 'date_format:H:i:s', 'after:check_in_time'],
-            'attendance_method' => ['nullable', 'string'],
-            'biometric_data_id' => ['nullable', 'integer'],
-            'recorded_by' => ['nullable', 'integer', 'exists:users,id'],
-            'status' => ['required', 'string', 'in:present,absent,late,excused'],
-            'notes' => ['nullable', 'string', 'max:500'],
-        ]);
-        $validated['service_date'] = now();
-        $validated['check_in_time'] = now()->format('H:i');
-        $isUserAlreadyRecorded = self::isUserAlreadyRecorded($validated['user_id'], $validated['event_occurrence_id']);
-        if ($isUserAlreadyRecorded) {
-            return response()->json('User already has record for this event');
+        //check if event is over then record all absensee
+        if ($request['status'] == 'eventDone') {
+            self::storeMultipleAbsentRecord($request['event_occurrence_id']);
+            logger('all user is success', [$request['event_occurrence_id']]);
+            return response()->json(['message' => 'All members has record']);
         }
+        try {
+            $validated = $request->validate([
+                'user_id' => ['required', 'integer', 'exists:users,id'],
+                'event_occurrence_id' => ['required', 'integer', 'exists:event_occurrences,id'],
+                'service_date' => ['nullable', 'date'],
+                'check_in_time' => ['nullable', 'date_format:H:i:s'],
+                'check_out_time' => ['nullable', 'date_format:H:i:s', 'after:check_in_time'],
+                'attendance_method' => ['nullable', 'string'],
+                'biometric_data_id' => ['nullable', 'integer'],
+                'recorded_by' => ['nullable', 'integer', 'exists:users,id'],
+                'status' => ['required', 'string', 'in:present,absent,eventDone'],
+                'notes' => ['nullable', 'string', 'max:500'],
+            ]);
+            $validated['service_date'] = now();
+            $validated['check_in_time'] = now()->format('H:i');
+            $isUserAlreadyRecorded = self::isUserAlreadyRecorded($validated['user_id'], $validated['event_occurrence_id']);
 
-        Attendance::create($validated);
-        return response()->json('Attendance record successfully');
+            if ($isUserAlreadyRecorded) {
+                return response()->json(['error' => 'User already has record for this event']);
+            }
+
+            Attendance::create($validated);
+            $attendance = Attendance::query()
+                ->orderByDesc('id')
+                ->simplePaginate(6);
+
+            if ($request->ajax()) {
+                $attendancesListView = view("admin.attendance.check-in-recent-attendance-list", compact('attendance'))->render();
+
+                return response()->json([
+                    'list' => $attendancesListView,
+                    'message' => 'Record recorded Successfully'
+                ]);
+            }
+        } catch (\Exception $e) {
+            \Log::error($e->getMessage());
+            return response()->json(['error' => 'There is an error. Please select a member and event to proceed']);
+        }
     }
 
     public function show(Request $request, $id)
@@ -106,7 +130,7 @@ class AttendanceController extends Controller
         $attendance = Attendance::with('user')->orderByDesc('created_at')->paginate(5);
 
         if ($request->ajax()) {
-            $recentAttendance = view('admin.attendance.check-in', compact('todaysScheduleEvent', 'attendance'))->render();
+            $recentAttendance = view('admin.attendance.check-in-recent-attendance-list', compact('todaysScheduleEvent', 'attendance'))->render();
             return response()->json([
                 'autoCorrctNameList' => $autoCorrectNames,
                 'list' => $recentAttendance,
@@ -208,5 +232,24 @@ class AttendanceController extends Controller
     private function isUserAlreadyRecorded($userId, $eventOccurenceId)
     {
         return Attendance::where('event_occurrence_id', $eventOccurenceId)->where('user_id', $userId)->exists();
+    }
+
+    private function storeMultipleAbsentRecord($eventOccurenceId)
+    {
+        $presentUser = Attendance::where('event_occurrence_id', $eventOccurenceId)->where('status', 'present')->pluck('user_id');
+        $absentUser = User::pluck('id')->diff($presentUser);
+
+        foreach ($absentUser as $id) {
+            Attendance::create([
+                'user_id' => $id,
+                'event_occurrence_id' => $eventOccurenceId,
+                'service_date' => now(),
+                'check_in_time' => now()->format('H:i'),
+                'status' => 'absent'
+            ]);
+        }
+        EventOccurrence::find($eventOccurenceId)->update([
+            'attendance_checked' => 1
+        ]);
     }
 }

@@ -22,6 +22,9 @@ $("#absent-attendnace-btn").on("click", () => {
     recordMemberAttendance("absent");
 });
 
+$("#event-done-btn").on("click", () => {
+    recordMemberAttendance("eventDone");
+});
 //===Functions===
 function showResults(searchTerm) {
     const resultsContainer = document.getElementById("autocomplete-results");
@@ -122,12 +125,17 @@ function recordMemberAttendance(status) {
     const event_occurence_id = $("#eventNameSelection").val();
 
     if (
-        !userId ||
-        userId == "0" ||
-        !event_occurence_id ||
-        event_occurence_id.length == 0
+        (!userId ||
+            userId == "0" ||
+            !event_occurence_id ||
+            event_occurence_id.length == 0) &&
+        status != "eventDone"
     ) {
-        alert("Please select both a user and an event.");
+        $("#responeMessage").html(`
+            <span class="text-red-500">
+                Please select both a user and an event.
+            </span>
+        `);
         return;
     }
 
@@ -152,14 +160,32 @@ function recordMemberAttendance(status) {
                 status: status,
             }),
             success: function (data) {
-                alert(data);
-                location.reload();
+                if (data.error) {
+                    $("#responeMessage").html(
+                        `<span class="text-red-500">${data.error}</span>`
+                    );
+                } else {
+                    $("#responeMessage").html(
+                        `<span class="text-green-500">${data.message}</span>`
+                    );
+
+                    setTimeout(() => {
+                        $("#responeMessage").html("");
+                        $("#member-search").val("");
+                    }, 2000);
+                }
+
+                $(".check-in-recent-attendance-list").html(data.list);
             },
             error: function (xhr, status, error) {
                 if (status !== "abort") {
                     console.error("Attendance error:", error);
                     console.log("Response text:", xhr.responseText);
                 }
+
+                $("#responeMessage").html(
+                    `<span class="text-red-500">${data.error}</span>`
+                );
             },
         });
     }, 100);

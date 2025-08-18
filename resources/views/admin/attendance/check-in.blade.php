@@ -80,6 +80,7 @@
                                     placeholder="Enter name or member ID"
                                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                                     oninput="()=>{showResults(this.value)}">
+                                <label id="responeMessage"></label>
                             </form>
                             <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none"
@@ -145,7 +146,7 @@
 
                 <!-- Action Buttons -->
                 <div class="flex justify-end space-x-3">
-                    <button
+                    <button id="event-done-btn"
                         class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary">
                         Event Done
                     </button>
