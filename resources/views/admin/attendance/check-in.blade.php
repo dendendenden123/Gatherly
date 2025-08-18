@@ -8,6 +8,7 @@
     <title>Church Attendance | Check-In</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -42,9 +43,9 @@
                         class="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent">
 
                         @if($todaysScheduleEvent->isEmpty())
-                            <option>No schedule event for today</option>
+                            <option value="">No schedule event for today</option>
                         @else
-                            <option>Select Event</option>
+                            <option value="">Select Event</option>
                             @foreach ($todaysScheduleEvent as $event)
                                 <option value="{{ optional($event->event_occurrences->last())->id }}">
                                     {{ $event->event_name }}

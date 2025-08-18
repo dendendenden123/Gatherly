@@ -22,9 +22,8 @@ $("#absent-attendnace-btn").on("click", () => {
     recordMemberAttendance("absent");
 });
 
-$("#event-done-btn").on("click", () => {
-    recordMemberAttendance("eventDone");
-});
+$("#event-done-btn").on("click", () => markEventAsDone());
+
 //===Functions===
 function showResults(searchTerm) {
     const resultsContainer = document.getElementById("autocomplete-results");
@@ -120,7 +119,7 @@ function showInfoSelectedMember(memberData) {
     $("#email-selected").text(data.email);
 }
 
-function recordMemberAttendance(status) {
+async function recordMemberAttendance(status) {
     const userId = $("#id-selected").text();
     const event_occurence_id = $("#eventNameSelection").val();
 
@@ -189,4 +188,36 @@ function recordMemberAttendance(status) {
             },
         });
     }, 100);
+}
+
+async function markEventAsDone() {
+    const event_occurence_id = $("#eventNameSelection").val();
+    console.log(event_occurence_id);
+    if (!event_occurence_id || event_occurence_id.length == 0) {
+        return $("#responeMessage").html(`
+            <span class="text-red-500">
+                Please select an event.
+            </span>
+        `);
+    }
+
+    const result = await Swal.fire({
+        title: "Are you sure?",
+        text: "This will mark the event as done and record attendance.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "rgb(46 204 113)",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, continue",
+    });
+
+    if (result.isConfirmed) {
+        await recordMemberAttendance("eventDone"); // wait here
+        await Swal.fire(
+            "Recorded!",
+            "The attendance has been saved.",
+            "success"
+        );
+        location.reload();
+    }
 }

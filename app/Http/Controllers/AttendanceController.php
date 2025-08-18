@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class AttendanceController extends Controller
 {
+    //===Show all Attendances===
     public function index(Request $request)
     {
         $events = Event::select(['id', 'event_name'])->get();
@@ -40,6 +41,7 @@ class AttendanceController extends Controller
         return view('admin.attendance.index', compact('attendances', "events"));
     }
 
+    //===Store attenandace record into database===
     public function store(Request $request)
     {
         //check if event is over then record all absensee
@@ -88,6 +90,7 @@ class AttendanceController extends Controller
         }
     }
 
+    //===Show attendance record of specific member===
     public function show(Request $request, $id)
     {
         logger($request->all());
@@ -123,11 +126,12 @@ class AttendanceController extends Controller
         ));
     }
 
+    //===Show Check-in page for attendance recording===
     public function checkIn(Request $request)
     {
         $todaysScheduleEvent = self::getTodaysScheduledEvents();
         $autoCorrectNames = self::getFilterByNameId($request['member-search']);
-        $attendance = Attendance::with('user')->orderByDesc('created_at')->paginate(5);
+        $attendance = Attendance::with(['user', 'event_occurrence'])->orderByDesc('created_at')->paginate(5);
 
         if ($request->ajax()) {
             $recentAttendance = view('admin.attendance.check-in-recent-attendance-list', compact('todaysScheduleEvent', 'attendance'))->render();
@@ -152,21 +156,32 @@ class AttendanceController extends Controller
 
     private function getTodaysScheduledEvents()
     {
-        return Event::with([
-            'event_occurrences' => function ($query) {
-                $query->whereBetween('occurrence_date', [
-                    Carbon::today()->startOfDay(),
-                    Carbon::today()->endOfDay()
-                ])->where('attendance_checked', 0)
-                    ->select('id', 'event_id', 'start_time');
+        // return Event::with([
+        //     'event_occurrences' => function ($query) {
+        //         $query->whereBetween('occurrence_date', [
+        //             Carbon::today()->startOfDay(),
+        //             Carbon::today()->endOfDay()
+        //         ])->where('attendance_checked', 0)
+        //             ->select('id', 'event_id', 'start_time');
+        //     }
+        // ])->whereHas('event_occurrences', function ($query) {
+        //     $query->whereBetween('occurrence_date', [
+        //         Carbon::today()->startOfDay(),
+        //         Carbon::today()->endOfDay()
+        //     ]);
+        // })->select('id', 'event_name')
+        //     ->get();
+
+        return Event::with('event_occurrences')->WhereHas(
+            'event_occurrences',
+            function ($query) {
+                $query->where('attendance_checked', 0)
+                    ->whereBetween('occurrence_date', [
+                        Carbon::today()->startOfDay(),
+                        Carbon::today()->endOfDay()
+                    ]);
             }
-        ])->whereHas('event_occurrences', function ($query) {
-            $query->whereBetween('occurrence_date', [
-                Carbon::today()->startOfDay(),
-                Carbon::today()->endOfDay()
-            ]);
-        })->select('id', 'event_name')
-            ->get();
+        )->get();
     }
 
     private function getAttendanceGrowthRateLastMonth($user_id)

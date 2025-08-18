@@ -3,6 +3,8 @@ $(document).ready(() => {
     const timeModal = $("#myModal");
     const eventData = $("#calendar").data("events");
 
+    eventData.map((item) => console.log(item));
+
     //===EVENT LISTENER===
     showCalendarEvent();
     $("#isRecurring").on("change", toggleRecurringOption);
@@ -104,13 +106,16 @@ function dateFormatter(rawDate) {
 }
 
 function formatTo12Hour(timeStr) {
+    console.log("chck time", timeStr);
+
     if (!timeStr) {
         return "No specified time";
     }
 
-    const [hour, minute] = timeStr.split(":");
-    const h = parseInt(hour);
+    const [hour, minute, second] = timeStr.split(":");
+    const h = parseInt(hour, 10);
     const suffix = h >= 12 ? "PM" : "AM";
     const hour12 = h % 12 === 0 ? 12 : h % 12;
-    return `${hour12}:${minute} ${suffix}`;
+
+    return `${hour12}:${minute.padStart(2, "0")} ${suffix}`;
 }
