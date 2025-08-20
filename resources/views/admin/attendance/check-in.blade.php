@@ -38,58 +38,82 @@
             <!-- Card Header with Event Selector -->
             <div class="bg-primary px-6 py-4 flex justify-between items-center">
                 <h2 class="text-xl font-semibold text-white">Record Attendance</h2>
-                <div class="relative w-64">
-                    <select id="eventNameSelection"
-                        class="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent">
-
-                        @if($todaysScheduleEvent->isEmpty())
-                            <option value="">No schedule event for today</option>
-                        @else
-                            <option value="">Select Event</option>
-                            @foreach ($todaysScheduleEvent as $event)
-                                <option value="{{ optional($event->event_occurrences->last())->id }}">
-                                    {{ $event->event_name }}
-                                    ({{ optional($event->event_occurrences->last())->StartTimeFormatted }})
-                                </option>
-                            @endforeach
-                        @endif
-                    </select>
-
-                    @if($todaysScheduleEvent->isEmpty())
-                        <a href="{{ route('admin.events.create') }}" class="text-blue-500 hover:underline">Create New
-                            One</a>
-                    @endif
-
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                        </svg>
-                    </div>
-                </div>
             </div>
 
             <!-- Card Body -->
             <div class="p-6">
                 <!-- Search Section -->
-                <div class="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="md:col-span-2">
+
+                <form method="GET" action="{{ route('admin.attendance.checkIn') }}"
+                    class="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Member From</label>
+                        <div class="relative w-64">
+                            <select id="locale-select" name='locale' action="{{ route('admin.attendance.checkIn') }}"
+                                class="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent">
+
+                                <option value="">-- Select Locale --</option>
+                                <option> Local ng Alcantara</option>
+                                <option> Local ng Argao</option>
+                                <option> Local ng Asturias</option>
+                                <option> Local ng Badian</option>
+                                <option> Local ng Balamban</option>
+                                <option> Local ng Barili</option>
+                                <option> Local ng Bato</option>
+                                <option> Local ng Binlod</option>
+                                <option> Local ng Bulasa</option>
+                                <option> Local ng Bulongan</option>
+                                <option> Local ng Cantao-an</option>
+                                <option> Local ng Carcar City</option>
+                                <option> Local ng Colon</option>
+                                <option> Local ng Dalaguete</option>
+                                <option> Local ng Don Juan Climaco Sr.</option>
+                                <option> Local ng Dumanjug</option>
+                                <option> Local ng Gen. Climaco</option>
+                                <option> Local ng Langtad</option>
+                                <option> Local ng Langub</option>
+                                <option> Local ng Lutopan</option>
+                                <option> Local ng Mainggit</option>
+                                <option> Local ng Malabuyoc</option>
+                                <option> Local ng Manguiao</option>
+                                <option> Local ng Mantalongon</option>
+                                <option> Local ng Naga</option>
+                                <option> Local ng Panadtaran</option>
+                                <option> Local ng Pinamungajan</option>
+                                <option> Local ng Ronda</option>
+                                <option> Local ng San Isidro</option>
+                                <option> Local ng Sangat</option>
+                                <option> Local ng Sibonga</option>
+                                <option> Local ng Sta Lucia</option>
+                                <option> Local ng Tag-Amakan</option>
+                                <option> Local ng Talaga</option>
+                                <option> Local ng Talavera</option>
+                                <option> Local ng Tiguib</option>
+                                <option> Local ng Toledo City</option>
+                            </select>
+
+                            <div
+                                class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20">
+                                    <path
+                                        d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
                         <label for="member-search" class="block text-sm font-medium text-gray-700 mb-1">Search
                             Members</label>
                         <div class="relative">
-                            <form method="GET" action="{{ route('admin.attendance.checkIn') }}">
-                                <input type="text" id="member-search" name="member-search"
-                                    placeholder="Enter name or member ID"
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                                    oninput="()=>{showResults(this.value)}">
-                                <label id="responeMessage"></label>
-                            </form>
-                            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
-                            </div>
+
+                            <input type="text" id="member-search" name="member-search"
+                                placeholder="Enter name or member ID"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                oninput="()=>{showResults(this.value)}" autocomplete="off">
+                            <label id="responeMessage"></label>
+
 
                             <!-- Autocomplete Dropdown -->
                             <div id="autocomplete-results"
@@ -104,19 +128,44 @@
                         </div>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Member Type</label>
-                        <div class="flex space-x-4">
-                            <label class="inline-flex items-center">
-                                <input type="radio" class="form-radio text-primary" name="member-type" checked>
-                                <span class="ml-2">Regular</span>
-                            </label>
-                            <label class="inline-flex items-center">
-                                <input type="radio" class="form-radio text-accent" name="member-type">
-                                <span class="ml-2">Guest</span>
-                            </label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Event</label>
+                        <div class="relative w-64">
+                            <select id="eventNameSelection"
+                                class="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent">
+
+                                @if($todaysScheduleEvent->isEmpty())
+                                    <option value="">No schedule event for today</option>
+                                @else
+                                    <option value="">Select Event</option>
+                                    @foreach ($todaysScheduleEvent as $eventOccurrence)
+                                        <option value="{{ $eventOccurrence->id }}">
+                                            {{ $eventOccurrence->event->event_name }}
+                                            ({{$eventOccurrence->StartTimeFormatted}})
+                                        </option>
+                                    @endforeach
+                                @endif
+                            </select>
+
+                            @if($todaysScheduleEvent->isEmpty())
+                                <a href="{{ route('admin.events.create') }}" class="text-blue-500 hover:underline">
+                                    Create New One
+                                </a>
+                            @endif
+
+
+                            <div
+                                class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20">
+                                    <path
+                                        d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                </svg>
+                            </div>
                         </div>
                     </div>
-                </div>
+
+                </form>
+
 
                 <!-- Member Display -->
                 <div class="bg-light-gray rounded-lg p-4 mb-6">

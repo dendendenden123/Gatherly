@@ -17,6 +17,8 @@ return new class extends Migration {
             $table->date("service_date");
             $table->time("check_in_time")->nullable();
             $table->time("check_out_time")->nullable();
+            $table->string("district")->nullable();
+            $table->string("locale")->nullable();
             $table->enum('attendance_method', ['in-person', 'online', 'fingerprint', 'mobile'])->default('fingerprint');
             $table->string('biometric_data_id')->nullable();
             $table->foreignId('recorded_by')->nullable()->constrained('users')->onDelete('cascade')->onUpdate('cascade');

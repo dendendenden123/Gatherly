@@ -12,7 +12,9 @@ use Illuminate\Support\Facades\DB;
 
 class AttendanceController extends Controller
 {
-    //===Show all Attendances===
+    //====================================
+    //===Show all attendance record
+    //===================================
     public function index(Request $request)
     {
         $events = Event::select(['id', 'event_name'])->get();
@@ -41,7 +43,9 @@ class AttendanceController extends Controller
         return view('admin.attendance.index', compact('attendances', "events"));
     }
 
-    //===Store attenandace record into database===
+    //====================================
+    //===Create New Attendance Record to attendances table
+    //===================================
     public function store(Request $request)
     {
         //check if event is over then record all absensee
@@ -90,7 +94,9 @@ class AttendanceController extends Controller
         }
     }
 
-    //===Show attendance record of specific member===
+    //====================================
+    //===Show Attendance record of specific member
+    //===================================
     public function show(Request $request, $id)
     {
         logger($request->all());
@@ -126,11 +132,18 @@ class AttendanceController extends Controller
         ));
     }
 
-    //===Show Check-in page for attendance recording===
+    //====================================
+    //===View the check in page
+    //===================================
     public function checkIn(Request $request)
     {
+        $locale = $request['local'];
         $todaysScheduleEvent = self::getTodaysScheduledEvents();
-        $autoCorrectNames = self::getFilterByNameId($request['member-search']);
+        $autoCorrectNames = self::searchUsersByNameOrId([
+            'memberName' => $request['member-search'],
+            'locale' => $request['locale']
+        ]);
+        logger('names', [$autoCorrectNames]);
         $attendance = Attendance::with(['user', 'event_occurrence'])->orderByDesc('created_at')->paginate(5);
 
         if ($request->ajax()) {
@@ -144,46 +157,45 @@ class AttendanceController extends Controller
         return view('admin.attendance.check-in', compact('todaysScheduleEvent', 'attendance'));
     }
 
-    private function getFilterByNameId($nameOrId)
+    //====================================
+    //=== Filter users by full name, partial name, or ID (supports LIKE)
+    //=== Optional: restrict by locale
+    //====================================
+    private function searchUsersByNameOrId($filter)
     {
-        return User::where(DB::raw("CONCAT(first_name, ' ', middle_name, ' ', last_name)"), 'like', "%{$nameOrId}%")
-            ->orWhere('first_name', 'like', "%{$nameOrId}%")
-            ->orWhere('middle_name', 'like', "%{$nameOrId}%")
-            ->orWhere('last_name', 'like', "%{$nameOrId}%")
-            ->orWhere('id', 'like', "%{$nameOrId}%")
+        $nameOrId = $filter['memberName'] ?? null;
+        $locale = $filter['locale'] ?? null;
+
+        logger('locale', [$locale]);
+
+        return User::where(function ($query) use ($nameOrId) {
+            $query->where(DB::raw("CONCAT(first_name, ' ', middle_name, ' ', last_name)"), 'like', "%{$nameOrId}%")
+                ->orWhere('first_name', 'like', "%{$nameOrId}%")
+                ->orWhere('middle_name', 'like', "%{$nameOrId}%")
+                ->orWhere('last_name', 'like', "%{$nameOrId}%")
+                ->orWhere('id', 'like', "%{$nameOrId}%");
+        })
+            ->when($locale, function ($query) use ($locale) {
+                $query->where('locale', $locale);
+            })
+            ->get();
+
+    }
+
+    //====================================
+    //===Fetch all events scheduled for today that haven't been marked as attended yet
+    //===================================
+    private function getTodaysScheduledEvents()
+    {
+        return EventOccurrence::with('event')
+            ->where('attendance_checked', 0)
+            ->where('occurrence_date', [now()->startOfDay(), now()->endOfDay()])
             ->get();
     }
 
-    private function getTodaysScheduledEvents()
-    {
-        // return Event::with([
-        //     'event_occurrences' => function ($query) {
-        //         $query->whereBetween('occurrence_date', [
-        //             Carbon::today()->startOfDay(),
-        //             Carbon::today()->endOfDay()
-        //         ])->where('attendance_checked', 0)
-        //             ->select('id', 'event_id', 'start_time');
-        //     }
-        // ])->whereHas('event_occurrences', function ($query) {
-        //     $query->whereBetween('occurrence_date', [
-        //         Carbon::today()->startOfDay(),
-        //         Carbon::today()->endOfDay()
-        //     ]);
-        // })->select('id', 'event_name')
-        //     ->get();
-
-        return Event::with('event_occurrences')->WhereHas(
-            'event_occurrences',
-            function ($query) {
-                $query->where('attendance_checked', 0)
-                    ->whereBetween('occurrence_date', [
-                        Carbon::today()->startOfDay(),
-                        Carbon::today()->endOfDay()
-                    ]);
-            }
-        )->get();
-    }
-
+    //====================================
+    //===Calculate a user's attendance growth rate by comparing last month and the previous month
+    //===================================
     private function getAttendanceGrowthRateLastMonth($user_id)
     {
         $countLastMonthAttendance = Attendance::filter([
@@ -219,6 +231,9 @@ class AttendanceController extends Controller
         return ['value' => (intval(($countDifference / $countLastTwoMonthAttendance) * 100)), 'sign' => 'negative'];
     }
 
+    //====================================
+    //===Calculate a user's attendance rate (percentage of present days) for last month
+    //===================================
     private function getAttendanceRateLastMonth($user_id)
     {
         $presentCount = Attendance::filter([
@@ -244,11 +259,17 @@ class AttendanceController extends Controller
         return intval(($presentCount / $total) * 100);
     }
 
+    //====================================
+    //===Check if a user already has an attendance record for a specific event occurrence
+    //===================================
     private function isUserAlreadyRecorded($userId, $eventOccurenceId)
     {
         return Attendance::where('event_occurrence_id', $eventOccurenceId)->where('user_id', $userId)->exists();
     }
 
+    //====================================
+    //===Record all absent users for a given event occurrence and mark attendance as checked
+    //===================================
     private function storeMultipleAbsentRecord($eventOccurenceId)
     {
         $presentUser = Attendance::where('event_occurrence_id', $eventOccurenceId)->where('status', 'present')->pluck('user_id');
