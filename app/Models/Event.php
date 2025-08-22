@@ -15,9 +15,9 @@ class Event extends Model
 
     protected $guarded = [];
 
-    protected $casts = [
-        'start_time' => 'datetime',
-    ];
+    // protected $casts = [
+    //     'start_time' => 'datetime',
+    // ];
 
     public function getCreatedAtAttribute($value)
     {

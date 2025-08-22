@@ -51,7 +51,6 @@ class AttendanceController extends Controller
         //check if event is over then record all absensee
         if ($request['status'] == 'eventDone') {
             self::storeMultipleAbsentRecord($request['event_occurrence_id']);
-            logger('all user is success', [$request['event_occurrence_id']]);
             return response()->json(['message' => 'All members has record']);
         }
         try {
@@ -99,7 +98,6 @@ class AttendanceController extends Controller
     //===================================
     public function show(Request $request, $id)
     {
-        logger($request->all());
         $events = Event::select(['id', 'event_name'])->get();
         $user = User::find($id);
         $countTotalAttendance = Attendance::filter(['user_id' => $id, 'status' => 'present'])->count();
@@ -143,7 +141,6 @@ class AttendanceController extends Controller
             'memberName' => $request['member-search'],
             'locale' => $request['locale']
         ]);
-        logger('names', [$autoCorrectNames]);
         $attendance = Attendance::with(['user', 'event_occurrence'])->orderByDesc('created_at')->paginate(5);
 
         if ($request->ajax()) {
@@ -165,9 +162,6 @@ class AttendanceController extends Controller
     {
         $nameOrId = $filter['memberName'] ?? null;
         $locale = $filter['locale'] ?? null;
-
-        logger('locale', [$locale]);
-
         return User::where(function ($query) use ($nameOrId) {
             $query->where(DB::raw("CONCAT(first_name, ' ', middle_name, ' ', last_name)"), 'like', "%{$nameOrId}%")
                 ->orWhere('first_name', 'like', "%{$nameOrId}%")

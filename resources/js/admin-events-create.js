@@ -3,8 +3,6 @@ $(document).ready(() => {
     const timeModal = $("#myModal");
     const eventData = $("#calendar").data("events");
 
-    eventData.map((item) => console.log(item));
-
     //===EVENT LISTENER===
     showCalendarEvent();
     $("#isRecurring").on("change", toggleRecurringOption);
@@ -70,6 +68,7 @@ $(document).ready(() => {
                         ? dateFormatter(item.end_date)
                         : dateFormatter(item.start_date),
                 eventStartTime: formatTo12Hour(item.start_time),
+                // eventStartTime: item.start_time,
                 eventEndTime: formatTo12Hour(item.end_time),
                 eventRepeat: item.repeat,
                 eventStatus: item.status,
@@ -77,9 +76,7 @@ $(document).ready(() => {
             }))
         );
     }
-
-    console.log("eventData", eventData);
-    console.log("getEvent: ", getEvent());
+    console.log("event data", eventData);
 
     function viewEvent(info) {
         const event = info.event;
@@ -106,8 +103,6 @@ function dateFormatter(rawDate) {
 }
 
 function formatTo12Hour(timeStr) {
-    console.log("chck time", timeStr);
-
     if (!timeStr) {
         return "No specified time";
     }
