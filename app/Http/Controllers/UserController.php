@@ -7,12 +7,36 @@ use App\Models\User;
 
 class UserController extends Controller
 {
+    //==========================
+    //===Display all members
+    //==========================
     public function index(Request $request)
     {
-        $users = User::query()->orderByDesc('updated_at')->simplePaginate(5);
+        logger('show.index', [$request->all()]);
+        $users = User::filter(['memberName' => $request->memberName])->orderByDesc('updated_at')->simplePaginate(5);
+        $totalMembersCount = User::query()->count();
+        $volunteersMemberCount = User::whereHas('officers', function ($query) {
+            $query->whereNot('role', '0');
+        })->count();
 
-        return view('admin.members', compact('users'));
+        if ($request->ajax()) {
+            $indexList = view('admin.members.index-list', compact('users', 'totalMembersCount', 'volunteersMemberCount'))->render();
+            return response()->json(['list' => $indexList]);
+        }
+        return view('admin.members.index', compact('users', 'totalMembersCount', 'volunteersMemberCount'));
     }
+
+    //==========================
+    //===Show information of specific member based on id
+    //==========================
+    public function show($id)
+    {
+        return view('admin.members.show');
+    }
+
+    //==========================
+    //===Create new member info
+    //==========================
     public function store(Request $request)
     {
         // Validate the request data
@@ -33,35 +57,45 @@ class UserController extends Controller
                 'birthdate' => 'required|date',
             ]);
 
-            // Create a new user
             $user = User::create($validatedData);
-
-            // Return a response
             return response()->json($user, 201);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
         }
     }
 
+    //==========================
+    //===Logs out the user, clears the session, 
+    //===regenerates the CSRF token, and redirects to landing page
+    //==========================
     public function logout()
     {
         auth()->logout();
-        // Invalidate the session
         request()->session()->invalidate();
-        // Regenerate CSRF token
         request()->session()->regenerateToken();
         return redirect()->route('landing_page');
     }
 
+    //==========================
+    //===Redirect to Login Form
+    //==========================
     public function showLoginForm()
     {
         return view('auth.login');
     }
+
+    //==========================
+    //===Redirect to Register Form
+    //==========================
     public function showRegisterForm()
     {
         return view('auth.register');
     }
 
+    //==========================
+    //===Handles user login, validates credentials, 
+    //===then redirects based on officer role (admin or member)
+    //==========================
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');

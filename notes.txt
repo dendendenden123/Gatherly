@@ -1,6 +1,5 @@
 Todo
  - fix profile pic in the entire project
  - add feature for guess or non-regular 
- - fix the date in calender show event data
  - in events/create, add a functinal 'value="old()"' in the field
  - location in check in (second thougts about it?)

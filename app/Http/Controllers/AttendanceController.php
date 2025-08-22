@@ -7,7 +7,6 @@ use Carbon\Carbon;
 use App\Models\Attendance;
 use App\Models\Event;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
 
 
 class AttendanceController extends Controller
@@ -137,10 +136,10 @@ class AttendanceController extends Controller
     {
         $locale = $request['local'];
         $todaysScheduleEvent = self::getTodaysScheduledEvents();
-        $autoCorrectNames = self::searchUsersByNameOrId([
+        $autoCorrectNames = User::filter([
             'memberName' => $request['member-search'],
             'locale' => $request['locale']
-        ]);
+        ])->get();
         $attendance = Attendance::with(['user', 'event_occurrence'])->orderByDesc('created_at')->paginate(5);
 
         if ($request->ajax()) {
@@ -152,28 +151,6 @@ class AttendanceController extends Controller
         }
 
         return view('admin.attendance.check-in', compact('todaysScheduleEvent', 'attendance'));
-    }
-
-    //====================================
-    //=== Filter users by full name, partial name, or ID (supports LIKE)
-    //=== Optional: restrict by locale
-    //====================================
-    private function searchUsersByNameOrId($filter)
-    {
-        $nameOrId = $filter['memberName'] ?? null;
-        $locale = $filter['locale'] ?? null;
-        return User::where(function ($query) use ($nameOrId) {
-            $query->where(DB::raw("CONCAT(first_name, ' ', middle_name, ' ', last_name)"), 'like', "%{$nameOrId}%")
-                ->orWhere('first_name', 'like', "%{$nameOrId}%")
-                ->orWhere('middle_name', 'like', "%{$nameOrId}%")
-                ->orWhere('last_name', 'like', "%{$nameOrId}%")
-                ->orWhere('id', 'like', "%{$nameOrId}%");
-        })
-            ->when($locale, function ($query) use ($locale) {
-                $query->where('locale', $locale);
-            })
-            ->get();
-
     }
 
     //====================================

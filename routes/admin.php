@@ -22,9 +22,12 @@ Route::get('/admin/reports', function () {
     return view('admin.reports');
 })->name('admin.reports');
 
+
+
 //Users Routes
 Route::controller(UserController::class)->group(function () {
-    Route::get('/admin/members', 'index')->name('admin.members');
+    Route::get('/admin/members/', 'index')->name('admin.members');
+    Route::get('/admin/members/show/{id}', 'show')->name('admin.members.show');
 });
 
 

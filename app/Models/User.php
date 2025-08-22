@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 use App\Models\Attendance;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
@@ -108,5 +109,30 @@ class User extends Authenticatable
         }
 
         return $numberWorshipDays;
+    }
+
+    //====================================
+    //=== Filter users by full name, partial name, or ID (supports LIKE)
+    //=== Optional: restrict by locale
+    //====================================
+    public function scopeFilter($query, $filter)
+    {
+        $nameOrId = $filter['memberName'] ?? null;
+        $locale = $filter['locale'] ?? null;
+        $role = $filter['role'] ?? null;
+        $status = $filter['status'] ?? null;
+
+        return $query->with('officers')->where(function ($query) use ($nameOrId) {
+            $query->where(DB::raw("CONCAT(first_name, ' ', middle_name, ' ', last_name)"), 'like', "%{$nameOrId}%")
+                ->orWhere('first_name', 'like', "%{$nameOrId}%")
+                ->orWhere('middle_name', 'like', "%{$nameOrId}%")
+                ->orWhere('last_name', 'like', "%{$nameOrId}%")
+                ->orWhere('id', 'like', "%{$nameOrId}%");
+        })
+            ->when($locale, function ($query) use ($locale) {
+                $query->where('locale', $locale);
+            })->when($status, function($query)use($status){
+                $query->officers->contains('')
+            });
     }
 }
