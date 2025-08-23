@@ -1,196 +1,276 @@
-@php
-    return 'hello';
-@endphp
-@extends('layouts.admin')
+<!DOCTYPE html>
+<html lang="en">
 
-@section('styles')
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link href="{{ asset('css/admin/events/show.css') }}" rel="stylesheet">
-@endsection
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-@section('header')
-    <!-- Header -->
-    <header>
-        <div class="max-w-7xl mx-auto px-4 py-1 sm:px-6 lg:px-8 flex justify-between items-center">
-            <div class="page-title">
-                <h1 class="text-xl font-semibold text-gray-900">Event Details</h1>
-                <p class="text-gray-500">View and manage event information and occurrences</p>
-            </div>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb;
+        }
 
-            <div class="flex items-center space-x-4">
-                <a href="{{ route('admin.events.edit', $event->id) }}"
-                    class="inline-flex items-center px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors duration-200">
-                    <i class="bi bi-pencil mr-2"></i> Edit Event
-                </a>
-                <a href="{{ route('admin.events.index') }}"
-                    class="inline-flex items-center px-4 py-2 bg-gray-50 text-gray-600 rounded-lg hover:bg-gray-100 transition-colors duration-200">
-                    <i class="bi bi-arrow-left mr-2"></i> Back to Events
-                </a>
-            </div>
-        </div>
-    </header>
-@endsection
+        .profile-header {
+            background: linear-gradient(120deg, #4f46e5, #7c3aed);
+        }
 
-@section('content')
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Event Summary Cards -->
-        <div class="dashboard-cards grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="dashboard-card bg-white rounded-lg shadow p-6">
-                <div class="card-header flex justify-between items-center mb-4">
-                    <div class="card-title text-gray-500 font-medium">Event Type</div>
-                    <i class="fas fa-tag text-blue-500"></i>
+        .info-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .status-badge {
+            transition: all 0.3s ease;
+        }
+
+        .tab-active {
+            border-bottom: 3px solid #4f46e5;
+            color: #4f46e5;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <!-- Profile Header -->
+        <div class="profile-header rounded-xl text-white p-6 mb-6 shadow-lg">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="w-32 h-32 rounded-full bg-white bg-opacity-20 p-1 mb-4 md:mb-0">
+                    <img class="w-full h-full rounded-full object-cover border-4 border-white border-opacity-30"
+                        src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1160&q=80"
+                        alt="Profile Image">
                 </div>
-                <div class="card-value text-2xl font-semibold text-gray-800">{{ $event->event_type }}</div>
-            </div>
-
-            <div class="dashboard-card bg-white rounded-lg shadow p-6">
-                <div class="card-header flex justify-between items-center mb-4">
-                    <div class="card-title text-gray-500 font-medium">Volunteers Needed</div>
-                    <i class="fas fa-users text-green-500"></i>
-                </div>
-                <div class="card-value text-2xl font-semibold text-gray-800">{{ $event->number_Volunteer_needed }}</div>
-            </div>
-
-            <div class="dashboard-card bg-white rounded-lg shadow p-6">
-                <div class="card-header flex justify-between items-center mb-4">
-                    <div class="card-title text-gray-500 font-medium">Occurrences</div>
-                    <i class="fas fa-calendar-day text-purple-500"></i>
-                </div>
-                <div class="card-value text-2xl font-semibold text-gray-800">{{ $eventOccurrences->count() }}</div>
-            </div>
-        </div>
-
-        <!-- Event Details -->
-        <div class="bg-white shadow rounded-lg overflow-hidden mb-8">
-            <div class="px-6 py-5 border-b border-gray-200">
-                <h2 class="text-lg font-semibold text-gray-900">Event Information</h2>
-            </div>
-
-            <div class="px-6 py-4 grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <div class="mb-4">
-                        <h3 class="text-sm font-medium text-gray-500">Event Name</h3>
-                        <p class="mt-1 text-sm text-gray-900">{{ $event->event_name }}</p>
-                    </div>
-
-                    <div class="mb-4">
-                        <h3 class="text-sm font-medium text-gray-500">Description</h3>
-                        <p class="mt-1 text-sm text-gray-900">{{ $event->event_description }}</p>
-                    </div>
-
-                    <div class="mb-4">
-                        <h3 class="text-sm font-medium text-gray-500">Location</h3>
-                        <p class="mt-1 text-sm text-gray-900">{{ $event->location }}</p>
-                    </div>
-                </div>
-
-                <div>
-                    <div class="mb-4">
-                        <h3 class="text-sm font-medium text-gray-500">Date Range</h3>
-                        <p class="mt-1 text-sm text-gray-900">
-                            {{ \Carbon\Carbon::parse($event->start_date)->format('M j, Y') }} -
-                            {{ \Carbon\Carbon::parse($event->end_date)->format('M j, Y') }}
-                        </p>
-                    </div>
-
-                    <div class="mb-4">
-                        <h3 class="text-sm font-medium text-gray-500">Time</h3>
-                        <p class="mt-1 text-sm text-gray-900">
-                            {{ \Carbon\Carbon::parse($event->start_time)->format('g:i A') }} -
-                            {{ \Carbon\Carbon::parse($event->end_time)->format('g:i A') }}
-                        </p>
-                    </div>
-
-                    <div class="mb-4">
-                        <h3 class="text-sm font-medium text-gray-500">Status</h3>
-                        <span
-                            class="mt-1 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
-                                        {{ $event->status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
-                            {{ ucfirst($event->status) }}
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Event Occurrences -->
-        <div class="bg-white shadow rounded-lg overflow-hidden">
-            <div class="px-6 py-5 border-b border-gray-200 flex justify-between items-center">
-                <h2 class="text-lg font-semibold text-gray-900">Event Occurrences</h2>
-                <a href="{{ route('admin.event-occurrences.create', ['event_id' => $event->id]) }}"
-                    class="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                    <i class="bi bi-plus mr-1"></i> Add Occurrence
-                </a>
-            </div>
-
-            <div class="divide-y divide-gray-200">
-                @forelse($eventOccurrences as $occurrence)
-                    <div class="px-6 py-4 hover:bg-gray-50 transition duration-150 ease-in-out">
-                        <div class="flex flex-col md:flex-row md:items-center md:justify-between">
-                            <div class="flex items-center mb-3 md:mb-0">
-                                <div
-                                    class="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                                    <i class="bi bi-calendar-event text-indigo-600"></i>
-                                </div>
-                                <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">
-                                        {{ \Carbon\Carbon::parse($occurrence->occurrence_date)->format('l, F j, Y') }}
-                                    </div>
-                                    <div class="text-sm text-gray-500">
-                                        {{ \Carbon\Carbon::parse($occurrence->start_time)->format('g:i A') }} -
-                                        {{ \Carbon\Carbon::parse($occurrence->end_time)->format('g:i A') }}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="flex items-center space-x-4">
-                                <span
-                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
-                                                            {{ $occurrence->status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
-                                    {{ ucfirst($occurrence->status) }}
-                                </span>
-
-                                <span
-                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
-                                                            {{ $occurrence->attendance_checked ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800' }}">
-                                    {{ $occurrence->attendance_checked ? 'Attendance Checked' : 'Pending Check' }}
-                                </span>
-
-                                <div class="flex space-x-2">
-                                    <a href="{{ route('admin.event-occurrences.edit', $occurrence->id) }}"
-                                        class="text-blue-600 hover:text-blue-900">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <form action="{{ route('admin.event-occurrences.destroy', $occurrence->id) }}" method="POST"
-                                        class="inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-900">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
+                <div class="md:ml-6 text-center md:text-left">
+                    <h1 class="text-3xl font-bold">Maria Dela Cruz</h1>
+                    <p class="text-indigo-100 mt-1">Active Member • Verified</p>
+                    <div class="flex flex-wrap items-center justify-center md:justify-start mt-4 gap-3">
+                        <div class="flex items-center bg-white bg-opacity-20 px-3 py-1 rounded-full">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            <span>Purok 5, Brgy. San Isidro</span>
+                        </div>
+                        <div class="flex items-center bg-white bg-opacity-20 px-3 py-1 rounded-full">
+                            <i class="fas fa-phone mr-2"></i>
+                            <span>+63 912 345 6789</span>
+                        </div>
+                        <div class="flex items-center bg-white bg-opacity-20 px-3 py-1 rounded-full">
+                            <i class="fas fa-envelope mr-2"></i>
+                            <span>maria.delacruz@example.com</span>
                         </div>
                     </div>
-                @empty
-                    <div class="px-6 py-8 text-center">
-                        <i class="bi bi-calendar-x text-4xl text-gray-400 mb-3"></i>
-                        <h3 class="mt-2 text-sm font-medium text-gray-900">No occurrences scheduled</h3>
-                        <p class="mt-1 text-sm text-gray-500">This event doesn't have any scheduled occurrences yet.</p>
+                </div>
+                <div class="ml-auto mt-4 md:mt-0">
+                    <button
+                        class="bg-white text-indigo-700 px-4 py-2 rounded-lg font-semibold hover:bg-opacity-90 transition">
+                        <i class="fas fa-edit mr-2"></i>Edit Profile
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Tabs -->
+        <div class="flex border-b border-gray-200 mb-6">
+            <button class="px-4 py-3 font-medium text-gray-600 hover:text-indigo-600 tab-active">
+                <i class="fas fa-user-circle mr-2"></i>Personal Information
+            </button>
+            <button class="px-4 py-3 font-medium text-gray-600 hover:text-indigo-600">
+                <i class="fas fa-calendar-check mr-2"></i>Attendance
+            </button>
+            <button class="px-4 py-3 font-medium text-gray-600 hover:text-indigo-600">
+                <i class="fas fa-file-alt mr-2"></i>Documents
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Left Column -->
+            <div class="md:col-span-2 space-y-6">
+                <!-- Personal Information Card -->
+                <div class="bg-white rounded-xl shadow-sm p-6 info-card transition-all duration-300">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-6 flex items-center">
+                        <i class="fas fa-user text-indigo-500 mr-3"></i>Personal Details
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm text-gray-500">Full Name</p>
+                            <p class="font-medium">Maria Santos Dela Cruz</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Birthdate</p>
+                            <p class="font-medium">June 15, 1985</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Sex</p>
+                            <p class="font-medium">Female</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Marital Status</p>
+                            <p class="font-medium">Married</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Baptism Date</p>
+                            <p class="font-medium">April 20, 2001</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Last Login</p>
+                            <p class="font-medium">Today, 3:45 PM</p>
+                        </div>
                     </div>
-                @endforelse
+                </div>
+
+                <!-- Contact Information Card -->
+                <div class="bg-white rounded-xl shadow-sm p-6 info-card transition-all duration-300">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-6 flex items-center">
+                        <i class="fas fa-address-book text-indigo-500 mr-3"></i>Contact Information
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="md:col-span-2">
+                            <p class="text-sm text-gray-500">Email Address</p>
+                            <p class="font-medium">maria.delacruz@example.com</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Phone Number</p>
+                            <p class="font-medium">+63 912 345 6789</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">District</p>
+                            <p class="font-medium">North District</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Locale</p>
+                            <p class="font-medium">San Isidro</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Purok/Grupo</p>
+                            <p class="font-medium">Purok 5</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Address Card -->
+                <div class="bg-white rounded-xl shadow-sm p-6 info-card transition-all duration-300">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-6 flex items-center">
+                        <i class="fas fa-home text-indigo-500 mr-3"></i>Address
+                    </h2>
+                    <div>
+                        <p class="text-sm text-gray-500">Complete Address</p>
+                        <p class="font-medium">123 San Isidro Street, Purok 5, Brgy. San Isidro, North District</p>
+                    </div>
+                    <div class="mt-4 h-48 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-map-marked-alt text-4xl text-gray-400"></i>
+                    </div>
+                </div>
             </div>
 
-            @if($eventOccurrences->hasPages())
-                <div class="px-6 py-4 border-t border-gray-200">
-                    {{ $eventOccurrences->links() }}
+            <!-- Right Column -->
+            <div class="space-y-6">
+                <!-- Status Card -->
+                <div class="bg-white rounded-xl shadow-sm p-6">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Member Status</h2>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Account Status</span>
+                            <span
+                                class="px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full status-badge">Active</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Verification</span>
+                            <span
+                                class="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full status-badge">Verified</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Email Confirmation</span>
+                            <span
+                                class="px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full status-badge">Confirmed</span>
+                        </div>
+                    </div>
                 </div>
-            @endif
+
+                <!-- Account Details Card -->
+                <div class="bg-white rounded-xl shadow-sm p-6">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Account Details</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-sm text-gray-500">Member Since</p>
+                            <p class="font-medium">January 10, 2015</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Last Profile Update</p>
+                            <p class="font-medium">3 days ago</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">User ID</p>
+                            <p class="font-medium">MB-02468</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Documents Card -->
+                <div class="bg-white rounded-xl shadow-sm p-6">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Documents</h2>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center">
+                                <i class="fas fa-file-pdf text-red-500 text-xl mr-3"></i>
+                                <span>Baptismal Certificate.pdf</span>
+                            </div>
+                            <button class="text-indigo-600 hover:text-indigo-800">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center">
+                                <i class="fas fa-file-image text-blue-500 text-xl mr-3"></i>
+                                <span>Valid ID.jpg</span>
+                            </div>
+                            <button class="text-indigo-600 hover:text-indigo-800">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button
+                        class="w-full mt-4 px-4 py-2 bg-indigo-50 text-indigo-700 rounded-lg font-medium hover:bg-indigo-100 transition">
+                        <i class="fas fa-upload mr-2"></i>Upload Document
+                    </button>
+                </div>
+
+                <!-- Quick Actions Card -->
+                <div class="bg-white rounded-xl shadow-sm p-6">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Quick Actions</h2>
+                    <div class="space-y-3">
+                        <button
+                            class="w-full flex items-center justify-center px-4 py-2 bg-green-50 text-green-700 rounded-lg font-medium hover:bg-green-100 transition">
+                            <i class="fas fa-envelope mr-2"></i>Send Message
+                        </button>
+                        <button
+                            class="w-full flex items-center justify-center px-4 py-2 bg-blue-50 text-blue-700 rounded-lg font-medium hover:bg-blue-100 transition">
+                            <i class="fas fa-calendar-plus mr-2"></i>Schedule Visit
+                        </button>
+                        <button
+                            class="w-full flex items-center justify-center px-4 py-2 bg-purple-50 text-purple-700 rounded-lg font-medium hover:bg-purple-100 transition">
+                            <i class="fas fa-file-invoice mr-2"></i>Generate Report
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-@endsection
 
-@section('scripts')
-    @vite('resources/js/admin/events/show.js')
-@endsection
+    <script>
+        // Simple tab functionality
+        document.querySelectorAll('.flex.border-b button').forEach(button => {
+            button.addEventListener('click', function () {
+                document.querySelectorAll('.flex.border-b button').forEach(btn => {
+                    btn.classList.remove('tab-active');
+                });
+                this.classList.add('tab-active');
+            });
+        });
+    </script>
+</body>
+
+</html>
