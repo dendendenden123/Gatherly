@@ -4,7 +4,8 @@ $(document).ready(() => {
     let debounceTimer = null;
 
     //EVENT HANDLER
-    $("#member-search").on("input change", () => {
+    $("#member-search, #filterForm").on("click input change", () => {
+        console.log("click");
         filter();
     });
 

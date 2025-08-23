@@ -13,7 +13,13 @@ class UserController extends Controller
     public function index(Request $request)
     {
         logger('show.index', [$request->all()]);
-        $users = User::filter(['memberName' => $request->memberName])->orderByDesc('updated_at')->simplePaginate(5);
+        $users = User::filter([
+            'memberName' => $request->memberName,
+            'role' => $request->role,
+            'status' => $request->status
+        ])->orderByDesc('updated_at')->simplePaginate(5);
+
+        logger('users list', [$users]);
         $totalMembersCount = User::query()->count();
         $volunteersMemberCount = User::whereHas('officers', function ($query) {
             $query->whereNot('role', '0');

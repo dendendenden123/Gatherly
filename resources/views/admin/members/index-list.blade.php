@@ -22,8 +22,8 @@
         <thead>
             <tr>
                 <th>Member</th>
-                <th>Contact</th>
-                <th>Birthdate</th>
+                <th>Status</th>
+                <th>Locale</th>
                 <th>Martital Status</th>
                 <th>Address</th>
                 <th>Actions</th>
@@ -43,8 +43,8 @@
                             </div>
                         </a>
                     </td>
-                    <td>{{ $user->phone }}</td>
-                    <td>{{ $user->birthdate }}</td>
+                    <td>{{ $user->status }}</td>
+                    <td>{{ $user->locale}}</td>
                     <td>{{ $user->marital_status }}</td>
                     <td>{{ $user->address }}</td>
                     <td>

@@ -31,7 +31,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
-        'birthdate' => 'date'
+        'birthdate' => 'datetime'
     ];
 
     /**
@@ -49,6 +49,20 @@ class User extends Authenticatable
         return $this->hasMany(Attendance::class);
     }
 
+    public function officers()
+    {
+        return $this->hasMany(Officer::class);
+    }
+
+    protected static function booted()
+    {
+        static::created(function ($user) {
+            Officer::create([
+                'user_id' => $user->id
+            ]);
+        });
+    }
+
     public function getFullNameAttribute()
     {
         $names = array_filter([
@@ -59,21 +73,6 @@ class User extends Authenticatable
 
         return implode(' ', $names);
     }
-
-
-    public function officers()
-    {
-        return $this->hasMany(Officer::class);
-    }
-    protected static function booted()
-    {
-        static::created(function ($user) {
-            Officer::create([
-                'user_id' => $user->id
-            ]);
-        });
-    }
-
 
     public function getAttendanceRate(): float
     {
@@ -122,17 +121,27 @@ class User extends Authenticatable
         $role = $filter['role'] ?? null;
         $status = $filter['status'] ?? null;
 
-        return $query->with('officers')->where(function ($query) use ($nameOrId) {
-            $query->where(DB::raw("CONCAT(first_name, ' ', middle_name, ' ', last_name)"), 'like', "%{$nameOrId}%")
-                ->orWhere('first_name', 'like', "%{$nameOrId}%")
-                ->orWhere('middle_name', 'like', "%{$nameOrId}%")
-                ->orWhere('last_name', 'like', "%{$nameOrId}%")
-                ->orWhere('id', 'like', "%{$nameOrId}%");
-        })
+        return $query->with('officers')
+            ->when($nameOrId, function ($query) use ($nameOrId) {
+                $query->where(function ($query) use ($nameOrId) {
+                    $query->where(DB::raw("CONCAT(first_name, ' ', middle_name, ' ', last_name)"), 'like', "%{$nameOrId}%")
+                        ->orWhere('first_name', 'like', "%{$nameOrId}%")
+                        ->orWhere('middle_name', 'like', "%{$nameOrId}%")
+                        ->orWhere('last_name', 'like', "%{$nameOrId}%")
+                        ->orWhere('id', 'like', "%{$nameOrId}%");
+                });
+            })
             ->when($locale, function ($query) use ($locale) {
                 $query->where('locale', $locale);
-            })->when($status, function($query)use($status){
-                $query->officers->contains('')
+            })
+            ->when($role, function ($query) use ($role) {
+                $query->whereHas('officers', function ($q) use ($role) {
+                    $q->where('role', $role);
+                });
+            })
+            ->when($status, function ($query) use ($status) {
+                $query->where('status', $status);
             });
     }
+
 }
