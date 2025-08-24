@@ -7,9 +7,9 @@ use App\Models\User;
 
 class UserController extends Controller
 {
-    //==========================
+    //===========================================
     //===Display all members
-    //==========================
+    //===========================================
     public function index(Request $request)
     {
         $users = User::filter([
@@ -31,17 +31,17 @@ class UserController extends Controller
         return view('admin.members.index', compact('users', 'totalMembersCount', 'volunteersMemberCount'));
     }
 
-    //==========================
+    //===========================================
     //===Show information of specific member based on id
-    //==========================
+    //===========================================
     public function show($id)
     {
         return view('admin.members.show');
     }
 
-    //==========================
+    //===========================================
     //===Create new member info
-    //==========================
+    //===========================================
     public function store(Request $request)
     {
         // Validate the request data
@@ -69,16 +69,20 @@ class UserController extends Controller
         }
     }
 
+
+    //===========================================
+    //===Delete the specified user and redirect back to members list.
+    //===========================================
     public function destroy($userId)
     {
         User::findOrFail($userId)->delete();
-        return redirect()->route('admin.events.index')->with(['success' => '']);
+        return redirect()->route('admin.members')->with(['success' => '']);
     }
 
-    //==========================
+    //===========================================
     //===Logs out the user, clears the session, 
     //===regenerates the CSRF token, and redirects to landing page
-    //==========================
+    //===========================================
     public function logout()
     {
         auth()->logout();
@@ -87,26 +91,26 @@ class UserController extends Controller
         return redirect()->route('landing_page');
     }
 
-    //==========================
+    //===========================================
     //===Redirect to Login Form
-    //==========================
+    //===========================================
     public function showLoginForm()
     {
         return view('auth.login');
     }
 
-    //==========================
+    //===========================================
     //===Redirect to Register Form
-    //==========================
+    //===========================================
     public function showRegisterForm()
     {
         return view('auth.register');
     }
 
-    //==========================
+    //===========================================
     //===Handles user login, validates credentials, 
     //===then redirects based on officer role (admin or member)
-    //==========================
+    //===========================================
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
