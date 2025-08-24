@@ -1,5 +1,5 @@
 Todo
  - fix profile pic in the entire project
- - add feature for guess or non-regular 
- - in events/create, add a functinal 'value="old()"' in the field
  - location in check in (second thougts about it?)
+ - fix register form not updated
+ -make the system responsive to mobile view

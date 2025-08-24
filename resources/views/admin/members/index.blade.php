@@ -57,9 +57,9 @@
                 <label>Sort By:</label>
                 <select name="sort">
                     <option value="latest">Recently Added</option>
-                    <option value="apl">Name (A-Z)</option>
-                    <option>Name (Z-A)</option>
-                    <option>Join Date</option>
+                    <option value="alphabetAsc">Name (A-Z)</option>
+                    <option value="alphabetDesc">Name (Z-A)</option>
+                    <option value="locale">Locale</option>
                 </select>
             </div>
         </div>

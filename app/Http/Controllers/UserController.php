@@ -12,14 +12,13 @@ class UserController extends Controller
     //==========================
     public function index(Request $request)
     {
-        logger('show.index', [$request->all()]);
         $users = User::filter([
             'memberName' => $request->memberName,
             'role' => $request->role,
-            'status' => $request->status
-        ])->orderByDesc('updated_at')->simplePaginate(5);
+            'status' => $request->status,
+            'sort' => $request->sort
+        ])->simplePaginate(5);
 
-        logger('users list', [$users]);
         $totalMembersCount = User::query()->count();
         $volunteersMemberCount = User::whereHas('officers', function ($query) {
             $query->whereNot('role', '0');
@@ -68,6 +67,12 @@ class UserController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
         }
+    }
+
+    public function destroy($userId)
+    {
+        User::findOrFail($userId)->delete();
+        return redirect()->route('admin.events.index')->with(['success' => '']);
     }
 
     //==========================

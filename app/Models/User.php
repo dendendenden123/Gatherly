@@ -120,7 +120,7 @@ class User extends Authenticatable
         $locale = $filter['locale'] ?? null;
         $role = $filter['role'] ?? null;
         $status = $filter['status'] ?? null;
-
+        $sort = $filter['sort'] ?? null;
         return $query->with('officers')
             ->when($nameOrId, function ($query) use ($nameOrId) {
                 $query->where(function ($query) use ($nameOrId) {
@@ -141,6 +141,21 @@ class User extends Authenticatable
             })
             ->when($status, function ($query) use ($status) {
                 $query->where('status', $status);
+            })
+            ->when($sort, function ($query) use ($sort) {
+                if ($sort == 'latest') {
+                    $query->orderBy('created_at');
+                } else if ($sort == 'alphabetAsc') {
+                    $query->orderBy('first_name')
+                        ->orderBy('middle_name')
+                        ->orderBy('last_name');
+                } else if ($sort == 'alphabetDesc') {
+                    $query->orderBy('first_name', 'desc')
+                        ->orderBy('middle_name', 'desc')
+                        ->orderBy('last_name', 'desc');
+                } else if ($sort == 'locale') {
+                    $query->orderBy('locale');
+                }
             });
     }
 

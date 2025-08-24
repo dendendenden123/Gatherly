@@ -28,6 +28,7 @@ Route::get('/admin/reports', function () {
 Route::controller(UserController::class)->group(function () {
     Route::get('/admin/members/', 'index')->name('admin.members');
     Route::get('/admin/members/show/{id}', 'show')->name('admin.members.show');
+    Route::delete('/admin/members/destroy/{id}', 'destroy')->name('admin.members.destroy');
 });
 
 

@@ -51,9 +51,13 @@
                         <button class="action-btn edit-btn">
                             <i class="fas fa-edit"></i> Edit
                         </button>
-                        <button class="action-btn delete-btn">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                        <form method='POST' action="{{ route('admin.members.destroy', $user->id) }}">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="action-btn delete-btn">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
                     </td>
                 </tr>
             @endforeach
