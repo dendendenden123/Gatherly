@@ -14,7 +14,7 @@
 
 @section('content')
     <div class="max-w-auto mx-auto px-4">
-        <form method='POST' action="{{ route('admin.members.update') }}"
+        <form method='POST' action="{{ route('admin.members.update') }}" enctype="multipart/form-data"
             class="bg-white rounded-xl shadow-lg overflow-hidden form-card">
             @csrf
             @method('PUT')
@@ -24,6 +24,16 @@
                         icon: 'success',
                         title: 'Success',
                         text: '{{ session('success') }}',
+                        confirmButtonColor: '#3085d6'
+                    })
+                </script>
+            @endif
+            @if(session('errpr'))
+                <script>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Failed',
+                        text: '{{ session('error') }}',
                         confirmButtonColor: '#3085d6'
                     })
                 </script>
@@ -167,28 +177,28 @@
             </div>
 
             <!-- Account Security Section
-                                                                                                                                <div class="p-6 border-b border-gray-200">
-                                                                                                                                    <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-                                                                                                                                        <i class="fas fa-lock text-indigo-500 mr-3"></i>Account Security
-                                                                                                                                    </h2>
+                                                                                                                                                        <div class="p-6 border-b border-gray-200">
+                                                                                                                                                            <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                                                                                                                                                                <i class="fas fa-lock text-indigo-500 mr-3"></i>Account Security
+                                                                                                                                                            </h2>
 
-                                                                                                                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                                                                                                        <div>
-                                                                                                                                            <label class="block text-sm font-medium text-gray-700 mb-1" for="password">Password *</label>
-                                                                                                                                            <input id="password" name="password" type="password" value="{{ $user->password }}" required
-                                                                                                                                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 input-focus"
-                                                                                                                                                placeholder="Create a password">
-                                                                                                                                        </div>
+                                                                                                                                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                                                                                                                                <div>
+                                                                                                                                                                    <label class="block text-sm font-medium text-gray-700 mb-1" for="password">Password *</label>
+                                                                                                                                                                    <input id="password" name="password" type="password" value="{{ $user->password }}" required
+                                                                                                                                                                        class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 input-focus"
+                                                                                                                                                                        placeholder="Create a password">
+                                                                                                                                                                </div>
 
-                                                                                                                                        <div>
-                                                                                                                                            <label class="block text-sm font-medium text-gray-700 mb-1" for="confirm_password">Confirm
-                                                                                                                                                Password *</label>
-                                                                                                                                            <input id="confirm_password" name="confirm_password" type="password" required
-                                                                                                                                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 input-focus"
-                                                                                                                                                placeholder="Confirm your password">
-                                                                                                                                        </div>
-                                                                                                                                    </div>
-                                                                                                                                </div> -->
+                                                                                                                                                                <div>
+                                                                                                                                                                    <label class="block text-sm font-medium text-gray-700 mb-1" for="confirm_password">Confirm
+                                                                                                                                                                        Password *</label>
+                                                                                                                                                                    <input id="confirm_password" name="confirm_password" type="password" required
+                                                                                                                                                                        class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 input-focus"
+                                                                                                                                                                        placeholder="Confirm your password">
+                                                                                                                                                                </div>
+                                                                                                                                                            </div>
+                                                                                                                                                        </div> -->
 
             <!-- Upload Section -->
             <div class="p-6">

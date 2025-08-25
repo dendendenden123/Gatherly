@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Models\User;
 
@@ -101,16 +102,36 @@ class UserController extends Controller
                 'baptism_date' => 'nullable|date',
                 'marital_status' => 'nullable|in:single,married,divorced,widowed',
                 'profile_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-                'document_image' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:4096',
+                'document_image' => 'nullable|image|mimes:jpg,jpeg,png,pdf|max:4096',
                 'status' => 'nullable|in:active,inactive,suspended',
                 'is_Verify' => 'boolean',
             ]);
 
             $user = User::findOrFail($validated['id']);
+
+            if ($request->hasFile('profile_image')) {
+                if ($user->profile_image && Storage::disk('public')->exists($user->profile_image)) {
+                    Storage::disk('public')->delete($user->profile_image);
+                }
+
+                $path = $request->file('profile_image')->store('profiles', 'public');
+                $validated['profile_image'] = $path;
+            }
+
+            if ($request->hasFile('document_image')) {
+                if ($user->document_image && Storage::disk('public')->exists($user->document_image)) {
+                    Storage::disk('public')->delete($user->document_image);
+                }
+
+                $path = $request->file('document_image')->store('profiles', 'public');
+                $validated['document_image'] = $path;
+            }
+
+
             $user->update($validated);
             return redirect()->back()->with('success', 'User updated successfully');
         } catch (\Exception $e) {
-            \log::error('Updating user data', [$e]);
+            \Log::error('Updating user data failed: ' . $e->getMessage());
             return redirect()->back()->with('error', $e);
         }
     }
