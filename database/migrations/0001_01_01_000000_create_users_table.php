@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->string('address')->nullable();
             $table->string('district')->required();
             $table->string('locale')->required();
-            $table->string('purok-grupo')->required();
+            $table->string('purok_grupo')->required();
             $table->date('birthdate');
             $table->enum('sex', ['male', 'female']);
             $table->date('baptism_date')->nullable();

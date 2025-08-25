@@ -85,7 +85,8 @@
                     <span>Dashboard</span>
                 </a>
             </div>
-            <div class="nav-item {{ request()->is('admin/members') ? 'active' : '' }}">
+            <div
+                class="nav-item {{ request()->is('admin/members') || request()->is('admin/members/*') ? 'active' : '' }}">
                 <a href="{{ route('admin.members') }}" class="text-decoration-none text-reset">
                     <i class="fas fa-users"></i>
                     <span>Members</span>

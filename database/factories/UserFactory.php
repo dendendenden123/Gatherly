@@ -72,7 +72,7 @@ class UserFactory extends Factory
                 'Local ng Tiguib',
                 'Local ng Toledo City',
             ]),
-            'purok-grupo' => '1-5',
+            'purok_grupo' => '1-5',
             'sex' => $this->faker->randomElement(['male', 'female']),
             'baptism_date' => $this->faker->optional()->date(),
             'marital_status' => $this->faker->randomElement([

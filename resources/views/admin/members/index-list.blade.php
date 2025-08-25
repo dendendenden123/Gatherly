@@ -48,9 +48,11 @@
                     <td>{{ $user->marital_status }}</td>
                     <td>{{ $user->address }}</td>
                     <td>
-                        <button class="action-btn edit-btn">
-                            <i class="fas fa-edit"></i> Edit
-                        </button>
+                        <a href="{{ route('admin.members.edit', $user->id) }}">
+                            <button class="action-btn edit-btn">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                        </a>
                         <form method='POST' action="{{ route('admin.members.destroy', $user->id) }}">
                             @csrf
                             @method('DELETE')

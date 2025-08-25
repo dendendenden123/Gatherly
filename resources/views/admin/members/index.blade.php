@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 @section('styles')
-    <link href="{{ asset('css/admin/members.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/admin/members/index.css') }}" rel="stylesheet">
 @endsection
 
 @section('header')
@@ -10,13 +10,6 @@
         <p>View and manage all church members</p>
     </div>
 
-    <div class="members-controls">
-        <div class="members-actions">
-            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm flex items-center">
-                <i class="bi bi-plus mr-1"></i> Add Member
-            </button>
-        </div>
-    </div>
 </div>
 @endSection
 

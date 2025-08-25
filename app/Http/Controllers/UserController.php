@@ -44,7 +44,6 @@ class UserController extends Controller
     //===========================================
     public function store(Request $request)
     {
-        // Validate the request data
         try {
             $validatedData = $request->validate([
                 'role' => 'required|in:Minister,Finance,SCAN,Deacon,Kalihim,Choir,None',
@@ -69,6 +68,52 @@ class UserController extends Controller
         }
     }
 
+    //===========================================
+    //===redirect to admin/members/edit page
+    //===========================================
+    public function edit($userId)
+    {
+        $user = User::with('officers')->findOrFail($userId)->first();
+        return view('admin.members.edit', compact('user'));
+    }
+
+    //===========================================
+    //===Update user's data
+    //===========================================
+    public function update(Request $request)
+    {
+
+        try {
+            $validated = $request->validate([
+                'id' => 'required|integer',
+                'first_name' => 'required|string|max:100',
+                'last_name' => 'required|string|max:100',
+                'middle_name' => 'nullable|string|max:100',
+                'email' => 'required|email|max:255  ',
+                'password' => 'nullable|string|min:8|confirmed', // optional if not changing
+                'phone' => 'nullable|string|max:20',
+                'address' => 'nullable|string|max:255',
+                'district' => 'nullable|string|max:100',
+                'locale' => 'nullable|string|max:100',
+                'purok_grupo' => 'nullable|string|max:100',
+                'birthdate' => 'nullable|date',
+                'sex' => 'nullable|in:male,female,other',
+                'baptism_date' => 'nullable|date',
+                'marital_status' => 'nullable|in:single,married,divorced,widowed',
+                'profile_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+                'document_image' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:4096',
+                'status' => 'nullable|in:active,inactive,suspended',
+                'is_Verify' => 'boolean',
+            ]);
+
+            $user = User::findOrFail($validated['id']);
+            $user->update($validated);
+            return redirect()->back()->with('success', 'User updated successfully');
+        } catch (\Exception $e) {
+            \log::error('Updating user data', [$e]);
+            return redirect()->back()->with('error', $e);
+        }
+    }
 
     //===========================================
     //===Delete the specified user and redirect back to members list.
@@ -80,8 +125,7 @@ class UserController extends Controller
     }
 
     //===========================================
-    //===Logs out the user, clears the session, 
-    //===regenerates the CSRF token, and redirects to landing page
+    //===Logs out the user, clears the session, and redirects to landing page
     //===========================================
     public function logout()
     {
