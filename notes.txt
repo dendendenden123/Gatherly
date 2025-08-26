@@ -3,3 +3,4 @@ Todo
  - location in check in (second thougts about it?)
  - fix register form not updated
  -make the system responsive to mobile view
+ - add field for officers in edit and register form

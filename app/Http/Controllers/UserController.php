@@ -37,7 +37,8 @@ class UserController extends Controller
     //===========================================
     public function show($id)
     {
-        return view('admin.members.show');
+        $user = User::findOrFail($id)->first();
+        return view('admin.members.show', compact('user'));
     }
 
     //===========================================

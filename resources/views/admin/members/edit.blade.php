@@ -43,7 +43,7 @@
             <!-- Personal Information Section -->
             <div class="p-6 border-b border-gray-200">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-                    <i class="fas fa-user-circle text-indigo-500 mr-3"></i>Personal Information
+                    <i class="fas fa-user-circle text-green-600 mr-3"></i>Personal Information
                 </h2>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -52,14 +52,14 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1" for="first_name">First Name
                             *</label>
                         <input id="first_name" name="first_name" type="text" value="{{ $user->first_name }}" required
-                            class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 input-focus"
+                            class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring- text-green-600  input-focus"
                             placeholder="Enter first name">
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1" for="last_name">Last Name *</label>
                         <input id="last_name" name="last_name" type="text" value="{{ $user->last_name }}" required
-                            class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 input-focus"
+                            class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring- text-green-600  input-focus"
                             placeholder="Enter last name">
                     </div>
 
@@ -67,7 +67,7 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1" for="middle_name">Middle
                             Name</label>
                         <input id="middle_name" name="middle_name" type="text" value="{{ $user->middle_name }}"
-                            class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 input-focus"
+                            class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring- text-green-600  input-focus"
                             placeholder="Enter middle name">
                     </div>
 
@@ -75,13 +75,13 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1" for="birthdate">Birthdate *</label>
                         <input id="birthdate" name="birthdate" type="date" value="{{ $user->birthdate->format('Y-m-d') }}"
                             required
-                            class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 input-focus">
+                            class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring- text-green-600  input-focus">
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1" for="sex">Sex *</label>
                         <select id="sex" name="sex" required
-                            class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 input-focus">
+                            class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring- text-green-600  input-focus">
                             <option value="">Select sex</option>
                             <option value="male" {{ $user->sex == 'male' ? 'selected' : '' }}>Male</option>
                             <option value="female" {{ $user->sex == 'female' ? 'selected' : '' }}>Female</option>
@@ -92,7 +92,7 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1" for="marital_status">Marital
                             Status</label>
                         <select id="marital_status" name="marital_status"
-                            class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 input-focus">
+                            class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring- text-green-600  input-focus">
                             <option value="">Select status</option>
                             <option value="single" {{ $user->marital_status == 'single' ? 'selected' : '' }}>Single
                             </option>
@@ -118,7 +118,7 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1" for="baptism_date">Baptism
                             Date</label>
                         <input id="baptism_date" name="baptism_date" type="date" value="{{ $user->baptism_date }}"
-                            class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 input-focus">
+                            class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring- text-green-600  input-focus">
                     </div>
                 </div>
             </div>
@@ -126,35 +126,35 @@
             <!-- Contact Information Section -->
             <div class="p-6 border-b border-gray-200">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-                    <i class="fas fa-address-book text-indigo-500 mr-3"></i>Contact Information
+                    <i class="fas fa-address-book text- text-green-600  mr-3"></i>Contact Information
                 </h2>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="md:col-span-2">
                         <label class="block text-sm font-medium text-gray-700 mb-1" for="email">Email Address *</label>
                         <input id="email" name="email" type="email" value="{{ $user->email }}" required
-                            class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 input-focus"
+                            class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring- text-green-600  input-focus"
                             placeholder="Enter email address">
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1" for="phone">Phone Number *</label>
                         <input id="phone" name="phone" type="tel" value="{{ $user->phone }}" required
-                            class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 input-focus"
+                            class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring- text-green-600  input-focus"
                             placeholder="Enter phone number">
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1" for="district">District *</label>
                         <input id="district" name="district" type="text" value="{{ $user->district }}" required
-                            class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 input-focus"
+                            class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring- text-green-600  input-focus"
                             placeholder="Enter district">
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1" for="locale">Locale *</label>
                         <input id="locale" name="locale" type="text" value="{{ $user->locale }}" required
-                            class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 input-focus"
+                            class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring- text-green-600  input-focus"
                             placeholder="Enter locale">
                     </div>
 
@@ -162,7 +162,7 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1" for="purok_grupo">Purok/Grupo
                             *</label>
                         <input id="purok_grupo" name="purok_grupo" type="text" value="{{ $user->purok_grupo }}" required
-                            class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 input-focus"
+                            class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring- text-green-600  input-focus"
                             placeholder="Enter purok/grupo">
                     </div>
 
@@ -170,40 +170,14 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1" for="address">Complete Address
                             *</label>
                         <textarea id="address" name="address" required rows="3"
-                            class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 input-focus"
+                            class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring- text-green-600  input-focus"
                             placeholder="Enter complete address">{{ $user->address }}</textarea>
                     </div>
                 </div>
             </div>
-
-            <!-- Account Security Section
-                                                                                                                                                        <div class="p-6 border-b border-gray-200">
-                                                                                                                                                            <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-                                                                                                                                                                <i class="fas fa-lock text-indigo-500 mr-3"></i>Account Security
-                                                                                                                                                            </h2>
-
-                                                                                                                                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                                                                                                                                <div>
-                                                                                                                                                                    <label class="block text-sm font-medium text-gray-700 mb-1" for="password">Password *</label>
-                                                                                                                                                                    <input id="password" name="password" type="password" value="{{ $user->password }}" required
-                                                                                                                                                                        class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 input-focus"
-                                                                                                                                                                        placeholder="Create a password">
-                                                                                                                                                                </div>
-
-                                                                                                                                                                <div>
-                                                                                                                                                                    <label class="block text-sm font-medium text-gray-700 mb-1" for="confirm_password">Confirm
-                                                                                                                                                                        Password *</label>
-                                                                                                                                                                    <input id="confirm_password" name="confirm_password" type="password" required
-                                                                                                                                                                        class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 input-focus"
-                                                                                                                                                                        placeholder="Confirm your password">
-                                                                                                                                                                </div>
-                                                                                                                                                            </div>
-                                                                                                                                                        </div> -->
-
-            <!-- Upload Section -->
             <div class="p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-                    <i class="fas fa-file-upload text-indigo-500 mr-3"></i>Document Upload
+                    <i class="fas fa-file-upload text- text-green-600  mr-3"></i>Document Upload
                     <i class="font-thin text-sm"> (Do not upload if you want it to remain unchanged)</i>
                 </h2>
 
@@ -240,7 +214,7 @@
                     </a>
 
                     <button type="submit"
-                        class="px-5 py-2.5 rounded-lg bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition">
+                        class="px-5 py-2.5 rounded-lg bg-green-600  text-white font-medium hover:bg-green-600 transition">
                         Update Account
                     </button>
                 </div>

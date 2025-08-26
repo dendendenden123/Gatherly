@@ -19,7 +19,8 @@ class OfficerFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'role' => $this->faker->randomElement([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]),
+            // 'role' => $this->faker->randomElement([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]),
+            'role' => '1'
         ];
     }
 }

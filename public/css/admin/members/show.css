@@ -1,0 +1,25 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+
+body {
+    font-family: "Inter", sans-serif;
+    background-color: #f9fafb;
+}
+
+.profile-header {
+    background: linear-gradient(120deg, #2ecc71, blue);
+}
+
+.info-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.status-badge {
+    transition: all 0.3s ease;
+}
+
+.tab-active {
+    border-bottom: 3px solid #2ecc71;
+    color: #2ecc71;
+    font-weight: 600;
+}
