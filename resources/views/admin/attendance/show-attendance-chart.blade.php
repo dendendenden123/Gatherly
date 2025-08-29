@@ -5,8 +5,6 @@
 
 <script>
     let attendanceChartInstance = null;
-    // Get chart data from PHP
-    // Render the attendance chart
     function renderAttendanceChart() {
         if (attendanceChartInstance !== null) {
             attendanceChartInstance.destroy();
@@ -24,6 +22,8 @@
 
         const absentlabels = aggregatedChartDataForAbsent.map(item => item.label);
         const absentdataValues = aggregatedChartDataForAbsent.map(item => item.value);
+
+
 
         attendanceChartInstance = new Chart(ctx, {
             type: 'bar',

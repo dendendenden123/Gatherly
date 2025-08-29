@@ -153,6 +153,11 @@ class AttendanceController extends Controller
         return view('admin.attendance.check-in', compact('todaysScheduleEvent', 'attendance'));
     }
 
+    private function getSpecificMemberAttendanceChartData()
+    {
+
+    }
+
     //====================================
     //===Fetch all events scheduled for today that haven't been marked as attended yet
     //===================================

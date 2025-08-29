@@ -74,10 +74,11 @@ class Attendance extends Model
 
     public static function getAggregatedChartData($filters)
     {
-        $aggregate = $filters['aggregate'] ?? 'monthly';
+        $aggregate = $filters['aggregate'] ?? 'weekly';
         $weekly = Null;
         $monthly = Null;
         $yearly = Null;
+        $totalMembers = User::count();
 
         if ($aggregate === 'weekly') {
             $weekly = true;
@@ -105,21 +106,21 @@ class Attendance extends Model
                     ->orderBy('year');
             })
             ->get()
-            ->map(function ($item) use ($weekly, $monthly, $yearly) {
+            ->map(function ($item) use ($weekly, $monthly, $yearly, $totalMembers) {
                 if ($weekly) {
                     return [
                         'label' => $item->year . '-W' . str_pad($item->week, 2, '0', STR_PAD_LEFT),
-                        'value' => $item->total,
+                        'value' => ($item->total / $totalMembers) * 100,
                     ];
                 } elseif ($monthly) {
                     return [
                         'label' => $item->month,
-                        'value' => $item->total,
+                        'value' => ($item->total / $totalMembers) * 100,
                     ];
                 } elseif ($yearly) {
                     return [
                         'label' => $item->year,
-                        'value' => $item->total,
+                        'value' => ($item->total / $totalMembers) * 100,
                     ];
                 }
                 return null;

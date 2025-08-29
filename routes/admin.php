@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\GuestController;
+use App\Http\Controllers\ReportController;
+use App\Models\Report;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\NotificationController;
@@ -18,19 +20,9 @@ Route::get('/admin/members', function () {
     return view('admin.members');
 })->name('admin.members');
 
-Route::get('/admin/reports', function () {
-    return view('admin.reports');
-})->name('admin.reports');
-
-
-
 //Users Routes
-Route::controller(UserController::class)->group(function () {
-    Route::get('/admin/members/', 'index')->name('admin.members');
-    Route::get('/admin/members/show/{id}/', 'show')->name('admin.members.show');
-    Route::get('/admin/members/edit/{id}/', 'edit')->name('admin.members.edit');
-    Route::put('/admin/members/update/', 'update')->name('admin.members.update');
-    Route::delete('/admin/members/destroy/{id}', 'destroy')->name('admin.members.destroy');
+Route::controller(ReportController::class)->group(function () {
+    Route::get('/admin/reports/', 'index')->name('admin.reports');
 });
 
 //Users Routes

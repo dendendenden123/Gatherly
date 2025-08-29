@@ -56,7 +56,7 @@
 
 @section('content')
 <div class="report-cards">
-    <div class="report-card" id="attendanceTrendsCard">
+    <div class="report-card max-w-md" id="attendanceTrendsCard">
         <div class="report-card-header">
             <div>
                 <div class="report-card-title">Attendance Trends</div>
@@ -66,9 +66,13 @@
                 <i class="fas fa-calendar-check"></i>
             </div>
         </div>
-        <div class="chart-placeholder">
-            [Line chart would display here]
+
+        <!-- test -->
+        <div style="height: 300px">
+            <x-chart :chartData="$attendanceChartData"></x-chart>
         </div>
+
+
     </div>
 
     <div class="report-card" id="membershipGrowthCard">
@@ -219,33 +223,41 @@
 @endSection
 
 <script>
-    // Mobile menu toggle
-    document.getElementById('menuToggle').addEventListener('click', function () {
-        document.getElementById('sidebar').classList.toggle('active');
-    });
 
-    // Show/hide custom date range
-    document.getElementById('timePeriod').addEventListener('change', function () {
-        const customRange = document.getElementById('customDateRange');
-        if (this.value === 'Custom Range') {
-            customRange.style.display = 'flex';
-        } else {
-            customRange.style.display = 'none';
-        }
-    });
-
-    // Generate Report Button
-    document.getElementById('generateReportBtn').addEventListener('click', function () {
-        const reportType = document.getElementById('reportType').value;
-        alert(`Generating ${reportType} report...`);
-        // In a real app, this would generate and download a report
-    });
-
-    // Report card clicks
-    document.querySelectorAll('.report-card').forEach(card => {
-        card.addEventListener('click', function () {
-            const reportTitle = this.querySelector('.report-card-title').textContent;
-            alert(`Loading detailed ${reportTitle} report...`);
+    $(document).ready(() => {
+        // Mobile menu toggle
+        document.getElementById('menuToggle').addEventListener('click', function () {
+            document.getElementById('sidebar').classList.toggle('active');
         });
-    });
+
+        // Show/hide custom date range
+        document.getElementById('timePeriod').addEventListener('change', function () {
+            const customRange = document.getElementById('customDateRange');
+            if (this.value === 'Custom Range') {
+                customRange.style.display = 'flex';
+            } else {
+                customRange.style.display = 'none';
+            }
+        });
+
+        // Generate Report Button
+        document.getElementById('generateReportBtn').addEventListener('click', function () {
+            const reportType = document.getElementById('reportType').value;
+            alert(`Generating ${reportType} report...`);
+            // In a real app, this would generate and download a report
+        });
+
+        // Report card clicks
+        document.querySelectorAll('.report-card').forEach(card => {
+            card.addEventListener('click', function () {
+                const reportTitle = this.querySelector('.report-card-title').textContent;
+                alert(`Loading detailed ${reportTitle} report...`);
+            });
+        });
+
+        renderChart()
+    }
+    )
+
+
 </script>

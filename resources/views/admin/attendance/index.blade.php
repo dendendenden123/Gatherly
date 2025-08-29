@@ -13,8 +13,6 @@
             <h1 class="text-xl font-semibold text-gray-900">Attendance Tracking</h1>
             <p class="text-gray-500">Monitor the attendance and engagement in real-time</p>
         </div>
-
-
         <div class="flex items-center space-x-4">
             <a href="{{ route('admin.attendance.checkIn') }}">
                 <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm flex items-center">
