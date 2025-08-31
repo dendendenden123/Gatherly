@@ -76,7 +76,6 @@ $(document).ready(() => {
             }))
         );
     }
-    console.log("event data", eventData);
 
     function viewEvent(info) {
         const event = info.event;

@@ -21,13 +21,17 @@ $chartData = [
 ];
 
 -->
-<canvas id="chart"></canvas>
+@php
+    //Generate random id for canvas to avoid duplication
+    $chart = substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 10);
+@endphp
+<canvas id="{{  $chart }}"></canvas>
 <script>
     $(document).ready(() => {
         let chartInstance = null;
         function renderChart() {
             const chartData = @json($chartData);
-            const chart = document.getElementById('chart').getContext('2d');
+            const ctx = document.getElementById('{{ $chart }}').getContext('2d');
             const labels = chartData['labels']
             const colors = [
                 { bg: 'rgba(54, 162, 235, 0.1)', border: 'rgba(54, 162, 235, 1)' },   // blue
@@ -54,14 +58,11 @@ $chartData = [
                     fill: true
                 }
             });
-
-            console.log('flatten', flatten)
-
             if (chartInstance !== null) {
                 chartInstance.destroy();
             }
 
-            chartInstance = new Chart(chart, {
+            chartInstance = new Chart(ctx, {
                 type: chartData.chartType,
                 data: {
                     labels: labels,

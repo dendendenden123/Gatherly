@@ -43,6 +43,43 @@ class AttendanceController extends Controller
     }
 
     //====================================
+    //===Show Attendance record of specific member
+    //===================================
+    public function show(Request $request, $id)
+    {
+        $events = Event::select(['id', 'event_name'])->get();
+        $user = User::find($id);
+        $countTotalAttendance = Attendance::filter(['user_id' => $id, 'status' => 'present'])->count();
+        $attendanceGrowthRateLastMonth = self::getAttendanceGrowthRateLastMonth($id);
+        $attendanceRateLastMonth = self::getAttendanceRateLastMonth($id);
+        $attendances = Attendance::filter([...$request->all(), 'user_id' => $id])->paginate(5);
+        $aggregatedChartDataForAttended = Attendance::getAggregatedChartData([...$request->all(), 'status' => 'present', 'user_id' => $id]);
+        $aggregatedChartDataForAbsent = Attendance::getAggregatedChartData([...$request->all(), 'status' => 'absent', 'user_id' => $id]);
+
+        if ($request->ajax()) {
+            $chartView = view('admin.attendance.show-attendance-chart', compact('aggregatedChartDataForAttended', 'aggregatedChartDataForAbsent'))->render();
+            $attendanceListView = view('admin.attendance.show-attendance-list', compact('attendances'))->render();
+
+            return response()->json([
+                'chart' => $chartView,
+                'list' => $attendanceListView,
+            ]);
+        }
+
+        return view('admin.attendance.show', compact(
+            'user',
+            'attendances',
+            'events',
+            'countTotalAttendance',
+            'attendanceGrowthRateLastMonth',
+            'attendanceRateLastMonth',
+            'aggregatedChartDataForAttended',
+            'aggregatedChartDataForAbsent'
+
+        ));
+    }
+
+    //====================================
     //===Create New Attendance Record to attendances table
     //===================================
     public function store(Request $request)
@@ -90,43 +127,6 @@ class AttendanceController extends Controller
             \Log::error($e->getMessage());
             return response()->json(['error' => 'There is an error. Please select a member and event to proceed']);
         }
-    }
-
-    //====================================
-    //===Show Attendance record of specific member
-    //===================================
-    public function show(Request $request, $id)
-    {
-        $events = Event::select(['id', 'event_name'])->get();
-        $user = User::find($id);
-        $countTotalAttendance = Attendance::filter(['user_id' => $id, 'status' => 'present'])->count();
-        $attendanceGrowthRateLastMonth = self::getAttendanceGrowthRateLastMonth($id);
-        $attendanceRateLastMonth = self::getAttendanceRateLastMonth($id);
-        $attendances = Attendance::filter([...$request->all(), 'user_id' => $id])->paginate(5);
-        $aggregatedChartDataForAttended = Attendance::getAggregatedChartData([...$request->all(), 'status' => 'present', 'user_id' => $id]);
-        $aggregatedChartDataForAbsent = Attendance::getAggregatedChartData([...$request->all(), 'status' => 'absent', 'user_id' => $id]);
-
-        if ($request->ajax()) {
-            $chartView = view('admin.attendance.show-attendance-chart', compact('aggregatedChartDataForAttended', 'aggregatedChartDataForAbsent'))->render();
-            $attendanceListView = view('admin.attendance.show-attendance-list', compact('attendances'))->render();
-
-            return response()->json([
-                'chart' => $chartView,
-                'list' => $attendanceListView,
-            ]);
-        }
-
-        return view('admin.attendance.show', compact(
-            'user',
-            'attendances',
-            'events',
-            'countTotalAttendance',
-            'attendanceGrowthRateLastMonth',
-            'attendanceRateLastMonth',
-            'aggregatedChartDataForAttended',
-            'aggregatedChartDataForAbsent'
-
-        ));
     }
 
     //====================================

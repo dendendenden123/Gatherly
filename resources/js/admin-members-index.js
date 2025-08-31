@@ -5,7 +5,6 @@ $(document).ready(() => {
 
     //EVENT LISTENER
     $("#member-search, #filterForm").on("click input change", () => {
-        console.log("click");
         fetchFilteredList();
     });
     $(".delete-btn").on("click", (e) => confirmDeleteEvent(e));

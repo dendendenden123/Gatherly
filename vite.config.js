@@ -13,6 +13,7 @@ export default defineConfig({
                 "resources/js/admin-events-create.js",
                 "resources/js/admin-attendance-check-in.js",
                 "resources/js/admin-members-index.js",
+                "resources/js/admin-reports-index.js",
             ],
             refresh: true,
         }),
