@@ -63,11 +63,11 @@
                     <div class="w-16 mr-2">
                         <div class="w-full bg-gray-200 rounded-full h-2">
                             <div class="bg-primary h-2 rounded-full"
-                                style="width: {{ $record->user->getAttendanceRate() }}%">
+                                style="width: {{ $record->user->getLastMonthAttendanceRate() }}%">
                             </div>
                         </div>
                     </div>
-                    <div class="text-sm">{{ $record->user->getAttendanceRate() }}%</div>
+                    <div class="text-sm">{{ $record->user->getLastMonthAttendanceRate() }}%</div>
                 </div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">

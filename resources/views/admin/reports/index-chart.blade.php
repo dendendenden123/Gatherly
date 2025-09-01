@@ -33,21 +33,6 @@
         </div>
     </div>
 
-    <div class="report-card" id="givingReportCard">
-        <div class="report-card-header">
-            <div>
-                <div class="report-card-title">Giving Report</div>
-                <div class="report-card-desc">Monthly donations</div>
-            </div>
-            <div class="report-card-icon icon-purple">
-                <i class="fas fa-donate"></i>
-            </div>
-        </div>
-        <div class="chart-placeholder">
-            [Donut chart would display here]
-        </div>
-    </div>
-
     <div class="report-card" id="eventParticipationCard">
         <div class="report-card-header">
             <div>

@@ -93,6 +93,7 @@ class UserFactory extends Factory
             'email_verified' => false,
             'last_login_at' => $this->faker->dateTime(),
             'remember_token' => Str::random(10),
+            'created_at' => $this->faker->dateTimeBetween('2025-01-01', '2025-12-30')->format('Y-m-d'),
         ];
     }
 

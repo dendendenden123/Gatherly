@@ -25,9 +25,11 @@ $chartData = [
     //Generate random id for canvas to avoid duplication
     $chart = substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 10);
 @endphp
-<canvas id="{{  $chart }}"></canvas>
+<canvas id="{{  $chart }}" style="display: block; box-sizing: border-box; height: 300px; width: 327px;" width="654"
+    height="600"></canvas>
 <script>
-    $(document).ready(() => {
+    (function () {
+
         let chartInstance = null;
         function renderChart() {
             const chartData = @json($chartData);
@@ -145,7 +147,6 @@ $chartData = [
             });
         }
 
-        renderChart()
-    })
-
+        renderChart();
+    })();
 </script>

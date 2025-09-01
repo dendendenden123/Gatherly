@@ -17,10 +17,9 @@ class AttendanceFactory extends Factory
     public function definition(): array
     {
         return [
-            // 'user_id' => \App\Models\User::factory(),
-            'user_id' => 6,
+            'user_id' => \App\Models\User::factory(),
             "event_occurrence_id" => \App\Models\EventOccurrence::factory(),
-            'service_date' => $this->faker->dateTimeBetween('2025-05-01', '2025-05-30')->format('Y-m-d'),
+            'service_date' => $this->faker->dateTimeBetween('2025-08-01', '2025-08-30')->format('Y-m-d'),
             'check_in_time' => $this->faker->time(),
             'check_out_time' => $this->faker->optional()->time(),
             'attendance_method' => $this->faker->randomElement(['in-person', 'online', 'fingerprint', 'mobile']),
@@ -29,8 +28,8 @@ class AttendanceFactory extends Factory
             // 'status' => $this->faker->randomElement(['present', 'absent']),
             'status' => 'present',
             'notes' => $this->faker->optional()->sentence(),
-            'created_at' => $this->faker->dateTimeBetween('2025-05-01', '2025-05-30')->format('Y-m-d'),
-            'updated_at' => $this->faker->dateTimeBetween('2025-05-01', '2025-05-30')->format('Y-m-d'),
+            'created_at' => $this->faker->dateTimeBetween('2025-08-01', '2025-08-30')->format('Y-m-d'),
+            'updated_at' => $this->faker->dateTimeBetween('2025-08-01', '2025-08-30')->format('Y-m-d'),
         ];
     }
 }

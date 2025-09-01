@@ -44,16 +44,25 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    //====================================
+    //=== Get the attendances for the user
+    //====================================
     public function attendances()
     {
         return $this->hasMany(Attendance::class);
     }
 
+    //====================================
+    //=== Get the officers for the user
+    //====================================
     public function officers()
     {
         return $this->hasMany(Officer::class);
     }
 
+    //====================================
+    //=== Create an officer record for the user when the user is created
+    //====================================
     protected static function booted()
     {
         static::created(function ($user) {
@@ -63,6 +72,9 @@ class User extends Authenticatable
         });
     }
 
+    //====================================
+    //=== Get the full name of the user
+    //====================================
     public function getFullNameAttribute()
     {
         $names = array_filter([
@@ -74,7 +86,10 @@ class User extends Authenticatable
         return implode(' ', $names);
     }
 
-    public function getAttendanceRate(): float
+    //====================================
+    //=== Get the attendance rate for the last month
+    //====================================
+    public function getLastMonthAttendanceRate(): float
     {
         $startOfLastMonth = Carbon::now()->subMonth()->startOfMonth();
         $endOfLastMonth = Carbon::now()->subMonth()->endOfMonth();
@@ -95,7 +110,9 @@ class User extends Authenticatable
         return intval(($attendedService / $monthlyWorshipSericeCount) * 100);
     }
 
-    // Count the total number of Sundays and Thursdays within the specified date range
+    //====================================
+    //=== Count the total number of Sundays and Thursdays within the specified date range
+    //====================================
     private function getDaysCount($start, $end)
     {
         $period = CarbonPeriod::create($start, $end);
@@ -121,6 +138,7 @@ class User extends Authenticatable
         $role = $filter['role'] ?? null;
         $status = $filter['status'] ?? null;
         $sort = $filter['sort'] ?? null;
+
         return $query->with('officers')
             ->when($nameOrId, function ($query) use ($nameOrId) {
                 $query->where(function ($query) use ($nameOrId) {
@@ -158,5 +176,4 @@ class User extends Authenticatable
                 }
             });
     }
-
 }

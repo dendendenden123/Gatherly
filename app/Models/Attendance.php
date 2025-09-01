@@ -77,7 +77,7 @@ class Attendance extends Model
         $weekly = Null;
         $monthly = Null;
         $yearly = Null;
-        $aggregate = $filters['aggregate'] ?? 'weekly';
+        $aggregate = $filters['aggregate'] ?? 'monthly';
         $totalMembers = User::count();
 
         if ($aggregate === 'weekly') {

@@ -75,5 +75,5 @@
 <div class="chart-container">
     @include('admin.reports.index-chart')
 </div>
-@vite('resources/js/admin-reports-index.js');
+@vite('resources/js/admin-reports-index.js')
 @endSection
