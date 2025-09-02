@@ -51,7 +51,7 @@ class AttendanceController extends Controller
         $user = User::find($id);
         $countTotalAttendance = Attendance::filter(['user_id' => $id, 'status' => 'present'])->count();
         $attendanceGrowthRateLastMonth = self::getAttendanceGrowthRateLastMonth($id);
-        $attendanceRateLastMonth = self::getAttendanceRateLastMonth($id);
+        $attendanceRateLastMonth = Attendance::getAttendanceRateLastMonth($id);
         $attendances = Attendance::filter([...$request->all(), 'user_id' => $id])->paginate(5);
         $aggregatedChartDataForAttended = Attendance::getAggregatedChartData([...$request->all(), 'status' => 'present', 'user_id' => $id]);
         $aggregatedChartDataForAbsent = Attendance::getAggregatedChartData([...$request->all(), 'status' => 'absent', 'user_id' => $id]);
@@ -207,33 +207,7 @@ class AttendanceController extends Controller
         return ['value' => (intval(($countDifference / $countLastTwoMonthAttendance) * 100)), 'sign' => 'negative'];
     }
 
-    //====================================
-    //===Calculate a user's attendance rate (percentage of present days) for last month
-    //===================================
-    private function getAttendanceRateLastMonth($user_id)
-    {
-        $presentCount = Attendance::filter([
-            'user_id' => $user_id,
-            'status' => 'present',
-            'start_date' => now()->subMonth()->startOfMonth(),
-            'end_date' => now()->subMonth()->endOfMonth()
-        ])->count();
 
-        $absentCount = Attendance::filter([
-            'user_id' => $user_id,
-            'status' => 'absent',
-            'start_date' => now()->subMonth()->startOfMonth(),
-            'end_date' => now()->subMonth()->endOfMonth()
-        ])->count();
-
-        $total = $presentCount + $absentCount;
-
-        if ($total === 0) {
-            return 0; // Prevent division by zero
-        }
-
-        return intval(($presentCount / $total) * 100);
-    }
 
     //====================================
     //===Check if a user already has an attendance record for a specific event occurrence

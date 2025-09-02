@@ -119,114 +119,37 @@
             <thead>
                 <tr>
                     <th>Member</th>
-                    <th>Engagement Score</th>
                     <th>Attendance</th>
-                    <th>Volunteering</th>
-                    <th>Groups</th>
+                    <th>Roles/ Duties</th>
                     <th>Progress</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>
-                        <div class="member-info">
-                            <div class="member-avatar"></div>
-                            <div>
-                                <div>Sarah Johnson</div>
-                                <div style="font-size: 0.8rem; color: var(--text-light);">Joined Jun 2022</div>
+                @foreach ($userEngagement as $engagement)
+                    <tr>
+                        <td>
+                            <div class="member-info">
+                                <div class="member-avatar"></div>
+                                <div>
+                                    <div>{{ $engagement['user_name'] }}</div>
+                                    <div style="font-size: 0.8rem; color: var(--text-light);">Joined
+                                        {{ $engagement['created_at'] }}</div>
+                                </div>
                             </div>
-                        </div>
-                    </td>
-                    <td class="engagement-score score-high">94</td>
-                    <td>100%</td>
-                    <td>12 hrs</td>
-                    <td>3 groups</td>
-                    <td>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 94%;"></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="member-info">
-                            <div class="member-avatar"></div>
-                            <div>
-                                <div>Michael Brown</div>
-                                <div style="font-size: 0.8rem; color: var(--text-light);">Joined Mar 2021</div>
+                        </td>
+
+                        <td>{{ $engagement['attendance'] }}%</td>
+                        <td>{{ $engagement['roles'] }}</td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: {{ $engagement['attendance']  }}%;"></div>
                             </div>
-                        </div>
-                    </td>
-                    <td class="engagement-score score-high">88</td>
-                    <td>92%</td>
-                    <td>8 hrs</td>
-                    <td>2 groups</td>
-                    <td>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 88%;"></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="member-info">
-                            <div class="member-avatar"></div>
-                            <div>
-                                <div>Emily Davis</div>
-                                <div style="font-size: 0.8rem; color: var(--text-light);">Joined Jan 2020</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="engagement-score score-medium">76</td>
-                    <td>85%</td>
-                    <td>5 hrs</td>
-                    <td>1 group</td>
-                    <td>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 76%;"></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="member-info">
-                            <div class="member-avatar"></div>
-                            <div>
-                                <div>Robert Wilson</div>
-                                <div style="font-size: 0.8rem; color: var(--text-light);">Joined Sep 2021</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="engagement-score score-medium">65</td>
-                    <td>78%</td>
-                    <td>3 hrs</td>
-                    <td>1 group</td>
-                    <td>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 65%;"></div>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="member-info">
-                            <div class="member-avatar"></div>
-                            <div>
-                                <div>Jennifer Lee</div>
-                                <div style="font-size: 0.8rem; color: var(--text-light);">Joined May 2023</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="engagement-score score-low">42</td>
-                    <td>60%</td>
-                    <td>1 hr</td>
-                    <td>0 groups</td>
-                    <td>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 42%;"></div>
-                        </div>
-                    </td>
-                </tr>
+                        </td>
+                    </tr>
+                @endforeach
+
+
+
             </tbody>
         </table>
     </div>
