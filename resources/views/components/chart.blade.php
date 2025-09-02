@@ -45,14 +45,28 @@ $chartData = [
             ];
             const flatten = chartData.datasets.map((dataset, index) => {
                 const color = colors[index % colors.length];
+
+                // Handle pie chart specific configuration
+                if (chartData.chartType === 'pie') {
+                    return {
+                        label: dataset.label,
+                        data: dataset.data,
+                        backgroundColor: dataset.backgroundColor || colors.map(c => c.bg),
+                        borderColor: dataset.borderColor || colors.map(c => c.border),
+                        borderWidth: dataset.borderWidth || 2,
+                        hoverOffset: 4
+                    };
+                }
+
+                // Handle other chart types (line, bar, etc.)
                 return {
                     label: dataset.label,
                     data: dataset.data,
-                    backgroundColor: color.bg,
-                    borderColor: color.border,
-                    borderWidth: 3,
+                    backgroundColor: dataset.backgroundColor || color.bg,
+                    borderColor: dataset.borderColor || color.border,
+                    borderWidth: dataset.borderWidth || 3,
                     pointBackgroundColor: '#fff',
-                    pointBorderColor: color.border,
+                    pointBorderColor: dataset.borderColor || color.border,
                     pointBorderWidth: 2,
                     pointRadius: 6,
                     pointHoverRadius: 8,
@@ -103,46 +117,54 @@ $chartData = [
                             displayColors: false,
                             callbacks: {
                                 label: function (context) {
+                                    if (chartData.chartType === 'pie') {
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                        return context.label + ': ' + context.parsed + ' (' + percentage + '%)';
+                                    }
                                     return context.parsed.y + '';
                                 }
                             }
                         }
                     },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.05)',
-                                drawBorder: false
-                            },
-                            ticks: {
-                                font: {
-                                    family: "'Inter', sans-serif",
-                                    size: 12
+                    ...(chartData.chartType !== 'pie' && {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ...(chartData.chartType === 'bar' && { max: Math.max(...chartData.datasets[0].data) * 1.1 }),
+                                ...(chartData.chartType !== 'bar' && { max: 100 }),
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)',
+                                    drawBorder: false
                                 },
-                                callback: value => value + ''
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false,
-                                drawBorder: false
+                                ticks: {
+                                    font: {
+                                        family: "'Inter', sans-serif",
+                                        size: 12
+                                    },
+                                    callback: value => value + ''
+                                }
                             },
-                            ticks: {
-                                font: {
-                                    family: "'Inter', sans-serif",
-                                    size: 12
+                            x: {
+                                grid: {
+                                    display: false,
+                                    drawBorder: false
+                                },
+                                ticks: {
+                                    font: {
+                                        family: "'Inter', sans-serif",
+                                        size: 12
+                                    }
                                 }
                             }
+                        },
+                        elements: {
+                            line: {
+                                borderJoinStyle: 'round',
+                                borderCapStyle: 'round'
+                            }
                         }
-                    },
-                    elements: {
-                        line: {
-                            borderJoinStyle: 'round',
-                            borderCapStyle: 'round'
-                        }
-                    }
+                    })
                 }
             });
         }

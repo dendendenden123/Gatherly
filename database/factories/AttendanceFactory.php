@@ -17,9 +17,9 @@ class AttendanceFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => \App\Models\User::factory(),
-            "event_occurrence_id" => \App\Models\EventOccurrence::factory(),
-            'service_date' => $this->faker->dateTimeBetween('2025-08-01', '2025-08-30')->format('Y-m-d'),
+            'user_id' => $this->faker->numberBetween(67, 75),
+            "event_occurrence_id" => $this->faker->randomElement(\App\Models\EventOccurrence::pluck('id')->toArray()),
+            'service_date' => $this->faker->dateTimeBetween('2025-01-01', '2025-12-30')->format('Y-m-d'),
             'check_in_time' => $this->faker->time(),
             'check_out_time' => $this->faker->optional()->time(),
             'attendance_method' => $this->faker->randomElement(['in-person', 'online', 'fingerprint', 'mobile']),
@@ -28,8 +28,8 @@ class AttendanceFactory extends Factory
             // 'status' => $this->faker->randomElement(['present', 'absent']),
             'status' => 'present',
             'notes' => $this->faker->optional()->sentence(),
-            'created_at' => $this->faker->dateTimeBetween('2025-08-01', '2025-08-30')->format('Y-m-d'),
-            'updated_at' => $this->faker->dateTimeBetween('2025-08-01', '2025-08-30')->format('Y-m-d'),
+            'created_at' => $this->faker->dateTimeBetween('2025-01-01', '2025-12-30')->format('Y-m-d'),
+            'updated_at' => $this->faker->dateTimeBetween('2025-01-01', '2025-12-30')->format('Y-m-d'),
         ];
     }
 }

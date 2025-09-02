@@ -1,21 +1,4 @@
 <div class="report-cards">
-    <div class="report-card max-w-md" id="attendanceTrendsCard">
-        <div class="report-card-header">
-            <div>
-                <div class="report-card-title">Attendance Trends</div>
-                <div class="report-card-desc">Weekly service attendance</div>
-            </div>
-            <div class="report-card-icon icon-green">
-                <i class="fas fa-calendar-check"></i>
-            </div>
-        </div>
-
-        <!-- attendance -->
-        <div style="height: 300px">
-            <x-chart :chartData="$attendanceChartData"></x-chart>
-        </div>
-    </div>
-
     <div class="report-card max-w-md" id="membershipGrowthCard">
         <div class="report-card-header">
             <div>
@@ -43,23 +26,8 @@
                 <i class="fas fa-calendar-alt"></i>
             </div>
         </div>
-        <div class="chart-placeholder">
-            [Horizontal bar chart would display here]
-        </div>
-    </div>
-
-    <div class="report-card" id="volunteerHoursCard">
-        <div class="report-card-header">
-            <div>
-                <div class="report-card-title">Volunteer Hours</div>
-                <div class="report-card-desc">Monthly service hours</div>
-            </div>
-            <div class="report-card-icon icon-red">
-                <i class="fas fa-hands-helping"></i>
-            </div>
-        </div>
-        <div class="chart-placeholder">
-            [Area chart would display here]
+        <div style="height: 300px">
+            <x-chart :chartData="$EventParticipationChartData"></x-chart>
         </div>
     </div>
 
@@ -73,8 +41,8 @@
                 <i class="fas fa-chart-pie"></i>
             </div>
         </div>
-        <div class="chart-placeholder">
-            [Pie chart would display here]
+        <div style="height: 300px">
+            <x-chart :chartData="$demographicChartData"></x-chart>
         </div>
     </div>
 </div>
@@ -87,9 +55,12 @@
             <a href="#">View Full Report</a>
         </div>
     </div>
-    <div class="chart-placeholder">
-        [Comparative line chart would display here]
+
+    <!-- attendance -->
+    <div style="height: 300px">
+        <x-chart :chartData="$attendanceChartData"></x-chart>
     </div>
+
 </div>
 
 <!-- Data Export Section -->

@@ -18,11 +18,15 @@ class ReportController extends Controller
             $events = Event::select('id', 'event_name')->get();
             $attendanceChartData = self::getAttendanceChartData($request);
             $memberShipGrowthChartData = self::getMemberShipGrowthChartData($request);
+            $EventParticipationChartData = self::getEventParticipationChartData($request);
+            $demographicChartData = self::getDemographicChartData($request);
 
             if ($request->ajax()) {
                 $chart = view('admin.reports.index-chart', [
                     'attendanceChartData' => $attendanceChartData,
                     'memberShipGrowthChartData' => $memberShipGrowthChartData,
+                    'EventParticipationChartData' => $EventParticipationChartData,
+                    'demographicChartData' => $demographicChartData,
                 ])->render();
                 return response()->json(['chart' => $chart]);
             }
@@ -30,13 +34,15 @@ class ReportController extends Controller
             return view('admin.reports.index', [
                 'attendanceChartData' => $attendanceChartData,
                 'memberShipGrowthChartData' => $memberShipGrowthChartData,
+                'EventParticipationChartData' => $EventParticipationChartData,
+                'demographicChartData' => $demographicChartData,
                 'events' => $events,
             ]);
         } catch (\Exception $e) {
+            logger()->error('Error in ReportController@index: ' . $e->getMessage(), ['exception' => $e]);
             if ($request->ajax()) {
                 return response()->json(['error' => 'An error occurred while generating the report.'], 500);
             }
-            logger()->error('Error in ReportController@index: ' . $e->getMessage(), ['exception' => $e]);
             return redirect()->back()->with('error', 'An error occurred while generating the report.');
         }
     }
@@ -65,6 +71,9 @@ class ReportController extends Controller
         ];
     }
 
+    //==================================================
+    //===Generate membership growth chart data (weekly, monthly, or yearly) within the given date range
+    //==================================================
     private function getMemberShipGrowthChartData($request)
     {
         $start_date = $request['start_date'] ?? now()->subCentury();
@@ -125,7 +134,101 @@ class ReportController extends Controller
 
     private function getEventParticipationChartData($request)
     {
-        return 'check';
+        // Get top 5 events with highest attendance
+        $topEvents = Event::select('events.id', 'events.event_name')
+            ->join('event_occurrences', 'events.id', '=', 'event_occurrences.event_id')
+            ->join('attendances', 'event_occurrences.id', '=', 'attendances.event_occurrence_id')
+            ->where('attendances.status', 'present')
+            ->selectRaw('COUNT(attendances.id) as total_attendance')
+            ->groupBy('events.id', 'events.event_name')
+            ->orderByDesc('total_attendance')
+            ->limit(5)
+            ->get();
+
+        // Prepare data for horizontal bar chart
+        $labels = $topEvents->pluck('event_name')->toArray();
+        $data = $topEvents->pluck('total_attendance')->toArray();
+
+        return [
+            'chartType' => 'bar',
+            'labels' => $labels,
+            'datasets' => [
+                [
+                    'label' => 'Total Attendance',
+                    'data' => $data,
+                    'backgroundColor' => [
+                        '#FF6384', // Red
+                        '#36A2EB', // Blue
+                        '#FFCE56', // Yellow
+                        '#4BC0C0', // Teal
+                        '#9966FF'  // Purple
+                    ],
+                    'borderColor' => [
+                        '#FF6384',
+                        '#36A2EB',
+                        '#FFCE56',
+                        '#4BC0C0',
+                        '#9966FF'
+                    ],
+                    'borderWidth' => 1
+                ]
+            ]
+        ];
+    }
+
+    private function getDemographicChartData($request)
+    {
+        // Age group definitions based on typical church organization:
+        // Binhi: 0-17 years (children and youth)
+        // Kadiwa: 18-35 years (young adults)
+        // Buklod: 36+ years (adults and seniors)
+
+        $demographicData = User::selectRaw('
+            CASE 
+                WHEN TIMESTAMPDIFF(YEAR, birthdate, CURDATE()) <= 17 THEN "Binhi"
+                WHEN TIMESTAMPDIFF(YEAR, birthdate, CURDATE()) <= 35 THEN "Kadiwa"
+                ELSE "Buklod"
+            END as age_group,
+            sex,
+            COUNT(*) as count
+        ')
+            ->groupBy('age_group', 'sex')
+            ->orderBy('age_group')
+            ->orderBy('sex')
+            ->get();
+
+        // Prepare data for pie chart
+        $labels = [];
+        $data = [];
+        $backgroundColor = [
+            '#FF6384',
+            '#36A2EB',
+            '#FFCE56',
+            '#4BC0C0', // Binhi Male, Binhi Female, Kadiwa Male, Kadiwa Female
+            '#9966FF',
+            '#FF9F40',
+            '#FF6384',
+            '#C9CBCF'  // Buklod Male, Buklod Female, additional colors
+        ];
+
+        foreach ($demographicData as $item) {
+            $label = $item->age_group . ' - ' . ucfirst($item->sex);
+            $labels[] = $label;
+            $data[] = $item->count;
+        }
+
+        return [
+            'chartType' => 'pie',
+            'labels' => $labels,
+            'datasets' => [
+                [
+                    'data' => $data,
+                    'backgroundColor' => array_slice($backgroundColor, 0, count($data)),
+                    'borderWidth' => 2,
+                    'borderColor' => '#ffffff'
+                ]
+            ]
+        ];
     }
 }
 

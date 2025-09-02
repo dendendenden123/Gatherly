@@ -17,7 +17,7 @@ class EventOccurrenceFactory extends Factory
     public function definition(): array
     {
         return [
-            'event_id' => \App\Models\Event::factory(),
+            'event_id' => $this->faker->randomElement(\App\Models\Event::pluck('id')->toArray()),
             'occurrence_date' => $this->faker->date(),
             'start_time' => $this->faker->optional()->Time(),
             'end_time' => $this->faker->optional()->Time(),
