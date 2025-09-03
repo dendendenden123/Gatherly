@@ -77,7 +77,7 @@ class Attendance extends Model
         $weekly = Null;
         $monthly = Null;
         $yearly = Null;
-        $aggregate = $filters['aggregate'] ?? 'monthly';
+        $aggregate = $filters['aggregate'] ?? 'monthly'; //default
         $totalMembers = User::count();
 
         if ($aggregate === 'weekly') {
@@ -90,18 +90,18 @@ class Attendance extends Model
 
         return static::filter($filters)
             ->when($weekly, function ($query) {
-                $query->selectRaw("YEAR(updated_at) as year, WEEK(updated_at, 1) as week, COUNT(*) as total, COUNT(DISTINCT  event_occurrence_id) as event_count")
+                $query->selectRaw("YEAR(updated_at) as year, WEEK(updated_at, 1) as week, COUNT(*) as total, COUNT(CASE WHEN status = 'present' THEN 1 END) AS present, COUNT(DISTINCT  event_occurrence_id) as event_count")
                     ->groupBy('year', 'week')
                     ->orderBy('year')
                     ->orderBy('week');
             })
             ->when($monthly, function ($query) {
-                $query->selectRaw("DATE_FORMAT(updated_at, '%Y-%m') as month, COUNT(*) as total, COUNT(DISTINCT  event_occurrence_id) as event_count")
+                $query->selectRaw("DATE_FORMAT(updated_at, '%Y-%m') as month, COUNT(*) as total, COUNT(CASE WHEN status = 'present' THEN 1 END) AS present, COUNT(DISTINCT  event_occurrence_id) as event_count")
                     ->groupBy('month')
                     ->orderBy('month');
             })
             ->when($yearly, function ($query) {
-                $query->selectRaw("YEAR(updated_at) as year, COUNT(*) as total, COUNT(DISTINCT  event_occurrence_id) as event_count")
+                $query->selectRaw("YEAR(updated_at) as year, COUNT(*) as total, COUNT(CASE WHEN status = 'present' THEN 1 END) AS present, COUNT(DISTINCT  event_occurrence_id) as event_count")
                     ->groupBy('year')
                     ->orderBy('year');
             })
@@ -110,20 +110,17 @@ class Attendance extends Model
                 if ($weekly) {
                     return [
                         'label' => $item->year . '-W' . str_pad($item->week, 2, '0', STR_PAD_LEFT),
-                        'value' => $item->total,
-                        'event_count' => $item->event_count
+                        'value' => ($item->present / $item->total) * 100
                     ];
                 } elseif ($monthly) {
                     return [
                         'label' => $item->month,
-                        'value' => $item->total,
-                        'event_count' => $item->event_count
+                        'value' => ($item->present / $item->total) * 100
                     ];
                 } elseif ($yearly) {
                     return [
                         'label' => $item->year,
-                        'value' => $item->total,
-                        'event_count' => $item->event_count
+                        'value' => ($item->present / $item->total) * 100
                     ];
                 }
                 return null;

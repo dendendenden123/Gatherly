@@ -54,7 +54,7 @@ class ReportController extends Controller
     private function getAttendanceChartData($request)
     {
         $usersCount = User::count();
-        $attendanceData = Attendance::getAggregatedChartData([...$request->all(), 'status' => 'present'])->toArray();
+        $attendanceData = Attendance::getAggregatedChartData([...$request->all()])->toArray();
         return [
             'chartType' => 'line',
             'labels' => array_map(function ($item) {
@@ -64,7 +64,7 @@ class ReportController extends Controller
                 [
                     'label' => 'Attendance',
                     'data' => array_map(function ($item) use ($usersCount) {
-                        return ($item['value'] / ($item['event_count'] * $usersCount)) * 100;
+                        return $item['value'];
                     }, $attendanceData),
                 ],
             ]

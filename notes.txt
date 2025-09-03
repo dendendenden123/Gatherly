@@ -4,3 +4,4 @@ Todo
  - fix register form not updated
  -make the system responsive to mobile view
  - add field for officers in edit and register form
+ -fix the attendance record check in. Problem: latest record should come first

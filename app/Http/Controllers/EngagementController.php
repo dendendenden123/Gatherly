@@ -8,28 +8,30 @@ use Illuminate\Http\Request;
 
 class EngagementController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $userEngagement = self::getUserEngagement()->paginate(5);
+        $userEngagement = self::getUserEngagement($request);
         return view('admin.engagements.index', compact('userEngagement'));
     }
 
-    private function getUserEngagement()
+    private function getUserEngagement($request)
     {
-        $users = User::with('attendances', 'officers')
-            ->get()
-            ->map(function ($user) {
-                return [
-                    'created_at' => optional($user->created_at)->format('M d, Y') ?? '',
-                    'user_name' => $user->first_name . ' ' . $user->last_name,
-                    'attendance' => Attendance::getAttendanceRateLastMonth($user->id),
-                    'roles' => implode(", ", $this->getRoleNames($user->officers->pluck('role')->toArray())),
-                    'roles_count' => $user->officers->count()
-                ];
-            });
+        $users = User::withCount(['officers', 'attendances'])
+            ->with('attendances', 'officers')
+            ->orderByDesc('officers_count')
+            ->orderByDesc('attendances_count')
+            ->limit(10)
+            ->get();
 
-
-        return collect($users)->sortByDesc('roles_count')->sortByDesc('attendance')->values();
+        return $users->map(function ($user) {
+            return [
+                'created_at' => optional($user->created_at)->format('M d, Y') ?? '',
+                'user_name' => $user->first_name . ' ' . $user->last_name,
+                'attendance' => Attendance::getAttendanceRateLastMonth($user->id),
+                'roles' => implode(", ", $this->getRoleNames($user->officers->pluck('role')->toArray())),
+                'roles_count' => $user->officers_count
+            ];
+        });
     }
 
     private function getRoleNames(array $roleNumbers): array
