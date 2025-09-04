@@ -52,6 +52,7 @@ Route::controller(NotificationController::class)->group(function () {
 //Officer Routes
 Route::controller(OfficerController::class)->group(function () {
     Route::get('/admin/officers', 'index')->name('admin.officers');
+    Route::post('/admin/officers/store', 'store')->name('admin.officers.store');
 });
 
 //Events Routes

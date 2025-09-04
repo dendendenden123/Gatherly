@@ -70,28 +70,48 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>
-                            <div class="officer-info">
-                                <div class="officer-avatar"></div>
-                                <div>
-                                    <div class="officer-name">Pastor John Smith</div>
-                                    <div class="officer-email">john.smith@church.org</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td><span class="role-tag">Senior Pastor</span></td>
-                        <td>Jan 2018</td>
-                        <td><span class="status-active">Active</span></td>
-                        <td>
-                            <button class="action-btn edit-btn">
-                                <i class="fas fa-edit"></i> Edit
-                            </button>
-                            <button class="action-btn remove-btn">
-                                <i class="fas fa-user-minus"></i>
-                            </button>
-                        </td>
-                    </tr>
+                    @foreach ($users as $user)
+                                <tr>
+                                    <td>
+                                        <div class="officer-info">
+                                            <div class="officer-avatar"></div>
+                                            <div>
+                                                <div class="officer-name">{{ $user->full_name }}</div>
+                                                <div class="officer-email">{{ $user->email }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="role-tag">
+                                            {{$user->officers->map(function ($officers) {
+                        return $officers->role_description; })->implode(', ')}}</span>
+                                    </td>
+                                    <td>{{ optional(optional($user->officers->first())->created_at)->format('M d, Y')}}</td>
+                                    <td>
+                                        @if($user->status == 'active')
+                                            <span class="status-active">
+                                                {{ $user->status}}
+                                            </span>
+                                        @elseif($user->status == 'partially-active')
+                                            <span class="status-partial">
+                                                {{ $user->status}}
+                                            </span>
+                                        @else
+                                            <span class="status-inactive">
+                                                {{ $user->status}}
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <button class="action-btn edit-btn" onclick='()=>openModal()'>
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <button class="action-btn remove-btn">
+                                            <i class="fas fa-user-minus"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                    @endforeach
+
                     <tr>
                         <td>
                             <div class="officer-info">
@@ -162,30 +182,34 @@
             </table>
         </div>
     </div>
-    </div>
 
     <!-- Add Officer Modal -->
     <div class="modal" id="addOfficerModal">
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-title">Add New Officer</div>
-                <button class="close-modal" id="closeModal">&times;</button>
+                <button class="close-modal" id="closeAddOfficerModalBtn">&times;</button>
             </div>
 
-            <form id="officerForm">
+            <form id="officerForm" method="POST" action="{{ route('admin.officers.store') }}">
+                @csrf
                 <div class="form-group">
-                    <label for="officerName">Full Name</label>
-                    <input type="text" id="officerName" placeholder="Enter officer's full name" required>
+                    <label for="officerName">Search name or id</label>
+                    <input type="text" id="officerName" name="full_name" placeholder="Enter officer's full name" required>
                 </div>
+                <div id="autoCompleteNames">
+                    <ul>De</ul>
+                </div>
+
 
                 <div class="form-group">
                     <label for="officerEmail">Email</label>
-                    <input type="email" id="officerEmail" placeholder="Enter email address" required>
+                    <input type="email" id="officerEmail" name="email" placeholder="Enter email address" required>
                 </div>
 
                 <div class="form-group">
                     <label for="officerRole">Role</label>
-                    <select id="officerRole" required>
+                    <select id="officerRole" name="role" required>
                         <option value="">Select a role...</option>
                         <option value="pastor">Pastor</option>
                         <option value="deacon">Deacon</option>
@@ -200,96 +224,93 @@
 
                 <div class="form-group" id="customRoleGroup" style="display: none;">
                     <label for="customRole">Custom Role Name</label>
-                    <input type="text" id="customRole" placeholder="Specify role">
+                    <input type="text" id="customRole" name="custom_role" placeholder="Specify role">
                 </div>
 
                 <div class="form-group">
                     <label for="termStart">Term Start Date</label>
-                    <input type="date" id="termStart" required>
+                    <input type="date" id="termStart" name="start_date" required>
                 </div>
 
                 <div class="form-group">
                     <label for="termEnd">Term End Date (optional)</label>
-                    <input type="date" id="termEnd">
+                    <input type="date" id="termEnd" name="end_date">
                 </div>
 
                 <div class="form-actions">
                     <button type="button" class="btn btn-outline" id="cancelAddOfficer">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Officer</button>
+                    <button id='submitAddOfficerForm' type="submit" class="btn btn-primary">Save Officer</button>
                 </div>
             </form>
         </div>
     </div>
 
+    <!-- Edit Officers Modal Backdrop -->
+    <div id="modalBackdrop" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50"></div>
+
+    <!--Edit Officers Modal Content -->
+    <div id="roleModal"
+        class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl z-50 hidden w-11/12 max-w-md">
+        <div class="p-6">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-gray-800">Edit User Roles</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- User Info -->
+            <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                <h4 class="font-semibold text-gray-700" id="userName">John Doe</h4>
+                <p class="text-sm text-gray-600 mt-1">
+                    Current Roles: <span id="currentRoles" class="font-medium">Admin, Editor</span>
+                </p>
+            </div>
+
+            <!-- Available Roles Checklist -->
+            <div class="mb-6">
+                <h4 class="font-semibold text-gray-700 mb-3">Available Roles</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center">
+                        <input type="checkbox" name="roles" value="admin" class="rounded text-blue-500 mr-2">
+                        <span class="text-gray-700">Administrator</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" name="roles" value="editor" class="rounded text-blue-500 mr-2" checked>
+                        <span class="text-gray-700">Editor</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" name="roles" value="author" class="rounded text-blue-500 mr-2">
+                        <span class="text-gray-700">Author</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" name="roles" value="viewer" class="rounded text-blue-500 mr-2" checked>
+                        <span class="text-gray-700">Viewer</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" name="roles" value="moderator" class="rounded text-blue-500 mr-2">
+                        <span class="text-gray-700">Moderator</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex justify-end space-x-3">
+                <button onclick="closeModal()" class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">
+                    Cancel
+                </button>
+                <button onclick="saveRoles()"
+                    class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors">
+                    Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        @vite("resources/js/admin-officers-index.js");
+    </script>
 @endsection
-<script>
-    // Modal Handling
-    const addOfficerBtn = document.getElementById('addOfficerBtn');
-    const addOfficerModal = document.getElementById('addOfficerModal');
-    const closeModal = document.getElementById('closeModal');
-    const cancelBtn = document.getElementById('cancelAddOfficer');
-
-    addOfficerBtn.addEventListener('click', () => {
-        addOfficerModal.style.display = 'flex';
-    });
-
-    closeModal.addEventListener('click', () => {
-        addOfficerModal.style.display = 'none';
-    });
-
-    cancelBtn.addEventListener('click', () => {
-        addOfficerModal.style.display = 'none';
-    });
-
-    // Show custom role field when "Other" is selected
-    document.getElementById('officerRole').addEventListener('change', function () {
-        const customRoleGroup = document.getElementById('customRoleGroup');
-        customRoleGroup.style.display = this.value === 'other' ? 'block' : 'none';
-    });
-
-    // Form Submission
-    document.getElementById('officerForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        // Get form values
-        const name = document.getElementById('officerName').value;
-        const email = document.getElementById('officerEmail').value;
-        const role = document.getElementById('officerRole').value;
-        const customRole = document.getElementById('customRole').value;
-        const termStart = document.getElementById('termStart').value;
-        const termEnd = document.getElementById('termEnd').value;
-
-        // In a real app, this would send data to your backend
-        console.log('Adding officer:', {
-            name,
-            email,
-            role: role === 'other' ? customRole : role,
-            termStart,
-            termEnd
-        });
-
-        alert(`Officer ${name} added successfully!`);
-        addOfficerModal.style.display = 'none';
-        this.reset();
-    });
-
-    // Edit buttons
-    document.querySelectorAll('.edit-btn').forEach(btn => {
-        btn.addEventListener('click', function () {
-            const officerName = this.closest('tr').querySelector('.officer-name').textContent;
-            alert(`Editing ${officerName}'s details`);
-            // In a real app, this would open an edit modal with pre-filled data
-        });
-    });
-
-    // Remove buttons
-    document.querySelectorAll('.remove-btn').forEach(btn => {
-        btn.addEventListener('click', function () {
-            const officerName = this.closest('tr').querySelector('.officer-name').textContent;
-            if (confirm(`Are you sure you want to remove ${officerName} as an officer?`)) {
-                alert(`${officerName} has been removed from officer position.`);
-                // In a real app, this would make an API call to update the database
-            }
-        });
-    });
-</script>

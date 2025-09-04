@@ -48,7 +48,6 @@ class UserController extends Controller
     {
         try {
             $validatedData = $request->validate([
-                'role' => 'required|in:Minister,Finance,SCAN,Deacon,Kalihim,Choir,None',
                 'first_name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',
                 'middle_name' => 'required|string|max:255',

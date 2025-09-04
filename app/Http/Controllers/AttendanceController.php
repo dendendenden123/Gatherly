@@ -140,7 +140,7 @@ class AttendanceController extends Controller
             'memberName' => $request['member-search'],
             'locale' => $request['locale']
         ])->get();
-        $attendance = Attendance::with(['user', 'event_occurrence'])->orderByDesc('created_at')->paginate(5);
+        $attendance = Attendance::with(['user', 'event_occurrence'])->orderByDesc('updated_at')->paginate(5);
 
         if ($request->ajax()) {
             $recentAttendance = view('admin.attendance.check-in-recent-attendance-list', compact('todaysScheduleEvent', 'attendance'))->render();

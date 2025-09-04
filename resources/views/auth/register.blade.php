@@ -16,17 +16,6 @@
     <x-form.field label="Last Name" name="last_name" type="text" placeholder="Enter your last name"
         :error="$errors->first('last_name')" />
 
-    <!-- Role -->
-    <x-form.field label="Role" name="role" type="select" :error="$errors->first('role')">
-        <option value="">Select your role</option>
-        <option value="Minister" {{ old('role') == 'Minister' ? 'selected' : '' }}>Minister</option>
-        <option value="SCAN" {{ old('role') == 'SCAN' ? 'selected' : '' }}>SCAN</option>
-        <option value="Deacon" {{ old('role') == 'Deacon' ? 'selected' : '' }}>Deacon</option>
-        <option value="Kalihim" {{ old('role') == 'Kalihim' ? 'selected' : '' }}>Kalihim</option>
-        <option value="Choir" {{ old('role') == 'Choir' ? 'selected' : '' }}>Choir</option>
-        <option value="None" {{ old('role') == 'None' ? 'selected' : '' }}>None</option>
-    </x-form.field>
-
     <!-- phone -->
     <x-form.field label="Phone" name="phone" type="text" placeholder="Enter your phone number"
         :error="$errors->first('phone')" />

@@ -140,6 +140,9 @@ td {
 .status-active {
     color: var(--primary-green);
 }
+.status-partial {
+    color: blue;
+}
 
 .status-inactive {
     color: var(--accent-red);
