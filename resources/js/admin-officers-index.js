@@ -1,20 +1,33 @@
 //===========================SET UP=================b=============
 const addOfficerModal = document.getElementById("addOfficerModal");
+let autocompleteNames = $("#autoCompleteNames").data("user");
 let ajaxRequest = null;
 let debounceTimer = null;
 
 //===========================EVENT HANDLERS==============================
 
 $("#addOfficerBtn").on("click", () => showAddOfficerForm());
+
 $("#closeAddOfficerModalBtn, #cancelAddOfficer").on("click", () =>
     hideAddOfficerForm()
 );
+
 $("#officerRole").on("change", function () {
     showCustomRoleField(this);
 });
+
 $("#submitAddOfficerForm").on("click", function (e) {
     submitAddOfficerForm(e);
 });
+
+$("#officerName").on("click input change", function () {
+    filterOfficerNames(this);
+});
+
+$(document).on("click", ".autocomplete-item", function () {
+    handleAutoCompleteSelection(this);
+});
+
 //===========================FUNCTIONS==============================
 
 //=================================
@@ -38,6 +51,46 @@ function showCustomRoleField(officerRole) {
     const customRoleGroup = document.getElementById("customRoleGroup");
     customRoleGroup.style.display =
         officerRole.value === "other" ? "block" : "none";
+}
+
+//=================================
+//==Filters the officer list autoComplete by input value and updates the autocomplete dropdown
+//=================================
+function filterOfficerNames(officerInput) {
+    let memberName = $(officerInput).val();
+    if (memberName.length > 0) {
+        $("#autoCompleteNames").removeClass("hidden");
+    } else {
+        $("#autoCompleteNames").addClass("hidden");
+    }
+
+    let filteredName = autocompleteNames.filter((element) => {
+        let full_name = element.first_name + " " + element.last_name;
+        return (
+            element.first_name
+                .toLowerCase()
+                .includes(memberName.toLowerCase()) ||
+            element.last_name
+                .toLowerCase()
+                .includes(memberName.toLowerCase()) ||
+            full_name.toLowerCase().includes(memberName.toLowerCase())
+        );
+    });
+
+    $("#autoCompleteNames ul").html(
+        filteredName.map((item) => {
+            return `<li id="${item.id}" class="autocomplete-item px-4 py-2 hover:bg-gray-100 cursor-pointer">${item.first_name} ${item.last_name}</li>`;
+        })
+    );
+}
+
+//=================================
+//==Updates the officer input and hidden user ID field when an autocomplete suggestion is selected.
+//=================================
+function handleAutoCompleteSelection(item) {
+    $("#officerName").val($(item).text());
+    $("#selectedUserId").val($(item).attr("id"));
+    $("#autoCompleteNames").addClass("hidden");
 }
 
 function submitAddOfficerForm(e) {
@@ -93,10 +146,11 @@ function openModal() {
     document.body.classList.add("overflow-hidden");
 }
 
-// function closeModal() {
-//     $("#modalBackdrop").removeClass("hidden");
-//     $("#roleModal").removeClass("hidden");
-// }
+function closeModal() {
+    $("#modalBackdrop").addClass("hidden");
+    $("#roleModal").addClass("hidden");
+    document.body.classList.remove("overflow-hidden");
+}
 
 function saveRoles() {
     const selectedRoles = Array.from(

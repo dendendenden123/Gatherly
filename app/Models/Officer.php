@@ -11,6 +11,8 @@ class Officer extends Model
     /** @use HasFactory<\Database\Factories\OfficerFactory> */
     use HasFactory;
 
+    protected $guarded = [];
+
     protected $casts = [
         'created_at' => 'datetime'
     ];

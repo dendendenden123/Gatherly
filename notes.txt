@@ -5,3 +5,5 @@ Todo
  -make the system responsive to mobile view
  - add field for officers in edit and register form
  -fix the attendance record check in. Problem: latest record should come first
+  -make the officers roles dynamic
+ -make the event_type dynamic

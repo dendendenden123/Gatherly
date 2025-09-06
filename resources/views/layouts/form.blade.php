@@ -11,6 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - Modern Green/Red Design</title>
     <link rel="stylesheet" href="{{ asset('css/layouts/form.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -25,7 +26,7 @@
             <h1 class="auth-title">@yield("title")</h1>
             <p class="auth-subtitle">@yield("subtitle")</p>
 
-            <form class="auth-form" method="POST" action="@yield('form-action')">
+            <form class="auth-form" method="POST" action="@yield('form-action')" enctype="multipart/form-data">
                 @csrf
                 @yield("form-fields")
                 <button type="submit" class="auth-button"> @yield("form-button-text")</button>

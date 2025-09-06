@@ -102,7 +102,7 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <button class="action-btn edit-btn" onclick='()=>openModal()'>
+                                        <button class="action-btn edit-btn" onclick="openModal()">
                                             <i class="fas fa-edit"></i> Edit
                                         </button>
                                         <button class="action-btn remove-btn">
@@ -193,48 +193,64 @@
 
             <form id="officerForm" method="POST" action="{{ route('admin.officers.store') }}">
                 @csrf
-                <div class="form-group">
-                    <label for="officerName">Search name or id</label>
-                    <input type="text" id="officerName" name="full_name" placeholder="Enter officer's full name" required>
-                </div>
-                <div id="autoCompleteNames">
-                    <ul>De</ul>
-                </div>
-
-
-                <div class="form-group">
-                    <label for="officerEmail">Email</label>
-                    <input type="email" id="officerEmail" name="email" placeholder="Enter email address" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="officerRole">Role</label>
-                    <select id="officerRole" name="role" required>
-                        <option value="">Select a role...</option>
-                        <option value="pastor">Pastor</option>
-                        <option value="deacon">Deacon</option>
-                        <option value="elder">Elder</option>
-                        <option value="treasurer">Treasurer</option>
-                        <option value="secretary">Secretary</option>
-                        <option value="worship">Worship Leader</option>
-                        <option value="youth">Youth Pastor</option>
-                        <option value="other">Other</option>
-                    </select>
+                <div class="form-group relative max-w-md">
+                    <label for="officerName" class="block font-medium">Search name or id</label>
+                    <input type="text" id="officerName" name="full_name" value="" placeholder="Enter officer's full name"
+                        required
+                        class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="hidden" name="user_id" id="selectedUserId">
+                    <!-- Autocomplete dropdown -->
+                    <div id="autoCompleteNames" data-user='{{ $userList }}'
+                        class="absolute left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-w-md hidden">
+                        <ul class="divide-y divide-gray-200"></ul>
+                    </div>
                 </div>
 
-                <div class="form-group" id="customRoleGroup" style="display: none;">
-                    <label for="customRole">Custom Role Name</label>
-                    <input type="text" id="customRole" name="custom_role" placeholder="Specify role">
-                </div>
 
                 <div class="form-group">
-                    <label for="termStart">Term Start Date</label>
-                    <input type="date" id="termStart" name="start_date" required>
-                </div>
+                    <label class="block font-medium mb-2">Role</label>
 
-                <div class="form-group">
-                    <label for="termEnd">Term End Date (optional)</label>
-                    <input type="date" id="termEnd" name="end_date">
+                    <div class="space-y-2">
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="roles[]" value="pastor" class="rounded text-blue-600">
+                            <span>Pastor</span>
+                        </label>
+
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="roles[]" value="deacon" class="rounded text-blue-600">
+                            <span>Deacon</span>
+                        </label>
+
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="roles[]" value="elder" class="rounded text-blue-600">
+                            <span>Elder</span>
+                        </label>
+
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="roles[]" value="treasurer" class="rounded text-blue-600">
+                            <span>Treasurer</span>
+                        </label>
+
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="roles[]" value="secretary" class="rounded text-blue-600">
+                            <span>Secretary</span>
+                        </label>
+
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="roles[]" value="worship" class="rounded text-blue-600">
+                            <span>Worship Leader</span>
+                        </label>
+
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="roles[]" value="youth" class="rounded text-blue-600">
+                            <span>Youth Pastor</span>
+                        </label>
+
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="roles[]" value="other" class="rounded text-blue-600">
+                            <span>Other</span>
+                        </label>
+                    </div>
                 </div>
 
                 <div class="form-actions">

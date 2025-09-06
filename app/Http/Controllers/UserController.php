@@ -53,19 +53,69 @@ class UserController extends Controller
                 'middle_name' => 'required|string|max:255',
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|string|min:8|confirmed',
-                'phone' => 'required|string|max:15',
-                'sex' => 'required|string|in:male,female',
-                'baptism_date' => 'required|date',
-                'document_image' => 'required',
-                'marital_status' => 'required|string',
-                'address' => 'required|string|max:255',
+                'phone' => 'nullable|string|max:15',
+                'address' => 'nullable|string|max:255',
+                'district' => 'required|string|max:255',
+                'locale' => 'required|string|max:255',
+                'purok_grupo' => 'required|string|max:255',
                 'birthdate' => 'required|date',
+                'sex' => 'required|string|in:male,female',
+                'baptism_date' => 'nullable|date',
+                'marital_status' => 'required|string|in:single,married,divorced,separated,widowed,engaged,civil union,domestic partnership,annulled',
+                'document_image' => 'nullable|image|mimes:jpg,jpeg,png,pdf|max:4096',
+            ], [
+                'first_name.required' => 'Please enter your first name.',
+                'first_name.max' => 'First name must not exceed 255 characters.',
+                'last_name.required' => 'Please enter your last name.',
+                'last_name.max' => 'Last name must not exceed 255 characters.',
+                'middle_name.required' => 'Please enter your middle name.',
+                'middle_name.max' => 'Middle name must not exceed 255 characters.',
+                'email.required' => 'Please enter your email address.',
+                'email.email' => 'Please enter a valid email address.',
+                'email.unique' => 'This email address is already registered.',
+                'password.required' => 'Please enter a password.',
+                'password.min' => 'Password must be at least 8 characters long.',
+                'password.confirmed' => 'Password confirmation does not match.',
+                'phone.max' => 'Phone number must not exceed 15 characters.',
+                'address.max' => 'Address must not exceed 255 characters.',
+                'district.required' => 'Please enter your district.',
+                'district.max' => 'District must not exceed 255 characters.',
+                'locale.required' => 'Please enter your locale.',
+                'locale.max' => 'Locale must not exceed 255 characters.',
+                'purok_grupo.required' => 'Please enter your purok/grupo.',
+                'purok_grupo.max' => 'Purok/Grupo must not exceed 255 characters.',
+                'birthdate.required' => 'Please enter your birthdate.',
+                'birthdate.date' => 'Please enter a valid birthdate.',
+                'sex.required' => 'Please select your sex.',
+                'sex.in' => 'Please select a valid sex option.',
+                'baptism_date.date' => 'Please enter a valid baptism date.',
+                'marital_status.required' => 'Please select your marital status.',
+                'marital_status.in' => 'Please select a valid marital status.',
+                'document_image.image' => 'Document must be an image file.',
+                'document_image.mimes' => 'Document must be a JPG, JPEG, PNG, or PDF file.',
+                'document_image.max' => 'Document file size must not exceed 4MB.',
             ]);
 
+            // Handle file upload for document_image
+            if ($request->hasFile('document_image')) {
+                $path = $request->file('document_image')->store('documents', 'public');
+                $validatedData['document_image'] = $path;
+            }
+
             $user = User::create($validatedData);
-            return response()->json($user, 201);
+
+            // Redirect to login with success message
+            return redirect()->route('showLoginForm')->with('success', 'Registration successful! Please log in with your credentials.');
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Return back with validation errors
+            return redirect()->back()->withErrors($e->validator)->withInput();
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 400);
+            // Log the error for debugging
+            \Log::error('Registration failed: ' . $e->getMessage());
+
+            // Return back with general error message
+            return redirect()->back()->with('error', 'Registration failed. Please try again.')->withInput();
         }
     }
 

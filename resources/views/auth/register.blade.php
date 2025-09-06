@@ -4,6 +4,33 @@
 @section("form-action", route('register'))
 
 @section("form-fields")
+    <!-- Display success/error messages -->
+    @if(session('success'))
+        <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-error">
+            <i class="fas fa-exclamation-circle"></i>
+            {{ session('error') }}
+        </div>
+    @endif
+
+    @if($errors->any())
+        <div class="alert alert-error">
+            <i class="fas fa-exclamation-triangle"></i>
+            <strong>Please correct the following errors:</strong>
+            <ul>
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <!-- first name -->
     <x-form.field label="First Name" name="first_name" type="text" placeholder="Enter your first name"
         :error="$errors->first('first_name')" />
@@ -17,12 +44,24 @@
         :error="$errors->first('last_name')" />
 
     <!-- phone -->
-    <x-form.field label="Phone" name="phone" type="text" placeholder="Enter your phone number"
-        :error="$errors->first('phone')" />
+    <x-form.field label="Phone (Optional)" name="phone" type="text" placeholder="Enter your phone number"
+        :error="$errors->first('phone')" :required="false" />
 
     <!-- address -->
-    <x-form.field label="Address" name="address" type="text" placeholder="Enter your address"
-        :error="$errors->first('address')" />
+    <x-form.field label="Address (Optional)" name="address" type="text" placeholder="Enter your address"
+        :error="$errors->first('address')" :required="false" />
+
+    <!-- district -->
+    <x-form.field label="District" name="district" type="text" placeholder="Enter your district"
+        :error="$errors->first('district')" />
+
+    <!-- locale -->
+    <x-form.field label="Locale" name="locale" type="text" placeholder="Enter your locale"
+        :error="$errors->first('locale')" />
+
+    <!-- purok_grupo -->
+    <x-form.field label="Purok/Grupo" name="purok_grupo" type="text" placeholder="Enter your purok/grupo"
+        :error="$errors->first('purok_grupo')" />
 
     <!-- birthdate -->
     <x-form.field label="Birthdate" name="birthdate" type="date" :error="$errors->first('birthdate')" />
@@ -50,11 +89,13 @@
     </x-form.field>
 
     <!-- baptism date -->
-    <x-form.field label="Baptism Date" name="baptism_date" type="date" :error="$errors->first('baptism_date')" />
+    <x-form.field label="Baptism Date (Optional)" name="baptism_date" type="date" :error="$errors->first('baptism_date')"
+        :required="false" />
 
     <!-- Upload your supporting documents(NSO Livebirth etc)-->
-    <x-form.field name="document_image" type="file" accept="image/*" label="Upload supporting documents"
-        aria-placeholder="NSO, Livebirth and PSA etc" :error="$errors->first('document_image')" />
+    <x-form.field name="document_image" type="file" accept="image/*,application/pdf"
+        label="Upload supporting documents (Optional)" aria-placeholder="NSO, Livebirth and PSA etc"
+        :error="$errors->first('document_image')" :required="false" />
 
     <!-- email -->
     <x-form.field label="Email" name="email" type="email" placeholder="you@example.com" :error="$errors->first('email')" />
