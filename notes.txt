@@ -7,6 +7,7 @@ Todo
  - fix the attendance record check in. Problem: latest record should come first
  - make the officers roles dynamic (database based)
  - make the event_type dynamic  (database based)
+ - add functionality to admin/dashboard buttons
 
 FIRST CHECKING
  1. Update User Status (automatic)
@@ -15,8 +16,8 @@ FIRST CHECKING
 4. send notification to absensee for certain number of absent
 5. ask for absentee for user
 6. attendance history, timeline for a user  
-7. dashboard, display active, inactive, partially-active
-8. dashboard, display the number of total, inactive, partially-active, expelled
+7. dashboard, display active, inactive, partially-active 
+8. dashboard, display the number of total, inactive, partially-active, expelled ✅
 9.Create Event, If the event type and type of attendances are should not in the same schedule.
 10. report, printable and list of report (e.g like absentee/present specific for event)
 11. track/ monitor / Logging  the officer activity

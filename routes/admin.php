@@ -9,12 +9,11 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OfficerController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\EngagementController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AttendanceController;
 
 
-Route::get('/admin', function () {
-    return view('admin.dashboard');
-})->name('admin.dashboard');
+Route::get('/admin', [DashboardController::class, 'index'])->name('admin.dashboard');
 
 Route::get('/admin/members', function () {
     return view('admin.members');
