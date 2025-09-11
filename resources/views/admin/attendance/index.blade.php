@@ -69,7 +69,7 @@
                 <select id="service-type" name="event_id"
                     class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-primary focus:border-primary">
                     <option value="">All Services</option>
-                    @foreach ($events as $event)
+                    @foreach ($eventIdName as $event)
                         <option value="{{ $event->id }}">
                             {{ $event->event_name }}
                         </option>

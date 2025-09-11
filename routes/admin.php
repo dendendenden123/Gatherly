@@ -53,6 +53,7 @@ Route::controller(NotificationController::class)->group(function () {
 Route::controller(OfficerController::class)->group(function () {
     Route::get('/admin/officers', 'index')->name('admin.officers');
     Route::post('/admin/officers/store', 'store')->name('admin.officers.store');
+    Route::delete('/admin/officers/destroy/{id}', 'destroy')->name('admin.officers.destroy');
 });
 
 //Events Routes

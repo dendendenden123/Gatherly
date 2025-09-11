@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Role;
-use \App\Models\User;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,9 +18,21 @@ class OfficerFactory extends Factory
      */
     public function definition(): array
     {
+        // Ensure we have a valid role_id
+        $roleId = Role::inRandomOrder()->first()?->id;
+        if (!$roleId) {
+            $roleId = Role::factory()->create()->id;
+        }
+
+        // Ensure we have a valid user_id
+        $userId = User::inRandomOrder()->first()?->id;
+        if (!$userId) {
+            $userId = User::factory()->create()->id;
+        }
+
         return [
-            'user_id' => User::inRandomOrder()->first()->id ?? User::factory(),
-            'role_id' => Role::inRandomOrder()->first()->id ?? Role::factory(),
+            'role_id' => $roleId,
+            'user_id' => $userId,
             'start_date' => $this->faker->date(),
             'end_date' => $this->faker->optional()->date(),
             'custom_role' => $this->faker->optional()->word(),

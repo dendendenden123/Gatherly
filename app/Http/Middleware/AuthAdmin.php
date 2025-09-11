@@ -18,7 +18,7 @@ class AuthAdmin
     public function handle(Request $request, Closure $next): Response
     {
         $user = User::with('officers')->find(auth()->id());
-        if (auth()->check() && !$user->officers->contains('role', 1)) {
+        if (auth()->check() && !$user->officers->contains('role_id', 1)) {
             return redirect()->route('logout');
         }
         return $next($request);

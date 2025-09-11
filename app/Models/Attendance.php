@@ -36,11 +36,8 @@ class Attendance extends Model
 
     public function getFormattedCheckInTimeAttribute()
     {
-        return $this->check_in_time->format('h:i A');
-
-
+        return $this->check_in_time ? $this->check_in_time->format('h:i A') : 'N/A';
     }
-
     public function scopeFilter($query, $filters)
     {
         $from = $filters['start_date'] ?? now()->subCentury();
@@ -127,33 +124,5 @@ class Attendance extends Model
             })
             ->filter()
             ->values();
-    }
-
-    //====================================
-    //===Calculate a user's attendance rate (percentage of present days) for last month
-    //===================================
-    public static function getAttendanceRateLastMonth($user_id)
-    {
-        $presentCount = Attendance::filter([
-            'user_id' => $user_id,
-            'status' => 'present',
-            'start_date' => now()->subMonth()->startOfMonth(),
-            'end_date' => now()->subMonth()->endOfMonth()
-        ])->count();
-
-        $absentCount = Attendance::filter([
-            'user_id' => $user_id,
-            'status' => 'absent',
-            'start_date' => now()->subMonth()->startOfMonth(),
-            'end_date' => now()->subMonth()->endOfMonth()
-        ])->count();
-
-        $total = $presentCount + $absentCount;
-
-        if ($total === 0) {
-            return 0; // Prevent division by zero
-        }
-
-        return intval(($presentCount / $total) * 100);
     }
 }

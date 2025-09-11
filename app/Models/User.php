@@ -68,7 +68,8 @@ class User extends Authenticatable
     {
         static::created(function ($user) {
             Officer::create([
-                'user_id' => $user->id
+                'user_id' => $user->id,
+                'role_id' => 1,
             ]);
         });
     }
@@ -155,7 +156,7 @@ class User extends Authenticatable
             })
             ->when($role, function ($query) use ($role) {
                 $query->whereHas('officers', function ($q) use ($role) {
-                    $q->where('role', $role);
+                    $q->where('role_id', $role);
                 });
             })
             ->when($status, function ($query) use ($status) {

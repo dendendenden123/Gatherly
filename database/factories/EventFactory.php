@@ -37,8 +37,8 @@ class EventFactory extends Factory
                 "monthly",
                 "yearly"
             ]),
-            'start_date' => $this->faker->date(),
-            'end_date' => $this->faker->optional()->date(),
+            'start_date' => $startDate = $this->faker->date(),
+            'end_date' => $this->faker->optional()->dateTimeBetween($startDate, '+7 days')?->format('Y-m-d'),
             'start_time' => $this->faker->time(),
             'end_time' => $this->faker->optional()->time(),
             'location' => $this->faker->address(),

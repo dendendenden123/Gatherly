@@ -69,6 +69,7 @@
                     type: 'GET',
                     data: $('form').serialize(),
                     success: function (data) {
+                        console.log(data.list);
                         $('.' + containerClass).html(data.list);
                     },
                     error: function (xhr, status, error) {

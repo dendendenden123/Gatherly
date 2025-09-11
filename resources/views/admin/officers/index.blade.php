@@ -23,7 +23,7 @@
                     <div class="card-title">Total Officers</div>
                     <i class="fas fa-user-tie"></i>
                 </div>
-                <div class="card-value">24</div>
+                <div class="card-value">{{ $totalOfficers }}</div>
                 <div class="card-footer">5 added this quarter</div>
             </div>
 
@@ -58,128 +58,10 @@
                     <i class="fas fa-plus"></i> Add Officer
                 </button>
             </div>
+            <div class="officer-list">
+                @include('admin.officers.index-officers-list')
+            </div>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Officer</th>
-                        <th>Role</th>
-                        <th>Term Start</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($users as $user)
-                                <tr>
-                                    <td>
-                                        <div class="officer-info">
-                                            <div class="officer-avatar"></div>
-                                            <div>
-                                                <div class="officer-name">{{ $user->full_name }}</div>
-                                                <div class="officer-email">{{ $user->email }}</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td><span class="role-tag">
-                                            {{$user->officers->map(function ($officers) {
-                        return $officers->role_description; })->implode(', ')}}</span>
-                                    </td>
-                                    <td>{{ optional(optional($user->officers->first())->created_at)->format('M d, Y')}}</td>
-                                    <td>
-                                        @if($user->status == 'active')
-                                            <span class="status-active">
-                                                {{ $user->status}}
-                                            </span>
-                                        @elseif($user->status == 'partially-active')
-                                            <span class="status-partial">
-                                                {{ $user->status}}
-                                            </span>
-                                        @else
-                                            <span class="status-inactive">
-                                                {{ $user->status}}
-                                            </span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        <button class="action-btn edit-btn" onclick="openModal()">
-                                            <i class="fas fa-edit"></i> Edit
-                                        </button>
-                                        <button class="action-btn remove-btn">
-                                            <i class="fas fa-user-minus"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                    @endforeach
-
-                    <tr>
-                        <td>
-                            <div class="officer-info">
-                                <div class="officer-avatar"></div>
-                                <div>
-                                    <div class="officer-name">Deacon Michael Brown</div>
-                                    <div class="officer-email">michael@example.com</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td><span class="role-tag">Deacon Board</span></td>
-                        <td>Mar 2021</td>
-                        <td><span class="status-active">Active</span></td>
-                        <td>
-                            <button class="action-btn edit-btn">
-                                <i class="fas fa-edit"></i> Edit
-                            </button>
-                            <button class="action-btn remove-btn">
-                                <i class="fas fa-user-minus"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="officer-info">
-                                <div class="officer-avatar"></div>
-                                <div>
-                                    <div class="officer-name">Sarah Johnson</div>
-                                    <div class="officer-email">sarah@example.com</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td><span class="role-tag">Worship Leader</span></td>
-                        <td>Jun 2022</td>
-                        <td><span class="status-active">Active</span></td>
-                        <td>
-                            <button class="action-btn edit-btn">
-                                <i class="fas fa-edit"></i> Edit
-                            </button>
-                            <button class="action-btn remove-btn">
-                                <i class="fas fa-user-minus"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="officer-info">
-                                <div class="officer-avatar"></div>
-                                <div>
-                                    <div class="officer-name">Robert Wilson</div>
-                                    <div class="officer-email">robert@example.com</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td><span class="role-tag">Treasurer</span></td>
-                        <td>Jan 2020</td>
-                        <td><span class="status-active">Active</span></td>
-                        <td>
-                            <button class="action-btn edit-btn">
-                                <i class="fas fa-edit"></i> Edit
-                            </button>
-                            <button class="action-btn remove-btn">
-                                <i class="fas fa-user-minus"></i>
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
         </div>
     </div>
 
@@ -187,20 +69,38 @@
     <div class="modal" id="addOfficerModal">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="modal-title">Add New Officer</div>
+                <div class="modal-title">Add New Role</div>
                 <button class="close-modal" id="closeAddOfficerModalBtn">&times;</button>
             </div>
 
             <form id="officerForm" method="POST" action="{{ route('admin.officers.store') }}">
                 @csrf
+                @if (session('success'))
+                    <script>
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: '{{ session('success') }}',
+                            confirmButtonColor: '#3085d6',
+                        });
+                    </script>
+                @elseif(session('error'))
+                    <script>
+                        Swal.fire({
+                            icon: 'Error',
+                            title: 'Failed!',
+                            text: '{{ session('error') }}',
+                            confirmButtonColor: '#d63030ff',
+                        });
+                    </script>
+                @endif
                 <div class="form-group relative max-w-md">
                     <label for="officerName" class="block font-medium">Search name or id</label>
-                    <input type="text" id="officerName" name="full_name" value="" placeholder="Enter officer's full name"
-                        required
+                    <input type="text" id="officerName" value="" placeholder="Enter officer's full name" required
                         class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <input type="hidden" name="user_id" id="selectedUserId">
                     <!-- Autocomplete dropdown -->
-                    <div id="autoCompleteNames" data-user='{{ $userList }}'
+                    <div id="autoCompleteNames" data-user='{{ $formattedUser }}'
                         class="absolute left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-w-md hidden">
                         <ul class="divide-y divide-gray-200"></ul>
                     </div>
@@ -209,47 +109,14 @@
 
                 <div class="form-group">
                     <label class="block font-medium mb-2">Role</label>
-
-                    <div class="space-y-2">
-                        <label class="flex items-center space-x-2">
-                            <input type="checkbox" name="roles[]" value="pastor" class="rounded text-blue-600">
-                            <span>Pastor</span>
-                        </label>
-
-                        <label class="flex items-center space-x-2">
-                            <input type="checkbox" name="roles[]" value="deacon" class="rounded text-blue-600">
-                            <span>Deacon</span>
-                        </label>
-
-                        <label class="flex items-center space-x-2">
-                            <input type="checkbox" name="roles[]" value="elder" class="rounded text-blue-600">
-                            <span>Elder</span>
-                        </label>
-
-                        <label class="flex items-center space-x-2">
-                            <input type="checkbox" name="roles[]" value="treasurer" class="rounded text-blue-600">
-                            <span>Treasurer</span>
-                        </label>
-
-                        <label class="flex items-center space-x-2">
-                            <input type="checkbox" name="roles[]" value="secretary" class="rounded text-blue-600">
-                            <span>Secretary</span>
-                        </label>
-
-                        <label class="flex items-center space-x-2">
-                            <input type="checkbox" name="roles[]" value="worship" class="rounded text-blue-600">
-                            <span>Worship Leader</span>
-                        </label>
-
-                        <label class="flex items-center space-x-2">
-                            <input type="checkbox" name="roles[]" value="youth" class="rounded text-blue-600">
-                            <span>Youth Pastor</span>
-                        </label>
-
-                        <label class="flex items-center space-x-2">
-                            <input type="checkbox" name="roles[]" value="other" class="rounded text-blue-600">
-                            <span>Other</span>
-                        </label>
+                    <div class="role-list space-y-2">
+                        @foreach ($roles as $role)
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" name="roles[]" value="{{ $role->id }}" id="role_{{ $role->id }}"
+                                    class="role-checkbox rounded text-blue-600">
+                                <span>{{$role->name}}</span>
+                            </label>
+                        @endforeach
                     </div>
                 </div>
 

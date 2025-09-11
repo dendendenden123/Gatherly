@@ -14,8 +14,8 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('event_occurrence_id')->constrained('event_occurrences')->onDelete('cascade')->onUpdate('cascade');
-            $table->date("service_date");
-            $table->time("check_in_time")->nullable();
+            $table->date("service_date")->default(now());
+            $table->time("check_in_time")->default(now());
             $table->time("check_out_time")->nullable();
             $table->string("district")->nullable();
             $table->string("locale")->nullable();

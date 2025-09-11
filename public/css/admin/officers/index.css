@@ -256,6 +256,43 @@ td {
     color: var(--primary-green);
 }
 
+/* Roles checklist layout: 5 rows per column */
+.role-list {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-rows: repeat(5, auto);
+    column-gap: 16px;
+    row-gap: 8px;
+    align-items: start;
+}
+
+.role-list > label {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.role-list input[type="checkbox"],
+.role-list .role-checkbox {
+    margin: 0;
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+}
+
+.role-list span {
+    line-height: 1.2;
+}
+
+@media (max-width: 640px) {
+    .role-list {
+        grid-auto-flow: row;
+        grid-template-rows: none;
+        grid-template-columns: 1fr;
+    }
+}
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
     .main-container {

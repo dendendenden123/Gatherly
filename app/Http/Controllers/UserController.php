@@ -22,7 +22,7 @@ class UserController extends Controller
 
         $totalMembersCount = User::query()->count();
         $volunteersMemberCount = User::whereHas('officers', function ($query) {
-            $query->whereNot('role', '0');
+            $query->whereNot('role_id', '0');
         })->count();
 
         if ($request->ajax()) {
@@ -228,6 +228,7 @@ class UserController extends Controller
     //===========================================
     public function login(Request $request)
     {
+
         $credentials = $request->only('email', 'password');
         if (!auth()->attempt($credentials)) {
             return redirect()->back()->with('error', 'Invalid Credentials');
@@ -235,7 +236,7 @@ class UserController extends Controller
 
         $getUserid = auth()->id();
         $user = User::with('officers')->findOrFail($getUserid);
-        if ($user->officers->contains('role', 1)) {
+        if ($user->officers->contains('role_id', '1')) {
             return redirect()->route('admin.dashboard');
         }
         return redirect()->route('member.dashboard');

@@ -15,7 +15,7 @@ return new class extends Migration {
         Schema::create('officers', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignIdFor(Role::class)->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignIdFor(Role::class, 'role_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->string('custom_role')->nullable();
