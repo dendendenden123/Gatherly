@@ -187,6 +187,29 @@ class UserController extends Controller
     }
 
     //===========================================
+    //===Quickly update user's status via AJAX
+    //===========================================
+    public function updateStatus(Request $request, $id)
+    {
+        try {
+            $validated = $request->validate([
+                'status' => 'required|in:active,inactive,partially-active,expelled',
+            ]);
+
+            $user = User::findOrFail($id);
+            $user->status = $validated['status'];
+            $user->save();
+
+            return response()->json(['success' => true]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['success' => false, 'errors' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            \Log::error('Quick status update failed: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Failed to update status'], 500);
+        }
+    }
+
+    //===========================================
     //===Delete the specified user and redirect back to members list.
     //===========================================
     public function destroy($userId)

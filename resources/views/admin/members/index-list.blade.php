@@ -26,6 +26,7 @@
                 <th>Locale</th>
                 <th>Martital Status</th>
                 <th>Address</th>
+                <th>Update status</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -47,6 +48,15 @@
                     <td>{{ $user->locale}}</td>
                     <td>{{ $user->marital_status }}</td>
                     <td>{{ $user->address }}</td>
+                    <td>
+                        <select class="member-status-select" data-user-id="{{ $user->id }}">
+                            <option value="active" {{ $user->status === 'active' ? 'selected' : '' }}>Active</option>
+                            <option value="inactive" {{ $user->status === 'inactive' ? 'selected' : '' }}>Inactive</option>
+                            <option value="partially-active" {{ $user->status === 'partially-active' ? 'selected' : '' }}>
+                                Partially-Active</option>
+                            <option value="expelled" {{ $user->status === 'expelled' ? 'selected' : '' }}>Expelled</option>
+                        </select>
+                    </td>
                     <td>
                         <a href="{{ route('admin.members.edit', $user->id) }}">
                             <button class="action-btn edit-btn">

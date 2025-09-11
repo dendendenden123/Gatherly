@@ -8,6 +8,9 @@ $(document).ready(() => {
         fetchFilteredList();
     });
     $(".delete-btn").on("click", (e) => confirmDeleteEvent(e));
+    $(document).on("change", ".member-status-select", function () {
+        quickUpdateStatus(this);
+    });
 
     //FUNCTIONS
     //============================================
@@ -56,6 +59,34 @@ $(document).ready(() => {
             if (result.isConfirmed) {
                 form.submit();
             }
+        });
+    }
+
+    //==================================================
+    //====Quickly update member status via AJAX
+    //=================================================
+    function quickUpdateStatus(selectEl) {
+        const userId = $(selectEl).data("user-id");
+        const status = $(selectEl).val();
+
+        $.ajax({
+            url: `/admin/members/${userId}/status`,
+            type: "PUT",
+            data: {
+                _token: $("meta[name='csrf-token']").attr("content"),
+                status: status,
+            },
+            success: function () {
+                // no-op: optimistic UI
+            },
+            error: function (xhr) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Update failed",
+                    text:
+                        xhr.responseJSON?.message || "Could not update status.",
+                });
+            },
         });
     }
 });
