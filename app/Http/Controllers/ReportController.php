@@ -6,6 +6,7 @@ use App\Models\Attendance;
 use App\Models\Event;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
 
 class ReportController extends Controller
 {
@@ -44,6 +45,63 @@ class ReportController extends Controller
                 return response()->json(['error' => 'An error occurred while generating the report.'], 500);
             }
             return redirect()->back()->with('error', 'An error occurred while generating the report.');
+        }
+    }
+
+    //==================================================
+    //=== Attendance list (AJAX HTML fragment)
+    //==================================================
+    public function attendanceList(Request $request)
+    {
+        try {
+            $filters = [
+                'start_date' => $request->get('start_date'),
+                'end_date' => $request->get('end_date'),
+                'event_id' => $request->get('event_id'),
+                'status' => $request->get('attendance_status'), // present | absent | null
+            ];
+
+            $attendances = Attendance::filter($filters)
+                ->orderByDesc('updated_at')
+                ->limit(500)
+                ->get();
+
+            $html = view('admin.reports.partials.attendance-list', [
+                'attendances' => $attendances,
+            ])->render();
+
+            return response()->json(['html' => $html]);
+        } catch (\Exception $e) {
+            logger()->error('Error in ReportController@attendanceList: ' . $e->getMessage(), ['exception' => $e]);
+            return response()->json(['error' => 'Failed to load attendance list'], 500);
+        }
+    }
+
+    //==================================================
+    //=== Print-friendly attendance list (for browser PDF export)
+    //==================================================
+    public function attendancePrint(Request $request)
+    {
+        try {
+            $filters = [
+                'start_date' => $request->get('start_date'),
+                'end_date' => $request->get('end_date'),
+                'event_id' => $request->get('event_id'),
+                'status' => $request->get('attendance_status'),
+            ];
+
+            $attendances = Attendance::filter($filters)
+                ->orderByDesc('updated_at')
+                ->limit(2000)
+                ->get();
+
+            return view('admin.reports.attendance-print', [
+                'attendances' => $attendances,
+                'filters' => $filters,
+            ]);
+        } catch (\Exception $e) {
+            logger()->error('Error in ReportController@attendancePrint: ' . $e->getMessage(), ['exception' => $e]);
+            return back()->with('error', 'Failed to generate printable report');
         }
     }
 

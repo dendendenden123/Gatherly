@@ -56,15 +56,28 @@
                     @endforeach
                 </select>
             </div>
+
+            <!-- Attendance Status Filter -->
+            <div class=" rounded-lg   max-w-48">
+                <label for="attendance_status" class="block text-sm font-medium text-gray-700 mb-1">Type of
+                    User</label>
+                <select id="attendance_status" name="attendance_status"
+                    class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-primary focus:border-primary">
+                    <option value="">All</option>
+                    <option value="present">Present</option>
+                    <option value="absent">Absent</option>
+                </select>
+            </div>
         </div>
 
-        <div class="report-actions">
-            <button class="btn btn-outline">
+        <div class="report-actions flex items-center gap-3">
+            <button type="button" class="btn btn-outline" id="applyFiltersBtn">
                 <i class="fas fa-filter"></i> Filter
             </button>
-            <button class="btn btn-primary" id="generateReportBtn">
-                <i class="fas fa-file-export"></i> Export
-            </button>
+            <a class="btn btn-primary" id="exportAttendanceBtn" href="{{ route('admin.reports.attendance.print') }}"
+                data-base="{{ route('admin.reports.attendance.print') }}">
+                <i class="fas fa-file-export"></i> Export PDF
+            </a>
         </div>
     </form>
 </div>
@@ -75,5 +88,23 @@
 <div class="chart-container">
     @include('admin.reports.index-chart')
 </div>
-@vite('resources/js/admin-reports-index.js')
+
+<div class="mt-8">
+    <h2 class="text-lg font-semibold text-gray-800 mb-3">Attendance List</h2>
+    <div id="attendanceListContainer" class="bg-white rounded-lg border border-gray-200"
+        data-url="{{ route('admin.reports.attendance.list') }}">
+        <div class="p-6 text-gray-500 text-sm">Use the filters to load attendance list.</div>
+    </div>
+    <div class="mt-2 text-xs text-gray-500">Max 500 rows shown.</div>
+    <template id="attendanceListEmptyTemplate">
+        <div class="p-6 text-gray-500 text-sm">No records found for selected filters.</div>
+    </template>
+    <template id="attendanceListErrorTemplate">
+        <div class="p-6 text-red-600 text-sm">Failed to load attendance list.</div>
+    </template>
+    <template id="attendanceListLoadingTemplate">
+        <div class="p-6 text-gray-500 text-sm">Loading...</div>
+    </template>
+</div>
+@vite(['resources/js/admin-reports-index.js', 'resources/js/admin-reports-list.js'])
 @endSection

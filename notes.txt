@@ -5,13 +5,13 @@ Todo
  - make the system responsive to mobile view
  - add field for officers in edit and register form
  - fix the attendance record check in. Problem: latest record should come first
- - make the officers roles dynamic (database based)
+ - make the officers roles dynamic (database based) ✅
  - make the event_type dynamic  (database based)
  - add functionality to admin/dashboard buttons
 
 FIRST CHECKING
  1. Update User Status (automatic)
-2. Editable for User( address, local, marital status) 
+2. Editable for User( address, local, marital status) ✅
 3. Button for active, inactive, partial-active (also in attendance)
 4. send notification to absensee for certain number of absent
 5. ask for absentee for user
