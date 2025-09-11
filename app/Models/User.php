@@ -69,7 +69,7 @@ class User extends Authenticatable
         static::created(function ($user) {
             Officer::create([
                 'user_id' => $user->id,
-                'role_id' => 1,
+                'role_id' => 100,
             ]);
         });
     }

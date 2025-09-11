@@ -3,6 +3,8 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\EventOccurrence;
+use App\Models\User;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Attendance>
@@ -17,14 +19,14 @@ class AttendanceFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => $this->faker->numberBetween(67, 75),
-            "event_occurrence_id" => $this->faker->randomElement(\App\Models\EventOccurrence::pluck('id')->toArray()),
+            'user_id' => $this->faker->randomElement(User::pluck('id')->toArray()),
+            "event_occurrence_id" => $this->faker->randomElement(EventOccurrence::pluck('id')->toArray()),
             'service_date' => $this->faker->dateTimeBetween('2025-01-01', '2025-12-30')->format('Y-m-d'),
             'check_in_time' => $this->faker->time(),
             'check_out_time' => $this->faker->optional()->time(),
             'attendance_method' => $this->faker->randomElement(['in-person', 'online', 'fingerprint', 'mobile']),
             'biometric_data_id' => $this->faker->optional()->uuid(),
-            'recorded_by' => $this->faker->optional()->randomElement(\App\Models\User::pluck('id')->toArray()),
+            'recorded_by' => $this->faker->optional()->randomElement(User::pluck('id')->toArray()),
             // 'status' => $this->faker->randomElement(['present', 'absent']),
             'status' => 'present',
             'notes' => $this->faker->optional()->sentence(),

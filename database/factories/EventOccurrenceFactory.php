@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\Event;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\EventOccurrence>
@@ -17,7 +18,7 @@ class EventOccurrenceFactory extends Factory
     public function definition(): array
     {
         return [
-            'event_id' => $this->faker->randomElement(\App\Models\Event::pluck('id')->toArray()),
+            'event_id' => $this->faker->randomElement(Event::pluck('id')->toArray()),
             'occurrence_date' => $this->faker->date(),
             'start_time' => $this->faker->optional()->Time(),
             'end_time' => $this->faker->optional()->Time(),
