@@ -73,7 +73,7 @@ class AttendanceController extends Controller
     {
         try {
             $validated = $request->validated();
-            if ($request['status'] == 'eventDone') {
+            if ($request->input('status') == 'eventDone') {
                 $this->attendanceService->storeMultipleAbsentRecord($request['event_occurrence_id']);
                 return response()->json(['message' => 'All members has record']);
             }
@@ -88,6 +88,7 @@ class AttendanceController extends Controller
             if (method_exists($attendance, 'withPath')) {
                 $attendance->withPath(route('admin.attendance.checkIn'));
             }
+
             if ($request->ajax()) {
                 $attendancesListView = view("admin.attendance.check-in-recent-attendance-list", compact('attendance'))->render();
                 return response()->json([
