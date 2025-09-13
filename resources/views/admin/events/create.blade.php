@@ -207,7 +207,7 @@
                             </div>
                             <button
                                 class="closeModal absolute top-2 right-2 text-gray-500 hover:text-black text-xl">&times;</button>
-                            <button class="closeModal mt-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                            <button class="confirmModal mt-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
                                 Confirm
                             </button>
                         </div>

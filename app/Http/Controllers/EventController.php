@@ -62,7 +62,7 @@ class EventController extends Controller
 
     public function store(EventStoreRequest $request)
     {
-        logger('code reached here');
+        logger('code reached here', ['request' => $request]);
         try {
             $validated = $request->validated();
             Event::create($validated);

@@ -5,9 +5,19 @@ $(document).ready(() => {
 
     //===EVENT LISTENER===
     showCalendarEvent();
-    $("#isRecurring").on("change", toggleRecurringOption);
-    $(".closeModal").on("click", hideTimeModal);
-    $(".closeViewEventModal").on("click", closeViewEventModal);
+    $("#isRecurring").on("change", () => toggleRecurringOption());
+    $(".closeModal").on("click", (e) => hideTimeModal(e));
+    $(".confirmModal").on("click", (e) => {
+        e.preventDefault();
+        hideTimeModal();
+    });
+    $(".closeViewEventModal").on("click", () => closeViewEventModal());
+
+    $("#eventForm").on("submit", (e) => {
+        e.preventDefault();
+        console.log("Form submitted");
+        $("#eventForm").submit();
+    });
 
     //===FUNCTIONS===
     function closeViewEventModal() {
@@ -15,11 +25,14 @@ $(document).ready(() => {
     }
 
     function showTimeModal() {
+        console.log("Showing time modal");
         timeModal.removeClass("hidden");
     }
 
     function hideTimeModal(e) {
-        e.preventDefault();
+        if (e) {
+            e.preventDefault();
+        }
         timeModal.addClass("hidden");
     }
 
@@ -34,6 +47,12 @@ $(document).ready(() => {
 
     function showCalendarEvent() {
         var calendarEl = document.getElementById("calendar");
+
+        if (!calendarEl) {
+            console.error("Calendar element not found");
+            return;
+        }
+
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: "dayGridMonth",
             selectable: true,
@@ -43,6 +62,7 @@ $(document).ready(() => {
                 $("#viewEvent").removeClass("hidden");
             },
             select: function (info) {
+                console.log("Date selected:", info.startStr, "to", info.endStr);
                 //set the value for start and end Date
                 $("#startDate").val(info.startStr);
                 $("#endDate").val(info.endStr);
@@ -54,6 +74,11 @@ $(document).ready(() => {
     }
 
     function getEvent() {
+        if (!eventData || !Array.isArray(eventData)) {
+            console.warn("No event data available");
+            return [];
+        }
+
         return eventData.flatMap((item) =>
             item.event_occurrences.map((occurrence) => ({
                 title: item.event_name,
@@ -91,25 +116,25 @@ $(document).ready(() => {
         $("#viewEventEndDate").html(event.extendedProps.eventEndDate);
         $("#viewEventRepeat").html(event.extendedProps.eventRepeat);
     }
-});
 
-function dateFormatter(rawDate) {
-    return new Date(rawDate).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-    });
-}
-
-function formatTo12Hour(timeStr) {
-    if (!timeStr) {
-        return "No specified time";
+    function dateFormatter(rawDate) {
+        return new Date(rawDate).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+        });
     }
 
-    const [hour, minute, second] = timeStr.split(":");
-    const h = parseInt(hour, 10);
-    const suffix = h >= 12 ? "PM" : "AM";
-    const hour12 = h % 12 === 0 ? 12 : h % 12;
+    function formatTo12Hour(timeStr) {
+        if (!timeStr) {
+            return "No specified time";
+        }
 
-    return `${hour12}:${minute.padStart(2, "0")} ${suffix}`;
-}
+        const [hour, minute, second] = timeStr.split(":");
+        const h = parseInt(hour, 10);
+        const suffix = h >= 12 ? "PM" : "AM";
+        const hour12 = h % 12 === 0 ? 12 : h % 12;
+
+        return `${hour12}:${minute.padStart(2, "0")} ${suffix}`;
+    }
+});

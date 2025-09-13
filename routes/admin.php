@@ -64,7 +64,7 @@ Route::controller(OfficerController::class)->group(function () {
 Route::controller(EventController::class)->group(function () {
     Route::get('/admin/events', 'index')->name('admin.events.index');
     Route::get('/admin/events/create', 'create')->name('admin.events.create');
-    Route::post('admin/events/store', 'store')->name('admin.events.store');
+    Route::post('/admin/events/store', 'store')->name('admin.events.store');
     Route::delete('/admin/events/bulkDestroy', 'bulkDestroy')->name('admin.events.bulkDestroy');
     Route::delete('/admin/events/destroy/{id}', 'destroy')->name('admin.events.destroy');
     Route::get('/admin/events/show/{id}', 'show')->name('admin.events.show');
