@@ -19,6 +19,6 @@ FIRST CHECKING
 7. dashboard, display active, inactive, partially-active 
 8. dashboard, display the number of total, inactive, partially-active, expelled ✅
 9.Create Event, If the event type and type of attendances are should not in the same schedule.
-10. report, printable and list of report (e.g like absentee/present specific for event)
+10. report, printable and list of report (e.g like absentee/present specific for event) ✅
 11. track/ monitor / Logging  the officer activity
 

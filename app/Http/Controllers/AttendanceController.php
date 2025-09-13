@@ -71,20 +71,21 @@ class AttendanceController extends Controller
 
     public function store(StoreAttendanceRequest $request)
     {
+        logger('store method reached');
         try {
             $validated = $request->validated();
+            $isUserAlreadyRecorded = $this->attendanceService->isUserAlreadyRecorded($validated['user_id'], $validated['event_occurrence_id']);
+
             if ($request->input('status') == 'eventDone') {
                 $this->attendanceService->storeMultipleAbsentRecord($request['event_occurrence_id']);
                 return response()->json(['message' => 'All members has record']);
             }
-            $isUserAlreadyRecorded = $this->attendanceService->isUserAlreadyRecorded($validated['user_id'], $validated['event_occurrence_id']);
             if ($isUserAlreadyRecorded) {
                 return response()->json(['error' => 'User already has record for this event']);
             }
 
             Attendance::create($validated);
             $attendance = $this->attendanceService->getAllAttendancePaginated();
-            // Ensure paginator links point to the check-in route when rendering from POST context
             if (method_exists($attendance, 'withPath')) {
                 $attendance->withPath(route('admin.attendance.checkIn'));
             }
@@ -106,17 +107,15 @@ class AttendanceController extends Controller
     public function checkIn(Request $request)
     {
         try {
+            $todaysScheduleEvent = $this->eventService->getTodaysScheduledEvents();
+            $attendance = $this->attendanceService->getAllAttendancePaginated();
             $locale = $request['local'];
             $autoCorrectNames = User::filter([
                 'memberName' => $request['member-search'],
                 'locale' => $request['locale']
             ])->get();
-            $todaysScheduleEvent = $this->eventService->getTodaysScheduledEvents();
-            $attendance = $this->attendanceService->getAllAttendancePaginated();
 
-            logger('check ajan went here');
             if ($request->ajax()) {
-                logger('ajax', ['df' => $attendance]);
 
                 $recentAttendance = view('admin.attendance.check-in-recent-attendance-list', compact('todaysScheduleEvent', 'attendance'))->render();
                 return response()->json([
@@ -124,10 +123,8 @@ class AttendanceController extends Controller
                     'list' => $recentAttendance,
                 ]);
             }
-            logger('refresh', ['df' => $attendance]);
 
             return view('admin.attendance.check-in', compact('todaysScheduleEvent', 'attendance'));
-
         } catch (\Exception $e) {
             \Log::error($e);
             return response()->json(['error' => 'something went wrong']);

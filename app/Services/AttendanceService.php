@@ -11,7 +11,7 @@ class AttendanceService
 
     public function getAllAttendancePaginated()
     {
-        return Attendance::with(['user', 'event_occurrence'])->orderByDesc('updated_at')->paginate(5);
+        return Attendance::with(['user', 'event_occurrence'])->orderByDesc('id')->paginate(5);
     }
 
     public function getFilteredAttendancesPaginated($request, $userId = null)
