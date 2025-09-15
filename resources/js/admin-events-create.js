@@ -13,12 +13,6 @@ $(document).ready(() => {
     });
     $(".closeViewEventModal").on("click", () => closeViewEventModal());
 
-    $("#eventForm").on("submit", (e) => {
-        e.preventDefault();
-        console.log("Form submitted");
-        $("#eventForm").submit();
-    });
-
     //===FUNCTIONS===
     function closeViewEventModal() {
         $("#viewEvent").addClass("hidden");

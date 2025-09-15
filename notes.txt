@@ -8,6 +8,7 @@ Todo
  - make the officers roles dynamic (database based) ✅
  - make the event_type dynamic  (database based)
  - add functionality to admin/dashboard buttons
+ - ass event type in event view in creating event
 
 FIRST CHECKING
  1. Update User Status (automatic)

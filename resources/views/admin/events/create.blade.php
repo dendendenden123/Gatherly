@@ -51,12 +51,13 @@
                             confirmButtonColor: '#3085d6',
                         });
                     </script>
-                @elseif(session('error'))
+                @endif
+                @if ($errors->any())
                     <script>
                         Swal.fire({
-                            icon: 'Error',
+                            icon: 'Failed',
                             title: 'Failed!',
-                            text: '{{ session('error') }}',
+                            text: '{{ $errors->first() }}',
                             confirmButtonColor: '#d63030ff',
                         });
                     </script>

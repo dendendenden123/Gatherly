@@ -14,6 +14,10 @@ class EventOccurrence extends Model
     protected $guarded = [];
     public $table = 'event_occurrences';
 
+    protected $casts = [
+        'occurrence_date' => 'date',
+    ];
+
     public function event()
     {
         return $this->belongsTo(Event::class);

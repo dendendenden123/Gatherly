@@ -62,14 +62,26 @@ class EventController extends Controller
 
     public function store(EventStoreRequest $request)
     {
-        logger('code reached here', ['request' => $request]);
         try {
+            $overlapEventCounts = $this->eventService->eventAndUserTypeOverlap($request)->count();
+            $overlappingEventNames = $this->eventService->eventAndUserTypeOverlap($request)->map(function ($eventOccurrence) {
+                return $eventOccurrence->event?->event_name;
+            })->join(', ');
+
+            if ($overlapEventCounts > 0) {
+
+                return back()->withErrors(
+                    'Failed! Your event overlaps with these existing events: '
+                    . $overlappingEventNames
+                );
+            }
+
             $validated = $request->validated();
             Event::create($validated);
             return redirect()->back()->with(['success' => 'Event created successfully']);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             \Log::error('Failed to create event. ', [$e]);
-            return redirect()->back()->with(['error' => 'Failed to create event: ' . $e->getMessage()]);
+            return back()->withErrors('Failed to create event: ' . $e->getMessage());
         }
     }
 
@@ -85,7 +97,7 @@ class EventController extends Controller
             $validated = $request->validated();
             Event::findOrFail($id)->update($validated);
             return redirect()->back()->with(['success' => 'Event updated successfully']);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             \Log::error('Failed to Update event. ', [$e]);
             return redirect()->back()->withInput()->with(['error' => 'Failed to update event: ' . $e->getMessage()]);
         }
@@ -106,7 +118,7 @@ class EventController extends Controller
         try {
             Event::whereIn('id', $validated['ids'])->delete();
             return response()->json(['success' => "Event deleted succesfully"]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             \Log::error('Failed to delete events:', [$e]);
             return response()->json(['error' => "Failed to delete events"]);
 

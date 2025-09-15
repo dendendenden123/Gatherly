@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\DB;
+use \Carbon\Carbon;
 use App\Models\Event;
 use App\Models\EventOccurrence;
 class EventService
@@ -16,10 +18,6 @@ class EventService
         return $this->getAllEvents()->select('id', 'event_name')->get();
     }
 
-
-    //====================================
-    //===Fetch all events scheduled for today that haven't been marked as attended yet
-    //===================================
     public function getTodaysScheduledEvents()
     {
         return EventOccurrence::with('event')
@@ -28,4 +26,30 @@ class EventService
             ->get();
     }
 
+    public function eventAndUserTypeOverlap($request)
+    {
+        $upcomingEvents = EventOccurrence::with('event')->where(function ($q) {
+            $q->where('occurrence_date', '>', today())
+                ->orWhere(function ($q2) {
+                    $q2->whereDate('occurrence_date', today())
+                        ->whereTime('start_time', '>=', now());
+                });
+        })->where(function ($upcomingEvents) use ($request) {
+            $upcomingEvents->whereHas('event', function ($event) use ($request) {
+                $event->where('event_type', $request->event_type);
+            })->whereBetween('occurrence_date', [$request->start_date, $request->end_date])
+                ->where(function ($checkTime) use ($request) {
+                    $request->end_time = $request->end_time ?? Carbon::parse($request->start_time)->addHour();
+
+                    $checkTime->whereBetween('start_time', [$request->start_time, $request->end_time])
+                        ->orWhereBetween(
+                            DB::raw("COALESCE(end_time, DATE_ADD(start_time, INTERVAL 1 HOUR))"),
+                            [$request->start_time, $request->end_time]
+                        );
+                });
+
+        })->get();
+
+        return $upcomingEvents;
+    }
 }
