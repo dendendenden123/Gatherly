@@ -159,7 +159,7 @@
                 <!-- Date & Time -->
                 <div class="px-6 py-5 space-y-6">
                     <h3 class="text-lg font-medium leading-6 text-gray-900">Date & Time</h3>
-                    <div id='calendar' data-events="{{$existingEvents}}"></div>
+                    <div id='calendar' data-events="{{ json_encode($existingEvents) }}"></div>
 
                     <!-- Modal (hidden by default) -->
                     <div id="myModal"

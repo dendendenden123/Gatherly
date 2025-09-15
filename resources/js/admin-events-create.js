@@ -74,25 +74,34 @@ $(document).ready(() => {
         }
 
         return eventData.flatMap((item) =>
-            item.event_occurrences.map((occurrence) => ({
-                title: item.event_name,
-                start: occurrence.occurrence_date,
-                end: occurrence.occurrence_date,
-                eventDescription: item.event_description,
-                eventType: item.event_type,
-                eventLocation: item.location ?? "No specified location",
-                eventStartDate: dateFormatter(item.start_date),
-                eventEndDate:
-                    item.repeat != "once"
-                        ? dateFormatter(item.end_date)
-                        : dateFormatter(item.start_date),
-                eventStartTime: formatTo12Hour(item.start_time),
-                // eventStartTime: item.start_time,
-                eventEndTime: formatTo12Hour(item.end_time),
-                eventRepeat: item.repeat,
-                eventStatus: item.status,
-                ...occurrence,
-            }))
+            item.event_occurrences.map((occurrence) => {
+                // Create a clean occurrence object without time properties that might confuse FullCalendar
+                const { start_time, end_time, ...cleanOccurrence } = occurrence;
+                return {
+                    title: item.event_name,
+                    start:
+                        occurrence.occurrence_date.split("T")[0] +
+                        "T" +
+                        start_time,
+                    end:
+                        occurrence.occurrence_date.split("T")[0] +
+                        "T" +
+                        end_time,
+                    eventDescription: item.event_description,
+                    eventType: item.event_type,
+                    eventLocation: item.location ?? "No specified location",
+                    eventStartDate: dateFormatter(item.start_date),
+                    eventEndDate:
+                        item.repeat != "once"
+                            ? dateFormatter(item.end_date)
+                            : dateFormatter(item.start_date),
+                    eventStartTime: formatTo12Hour(item.start_time),
+                    eventEndTime: formatTo12Hour(item.end_time),
+                    eventRepeat: item.repeat,
+                    eventStatus: item.status,
+                    ...cleanOccurrence,
+                };
+            })
         );
     }
 
@@ -124,10 +133,11 @@ $(document).ready(() => {
             return "No specified time";
         }
 
-        const [hour, minute, second] = timeStr.split(":");
-        const h = parseInt(hour, 10);
-        const suffix = h >= 12 ? "PM" : "AM";
-        const hour12 = h % 12 === 0 ? 12 : h % 12;
+        const timeParts = timeStr.split(":");
+        const hour = parseInt(timeParts[0], 10);
+        const minute = timeParts[1] || "00"; // Default to "00" if minute is undefined
+        const suffix = hour >= 12 ? "PM" : "AM";
+        const hour12 = hour % 12 === 0 ? 12 : hour % 12;
 
         return `${hour12}:${minute.padStart(2, "0")} ${suffix}`;
     }
