@@ -71,8 +71,3 @@ Route::controller(EventController::class)->group(function () {
     Route::get('admin/events/edit/{id}', 'edit')->name('admin.events.edit');
     Route::put('admin/events/update/{id}', 'update')->name('admin.events.update');
 });
-
-//Engagements Routes
-Route::controller(EngagementController::class)->group(function () {
-    Route::get('/admin/engagements', 'index')->name('admin.engagements.index');
-});

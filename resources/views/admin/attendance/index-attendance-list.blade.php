@@ -9,8 +9,6 @@
             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Event</th>
             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Last month attendance %</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Status</th>
             <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Actions</th>
@@ -56,18 +54,6 @@
                 </div>
                 <div class="text-sm text-gray-500">
                     {{ $record->event_occurrence->event->event_name ? $record->event_occurrence->event->event_name : 'No record'}}
-                </div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-                <div class="flex items-center">
-                    <div class="w-16 mr-2">
-                        <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-primary h-2 rounded-full"
-                                style="width: {{ $record->user->getLastMonthAttendanceRate() }}%">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="text-sm">{{ $record->user->getLastMonthAttendanceRate() }}%</div>
                 </div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">

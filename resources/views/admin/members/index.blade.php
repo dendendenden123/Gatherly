@@ -14,6 +14,7 @@
 
 @section('content')
 
+
     <!-- Filters -->
     <form id="filterForm" action="{{ route('admin.members') }}" class="members-filters">
         <div class="filter-group">
@@ -59,9 +60,9 @@
             <input name="memberName" id="member-search" type="text" placeholder="Search members...">
         </div>
     </form>
-    <div class="index-list">
+    <div class="index-list ">
         @include('admin.members.index-list')
-    </div>
+    </div>]
 
     @vite('resources/js/admin-members-index.js');
 @endsection

@@ -89,30 +89,6 @@ class User extends Authenticatable
     }
 
     //====================================
-    //=== Get the attendance rate for the last month
-    //====================================
-    public function getLastMonthAttendanceRate(): float
-    {
-        $startOfLastMonth = Carbon::now()->subMonth()->startOfMonth();
-        $endOfLastMonth = Carbon::now()->subMonth()->endOfMonth();
-        //Get the total number of worship service last month
-        $monthlyWorshipSericeCount = $this->getDaysCount($startOfLastMonth, $endOfLastMonth);
-
-        $attendedService = $this->attendances()
-            ->where("status", "present")
-            ->whereBetween('service_date', [$startOfLastMonth, $endOfLastMonth])
-            ->whereHas('event_occurrence.event', function ($query) {
-                $query->whereIn("event_type", [
-                    "Weekend worship service",
-                    "weekdays worship service"
-                ]);
-            })
-            ->count();
-
-        return intval(($attendedService / $monthlyWorshipSericeCount) * 100);
-    }
-
-    //====================================
     //=== Count the total number of Sundays and Thursdays within the specified date range
     //====================================
     private function getDaysCount($start, $end)

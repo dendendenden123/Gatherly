@@ -126,12 +126,6 @@
                     <span>Events</span>
                 </a>
             </div>
-            <div class="nav-item  {{ request()->is('admin/engagements') ? 'active' : '' }}">
-                <a href="{{ route('admin.engagements.index') }}" class="text-decoration-none text-reset">
-                    <i class="fas fa-chart-line"></i>
-                    <span>Engagements</span>
-                </a>
-            </div>
             <div class="nav-item {{ request()->is('admin/settings') ? 'active' : '' }}">
                 <a href="#" class="text-decoration-none text-reset">
                     <i class="fas fa-cog"></i>
