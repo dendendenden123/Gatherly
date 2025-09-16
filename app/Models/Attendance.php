@@ -105,19 +105,25 @@ class Attendance extends Model
             ->get()
             ->map(function ($item) use ($weekly, $monthly, $yearly, $totalMembers) {
                 if ($weekly) {
+                    // Display as "Mon j – Mon j (Wk NN, YYYY)"
+                    $startOfWeek = Carbon::now()->setISODate($item->year, (int) $item->week)->startOfWeek(Carbon::MONDAY);
+                    $endOfWeek = (clone $startOfWeek)->endOfWeek(Carbon::SUNDAY);
+                    $label = $startOfWeek->format('M j') . ' – ' . $endOfWeek->format('M j') . ' (Wk ' . str_pad($item->week, 2, '0', STR_PAD_LEFT) . ', ' . $item->year . ')';
                     return [
-                        'label' => $item->year . '-W' . str_pad($item->week, 2, '0', STR_PAD_LEFT),
-                        'value' => ($item->present / $item->total) * 100
+                        'label' => $label,
+                        'value' => ($item->present && $item->total) ? round((($item->present / $item->total) * 100), 1) : 0
                     ];
                 } elseif ($monthly) {
+                    // $item->month comes as YYYY-MM; convert to "Mon YYYY"
+                    $label = Carbon::createFromFormat('Y-m', $item->month)->startOfMonth()->format('M Y');
                     return [
-                        'label' => $item->month,
-                        'value' => ($item->present / $item->total) * 100
+                        'label' => $label,
+                        'value' => ($item->present && $item->total) ? round((($item->present / $item->total) * 100), 1) : 0
                     ];
                 } elseif ($yearly) {
                     return [
-                        'label' => $item->year,
-                        'value' => ($item->present / $item->total) * 100
+                        'label' => (string) $item->year,
+                        'value' => ($item->present && $item->total) ? round((($item->present / $item->total) * 100), 1) : 0
                     ];
                 }
                 return null;

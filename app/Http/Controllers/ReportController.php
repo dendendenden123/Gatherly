@@ -7,6 +7,7 @@ use App\Models\Event;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
+use Carbon\Carbon;
 
 class ReportController extends Controller
 {
@@ -19,14 +20,12 @@ class ReportController extends Controller
             $events = Event::select('id', 'event_name')->get();
             $attendanceChartData = self::getAttendanceChartData($request);
             $memberShipGrowthChartData = self::getMemberShipGrowthChartData($request);
-            $EventParticipationChartData = self::getEventParticipationChartData($request);
             $demographicChartData = self::getDemographicChartData($request);
 
             if ($request->ajax()) {
                 $chart = view('admin.reports.index-chart', [
                     'attendanceChartData' => $attendanceChartData,
                     'memberShipGrowthChartData' => $memberShipGrowthChartData,
-                    'EventParticipationChartData' => $EventParticipationChartData,
                     'demographicChartData' => $demographicChartData,
                 ])->render();
                 return response()->json(['chart' => $chart]);
@@ -35,7 +34,6 @@ class ReportController extends Controller
             return view('admin.reports.index', [
                 'attendanceChartData' => $attendanceChartData,
                 'memberShipGrowthChartData' => $memberShipGrowthChartData,
-                'EventParticipationChartData' => $EventParticipationChartData,
                 'demographicChartData' => $demographicChartData,
                 'events' => $events,
             ]);
@@ -106,6 +104,64 @@ class ReportController extends Controller
     }
 
     //==================================================
+    //=== CSV export for attendance list
+    //==================================================
+    public function attendanceExportCsv(Request $request)
+    {
+        try {
+            $filters = [
+                'start_date' => $request->get('start_date'),
+                'end_date' => $request->get('end_date'),
+                'event_id' => $request->get('event_id'),
+                'status' => $request->get('attendance_status'),
+            ];
+
+            $attendances = Attendance::filter($filters)
+                ->orderByDesc('updated_at')
+                ->limit(5000)
+                ->get();
+
+            $headers = [
+                'Content-Type' => 'text/csv',
+                'Content-Disposition' => 'attachment; filename="attendance.csv"',
+            ];
+
+            $callback = function () use ($attendances) {
+                $out = fopen('php://output', 'w');
+                fputcsv($out, ['Date', 'Event', 'Member', 'Status']);
+                foreach ($attendances as $a) {
+                    fputcsv($out, [
+                        optional($a->updated_at)->format('Y-m-d H:i:s'),
+                        optional(optional($a->event_occurrence)->event)->event_name,
+                        optional($a->user)->first_name . ' ' . optional($a->user)->last_name,
+                        $a->status,
+                    ]);
+                }
+                fclose($out);
+            };
+
+            return response()->stream($callback, 200, $headers);
+        } catch (\Exception $e) {
+            logger()->error('Error in ReportController@attendanceExportCsv: ' . $e->getMessage(), ['exception' => $e]);
+            return back()->with('error', 'Failed to export CSV');
+        }
+    }
+
+    //==================================================
+    //=== Excel-compatible CSV (same as CSV, different filename)
+    //==================================================
+    public function attendanceExportExcel(Request $request)
+    {
+        $request->merge(['__excel' => true]);
+        $response = $this->attendanceExportCsv($request);
+        // Adjust filename header if possible
+        if (method_exists($response, 'headers')) {
+            $response->headers->set('Content-Disposition', 'attachment; filename="attendance.xlsx.csv"');
+        }
+        return $response;
+    }
+
+    //==================================================
     //===Prepares attendance chart data (labels and datasets) 
     //===by aggregating present and absent records for visualization.
     //==================================================
@@ -146,9 +202,12 @@ class ReportController extends Controller
                 ->orderBy('week')
                 ->get()
                 ->map(function ($item) {
+                    $startOfWeek = Carbon::now()->setISODate($item->year, (int) $item->week)->startOfWeek(Carbon::MONDAY);
+                    $endOfWeek = (clone $startOfWeek)->endOfWeek(Carbon::SUNDAY);
+                    $label = $startOfWeek->format('M j') . ' – ' . $endOfWeek->format('M j') . ' (Wk ' . str_pad($item->week, 2, '0', STR_PAD_LEFT) . ', ' . $item->year . ')';
                     return [
-                        'label' => $item->year . '-W' . str_pad($item->week, 2, '0', STR_PAD_LEFT),
-                        'value' => ($item->total / User::count()) * 100,
+                        'label' => $label,
+                        'value' => (User::count() > 0) ? round((($item->total / User::count()) * 100), 1) : 0,
                     ];
                 });
         } elseif ($aggregate === 'monthly') {
@@ -158,9 +217,10 @@ class ReportController extends Controller
                 ->orderBy('month')
                 ->get()
                 ->map(function ($item) {
+                    $label = Carbon::createFromFormat('Y-m', $item->month)->startOfMonth()->format('M Y');
                     return [
-                        'label' => $item->month,
-                        'value' => ($item->total / User::count()) * 100,
+                        'label' => $label,
+                        'value' => (User::count() > 0) ? round((($item->total / User::count()) * 100), 1) : 0,
                     ];
                 });
         } elseif ($aggregate === 'yearly') {
@@ -172,7 +232,7 @@ class ReportController extends Controller
                 ->map(function ($item) {
                     return [
                         'label' => $item->year,
-                        'value' => ($item->total / User::count()) * 100,
+                        'value' => (User::count() > 0) ? round((($item->total / User::count()) * 100), 1) : 0,
                     ];
                 });
         } else {
@@ -183,52 +243,8 @@ class ReportController extends Controller
             'labels' => $userGrowth->pluck('label'),
             'datasets' => [
                 [
-                    'label' => 'Membership Growth',
+                    'label' => 'Membership Growth (%)',
                     'data' => $userGrowth->pluck('value'),
-                ]
-            ]
-        ];
-    }
-
-    private function getEventParticipationChartData($request)
-    {
-        // Get top 5 events with highest attendance
-        $topEvents = Event::select('events.id', 'events.event_name')
-            ->join('event_occurrences', 'events.id', '=', 'event_occurrences.event_id')
-            ->join('attendances', 'event_occurrences.id', '=', 'attendances.event_occurrence_id')
-            ->where('attendances.status', 'present')
-            ->selectRaw('COUNT(attendances.id) as total_attendance')
-            ->groupBy('events.id', 'events.event_name')
-            ->orderByDesc('total_attendance')
-            ->limit(5)
-            ->get();
-
-        // Prepare data for horizontal bar chart
-        $labels = $topEvents->pluck('event_name')->toArray();
-        $data = $topEvents->pluck('total_attendance')->toArray();
-
-        return [
-            'chartType' => 'bar',
-            'labels' => $labels,
-            'datasets' => [
-                [
-                    'label' => 'Total Attendance',
-                    'data' => $data,
-                    'backgroundColor' => [
-                        '#FF6384', // Red
-                        '#36A2EB', // Blue
-                        '#FFCE56', // Yellow
-                        '#4BC0C0', // Teal
-                        '#9966FF'  // Purple
-                    ],
-                    'borderColor' => [
-                        '#FF6384',
-                        '#36A2EB',
-                        '#FFCE56',
-                        '#4BC0C0',
-                        '#9966FF'
-                    ],
-                    'borderWidth' => 1
                 ]
             ]
         ];

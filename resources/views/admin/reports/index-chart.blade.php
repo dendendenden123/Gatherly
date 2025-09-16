@@ -16,21 +16,6 @@
         </div>
     </div>
 
-    <div class="report-card" id="eventParticipationCard">
-        <div class="report-card-header">
-            <div>
-                <div class="report-card-title">Event Participation</div>
-                <div class="report-card-desc">Top 5 events by attendance</div>
-            </div>
-            <div class="report-card-icon icon-orange">
-                <i class="fas fa-calendar-alt"></i>
-            </div>
-        </div>
-        <div style="height: 300px">
-            <x-chart :chartData="$EventParticipationChartData"></x-chart>
-        </div>
-    </div>
-
     <div class="report-card" id="demographicsCard">
         <div class="report-card-header">
             <div>
@@ -52,7 +37,7 @@
     <div class="chart-header">
         <div class="chart-title">Monthly Attendance Comparison</div>
         <div class="chart-actions">
-            <a href="#">View Full Report</a>
+            <a id="viewFullReportLink" href="{{ route('admin.reports') }}">View Full Report</a>
         </div>
     </div>
 
@@ -69,11 +54,13 @@
         <div class="chart-title">Raw Data Export</div>
         <div class="chart-actions">
             <select id="exportFormat">
-                <option>CSV</option>
-                <option>Excel</option>
-                <option>PDF</option>
+                <option value="csv">CSV</option>
+                <option value="excel">Excel</option>
+                <option value="pdf">PDF</option>
             </select>
-            <button class="btn btn-primary" style="margin-left: 10px;">
+            <button class="btn btn-primary" id="rawExportBtn"
+                data-csv="{{ route('admin.reports.attendance.export.csv') }}"
+                data-excel="{{ route('admin.reports.attendance.export.excel') }}" style="margin-left: 10px;">
                 <i class="fas fa-download"></i> Download
             </button>
         </div>

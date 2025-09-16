@@ -54,5 +54,37 @@ $(document).ready(function () {
                 }
             }
         });
+
+        // Wire export and full report link after re-render
+        wireExportsAndFullReport();
     }
+
+    function wireExportsAndFullReport() {
+        // Keep full report link with current filters
+        const params = $("#filterForm").serialize();
+        const fullLink = $("#viewFullReportLink");
+        if (fullLink.length) {
+            const base = fullLink.attr("href");
+            fullLink.attr(
+                "href",
+                base + (params ? (base.includes("?") ? "&" : "?") + params : "")
+            );
+        }
+
+        // Raw data export (CSV/Excel)
+        const btn = $("#rawExportBtn");
+        if (btn.length) {
+            btn.off("click").on("click", function (e) {
+                e.preventDefault();
+                const fmt = $("#exportFormat").val();
+                const base =
+                    fmt === "excel" ? btn.data("excel") : btn.data("csv");
+                const url = base + "?" + $("#filterForm").serialize();
+                window.location.href = url;
+            });
+        }
+    }
+
+    // Initial wire on DOM ready
+    wireExportsAndFullReport();
 });

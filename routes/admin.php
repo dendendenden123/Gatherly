@@ -26,6 +26,10 @@ Route::controller(ReportController::class)->group(function () {
         ->name('admin.reports.attendance.list');
     Route::get('/admin/reports/attendance-print', 'attendancePrint')
         ->name('admin.reports.attendance.print');
+    Route::get('/admin/reports/attendance-export-csv', 'attendanceExportCsv')
+        ->name('admin.reports.attendance.export.csv');
+    Route::get('/admin/reports/attendance-export-excel', 'attendanceExportExcel')
+        ->name('admin.reports.attendance.export.excel');
 });
 
 //Users Routes
