@@ -44,7 +44,7 @@
                             </div>
                         </a>
                     </td>
-                    <td>{{ $user->status }}</td>
+                    <td id="status_{{ $user->id }}">{{ $user->status }}</td>
                     <td>{{ $user->locale}}</td>
                     <td>{{ $user->marital_status }}</td>
                     <td>{{ $user->address }}</td>

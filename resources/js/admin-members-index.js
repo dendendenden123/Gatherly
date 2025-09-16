@@ -76,7 +76,9 @@ $(document).ready(() => {
                 _token: $("meta[name='csrf-token']").attr("content"),
                 status: status,
             },
-            success: function () {},
+            success: function () {
+                $("#status_" + userId).html(status); //change the status
+            },
             error: function (xhr) {
                 Swal.fire({
                     icon: "error",
