@@ -32,6 +32,10 @@
                 <button type="submit" class="auth-button"> @yield("form-button-text")</button>
             </form>
 
+            @hasSection("google-auth")
+                @yield("google-auth")
+            @endif
+
             <div class="auth-footer">
                 @yield("footer-text")
             </div>

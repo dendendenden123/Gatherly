@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OfficerController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\EngagementController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AttendanceController;
 
@@ -54,10 +55,6 @@ Route::controller(AttendanceController::class)->group(function () {
 Route::controller(NotificationController::class)->group(function () {
     Route::get('/admin/notifications', 'index')->name('admin.notifications.index');
     Route::get('/admin/notifications/create', 'create')->name('admin.notifications.create');
-    Route::post('/admin/notifications/store', 'store')->name('admin.notifications.store');
-    Route::post('/admin/notifications/{id}/read', 'markRead')->name('admin.notifications.read');
-    Route::post('/admin/notifications/mark-all-read', 'markAllRead')->name('admin.notifications.markAllRead');
-    Route::delete('/admin/notifications/{id}', 'destroy')->name('admin.notifications.destroy');
 });
 
 //Officer Routes

@@ -10,9 +10,9 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('notifications', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('google_id')->nullable()->unique();
+            $table->boolean('is_google_user')->default(false);
         });
     }
 
@@ -21,6 +21,8 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('notifications');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn(['google_id', 'is_google_user']);
+        });
     }
 };

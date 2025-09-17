@@ -20,3 +20,9 @@ Route::controller(UserController::class)->group(function () {
     Route::post('/register', 'store')->name('register');
     Route::get('/logout', 'logout')->name('logout');
 });
+
+// Google OAuth routes
+Route::controller(\App\Http\Controllers\GoogleAuthController::class)->group(function () {
+    Route::get('/auth/google', 'redirectToGoogle')->name('auth.google');
+    Route::get('/auth/google/callback', 'handleGoogleCallback')->name('auth.google.callback');
+});
