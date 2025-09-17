@@ -11,14 +11,15 @@
     </div>
 
     <div class="notifications-actions">
-        <button class="btn btn-outline" id="markAllReadBtn">
-            <i class="fas fa-check-circle"></i> Mark All Read
-        </button>
-        <a href="{{ route('admin.notifications.create') }}" class="text-reset text-decoration-none">
-            <button class="btn btn-primary" id="newNotificationBtn">
-                <i class="fas fa-plus"></i> New Notification
+        <form action="{{ route('admin.notifications.markAllRead') }}" method="POST" style="display:inline-block;">
+            @csrf
+            <button type="submit" class="btn btn-outline">
+                <i class="fas fa-check-circle"></i> Mark All Read
             </button>
-        </a>
+        </form>
+        <button class="btn btn-primary" id="newNotificationBtn" type="button">
+            <i class="fas fa-plus"></i> New Notification
+        </button>
     </div>
 </div>
 
@@ -27,18 +28,19 @@
 
 @section('content')
     <!-- Main Content -->
-    <div class="compose-panel" id="composePanel">
+    <div class="compose-panel" id="composePanel" style="display:none;">
         <div class="compose-header">
             <div class="compose-title">Compose New Notification</div>
-            <button id="closeCompose">
+            <button id="closeCompose" type="button">
                 <i class="fas fa-times"></i>
             </button>
         </div>
 
-        <form id="notificationForm">
+        <form id="notificationForm" method="POST" action="{{ route('admin.notifications.store') }}">
+            @csrf
             <div class="form-group">
                 <label for="notificationType">Notification Type</label>
-                <select id="notificationType" required>
+                <select id="notificationType" name="type" required>
                     <option value="">Select type...</option>
                     <option value="email">Email</option>
                     <option value="sms">Text Message</option>
@@ -48,33 +50,36 @@
             </div>
 
             <div class="form-group">
-                <label for="recipients">Recipients</label>
-                <select id="recipients" multiple>
-                    <option value="all">All Members</option>
-                    <option value="active">Active Members Only</option>
-                    <option value="volunteers">Volunteers</option>
-                    <option value="small_group1">Small Group: Men's Bible Study</option>
-                    <option value="small_group2">Small Group: Women's Fellowship</option>
-                    <option value="youth">Youth Group</option>
+                <label for="recipients">Recipients (optional)</label>
+                <input type="text" id="recipients" name="recipients" placeholder="e.g. all, active, volunteers">
+            </div>
+
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" name="category">
+                    <option value="announcement">General Announcement</option>
+                    <option value="event">Event Reminder</option>
+                    <option value="urgent">Urgent Alert</option>
+                    <option value="spiritual">Spiritual Message</option>
+                    <option value="volunteer">Volunteer Request</option>
                 </select>
-                <div class="recipient-tags" id="recipientTags"></div>
             </div>
 
             <div class="form-group">
                 <label for="subject">Subject</label>
-                <input type="text" id="subject" placeholder="Enter subject..." required>
+                <input type="text" id="subject" name="subject" placeholder="Enter subject..." required>
             </div>
 
             <div class="form-group">
                 <label for="message">Message</label>
-                <textarea id="message" placeholder="Type your message here..." required></textarea>
+                <textarea id="message" name="message" placeholder="Type your message here..." required></textarea>
             </div>
 
             <div class="form-group">
                 <label>
                     <input type="checkbox" id="scheduleCheckbox"> Schedule for later
                 </label>
-                <input type="datetime-local" id="scheduleTime" style="display: none; margin-top: 5px;">
+                <input type="datetime-local" id="scheduleTime" name="scheduled_at" style="display: none; margin-top: 5px;">
             </div>
 
             <button type="submit" class="btn btn-primary">
@@ -85,119 +90,74 @@
 
     <!-- Notification Tabs -->
     <div class="notification-tabs">
-        <div class="tab active" data-tab="all">All Notifications</div>
-        <div class="tab" data-tab="unread">Unread <span class="tab-badge">5</span></div>
-        <div class="tab" data-tab="alerts">Alerts</div>
-        <div class="tab" data-tab="announcements">Announcements</div>
+        <a href="{{ route('admin.notifications.index') }}" class="tab {{ request('filter') ? '' : 'active' }}"
+            data-tab="all">All Notifications</a>
+        <a href="{{ route('admin.notifications.index', ['filter' => 'unread']) }}"
+            class="tab {{ request('filter') === 'unread' ? 'active' : '' }}" data-tab="unread">Unread <span
+                class="tab-badge">{{ $unreadCount ?? 0 }}</span></a>
+        <a href="{{ route('admin.notifications.index', ['filter' => 'alerts']) }}"
+            class="tab {{ request('filter') === 'alerts' ? 'active' : '' }}" data-tab="alerts">Alerts</a>
+        <a href="{{ route('admin.notifications.index', ['filter' => 'announcements']) }}"
+            class="tab {{ request('filter') === 'announcements' ? 'active' : '' }}"
+            data-tab="announcements">Announcements</a>
     </div>
 
     <!-- Notification List -->
     <div class="notification-list">
-        <!-- Unread Notification Example -->
-        <div class="notification-item unread">
-            <div class="notification-checkbox">
-                <input type="checkbox">
-            </div>
-            <div class="notification-icon">
-                <i class="fas fa-exclamation-circle"></i>
-            </div>
-            <div class="notification-content">
-                <div class="notification-title">
-                    <span>Volunteers Needed for Food Drive</span>
-                    <span class="notification-time">Today, 10:30 AM</span>
-                </div>
-                <div class="notification-message">
-                    We need 5 more volunteers for this Saturday's community food drive. Please sign up if available.
-                </div>
-                <div class="notification-actions">
-                    <a href="#" class="action-link">
-                        <i class="fas fa-reply"></i> Reply
-                    </a>
-                    <a href="#" class="action-link">
-                        <i class="fas fa-archive"></i> Archive
-                    </a>
-                </div>
-            </div>
-        </div>
+        @if(session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
 
-        <!-- Read Notification Example -->
-        <div class="notification-item">
-            <div class="notification-checkbox">
-                <input type="checkbox">
-            </div>
-            <div class="notification-icon">
-                <i class="fas fa-calendar-alt"></i>
-            </div>
-            <div class="notification-content">
-                <div class="notification-title">
-                    <span>Upcoming Baptism Service</span>
-                    <span class="notification-time">Yesterday, 3:45 PM</span>
+        @forelse($notifications as $n)
+            <div class="notification-item {{ $n->is_read ? '' : 'unread' }}">
+                <div class="notification-icon">
+                    @php
+                        $icon = 'fa-bell';
+                        if ($n->category === 'urgent') {
+                            $icon = 'fa-exclamation-circle';
+                        } elseif ($n->category === 'event') {
+                            $icon = 'fa-calendar-alt';
+                        } elseif ($n->category === 'volunteer') {
+                            $icon = 'fa-hands-helping';
+                        } elseif ($n->category === 'spiritual') {
+                            $icon = 'fa-praying-hands';
+                        }
+                    @endphp
+                    <i class="fas {{ $icon }}"></i>
                 </div>
-                <div class="notification-message">
-                    Reminder: Baptism service this Sunday after morning worship. Please arrive by 12:30 PM if
-                    participating.
-                </div>
-                <div class="notification-actions">
-                    <a href="#" class="action-link">
-                        <i class="fas fa-eye"></i> View Details
-                    </a>
-                    <a href="#" class="action-link">
-                        <i class="fas fa-archive"></i> Archive
-                    </a>
+                <div class="notification-content">
+                    <div class="notification-title">
+                        <span>{{ $n->subject }}</span>
+                        <span class="notification-time">{{ optional($n->created_at)->format('M d, h:i A') }}</span>
+                    </div>
+                    <div class="notification-message">{{ $n->message }}</div>
+                    <div class="notification-actions">
+                        @if(!$n->is_read)
+                            <form action="{{ route('admin.notifications.read', $n->id) }}" method="POST"
+                                style="display:inline-block;">
+                                @csrf
+                                <button type="submit" class="action-link" style="background:none;border:none;">
+                                    <i class="fas fa-check"></i> Mark Read
+                                </button>
+                            </form>
+                        @endif
+                        <form action="{{ route('admin.notifications.destroy', $n->id) }}" method="POST"
+                            style="display:inline-block;" onsubmit="return confirm('Delete this notification?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="action-link" style="background:none;border:none;">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
+        @empty
+            <p>No notifications found.</p>
+        @endforelse
 
-        <!-- Alert Notification Example -->
-        <div class="notification-item unread">
-            <div class="notification-checkbox">
-                <input type="checkbox">
-            </div>
-            <div class="notification-icon">
-                <i class="fas fa-urgent"></i>
-            </div>
-            <div class="notification-content">
-                <div class="notification-title">
-                    <span>Weather Alert: Service Cancellation</span>
-                    <span class="notification-time">Jun 24, 8:15 AM</span>
-                </div>
-                <div class="notification-message">
-                    Due to severe weather warnings, tonight's Bible study has been cancelled. Stay safe!
-                </div>
-                <div class="notification-actions">
-                    <a href="#" class="action-link">
-                        <i class="fas fa-share"></i> Forward
-                    </a>
-                    <a href="#" class="action-link">
-                        <i class="fas fa-archive"></i> Archive
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- System Notification Example -->
-        <div class="notification-item">
-            <div class="notification-checkbox">
-                <input type="checkbox">
-            </div>
-            <div class="notification-icon">
-                <i class="fas fa-cog"></i>
-            </div>
-            <div class="notification-content">
-                <div class="notification-title">
-                    <span>System Update Completed</span>
-                    <span class="notification-time">Jun 23, 11:20 PM</span>
-                </div>
-                <div class="notification-message">
-                    The latest Gatherly update has been installed. New features include improved attendance
-                    tracking.
-                </div>
-                <div class="notification-actions">
-                    <a href="#" class="action-link">
-                        <i class="fas fa-info-circle"></i> Learn More
-                    </a>
-                </div>
-            </div>
+        <div style="margin-top: 10px;">
+            {{ $notifications->withQueryString()->links() }}
         </div>
     </div>
 
@@ -220,13 +180,7 @@
         document.getElementById('composePanel').classList.remove('active');
     });
 
-    // Mark All as Read
-    document.getElementById('markAllReadBtn').addEventListener('click', function () {
-        document.querySelectorAll('.notification-item.unread').forEach(item => {
-            item.classList.remove('unread');
-        });
-        alert('All notifications marked as read');
-    });
+    // (Removed) Mark All as Read handled by form submit above
 
     // Tab Switching
     document.querySelectorAll('.tab').forEach(tab => {
@@ -243,38 +197,7 @@
         scheduleTime.style.display = this.checked ? 'block' : 'none';
     });
 
-    // Recipient Selection
-    document.getElementById('recipients').addEventListener('change', function () {
-        const tagsContainer = document.getElementById('recipientTags');
-        tagsContainer.innerHTML = '';
+    // Simplified recipients: plain text input, no tag UI
 
-        Array.from(this.selectedOptions).forEach(option => {
-            const tag = document.createElement('div');
-            tag.className = 'tag';
-            tag.innerHTML = `
-                    ${option.text}
-                    <span class="tag-remove" data-value="${option.value}">×</span>
-                `;
-            tagsContainer.appendChild(tag);
-        });
-    });
-
-    // Remove recipient tag
-    document.addEventListener('click', function (e) {
-        if (e.target.classList.contains('tag-remove')) {
-            const value = e.target.getAttribute('data-value');
-            const option = document.querySelector(`#recipients option[value="${value}"]`);
-            option.selected = false;
-            e.target.parentElement.remove();
-        }
-    });
-
-    // Form Submission
-    document.getElementById('notificationForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-        alert('Notification sent successfully!');
-        this.reset();
-        document.getElementById('recipientTags').innerHTML = '';
-        document.getElementById('composePanel').classList.remove('active');
-    });
+    // On successful submit, server redirects back with flash; no JS interception
 </script>
