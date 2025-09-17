@@ -11,9 +11,12 @@
     </div>
 
     <div class="notifications-actions">
-        <button class="btn btn-outline" id="markAllReadBtn">
-            <i class="fas fa-check-circle"></i> Mark All Read
-        </button>
+        <form action="{{ route('admin.notifications.markAllRead') }}" method="POST" style="display:inline-block;">
+            @csrf
+            <button type="submit" class="btn btn-outline" id="markAllReadBtn">
+                <i class="fas fa-check-circle"></i> Mark All Read
+            </button>
+        </form>
         <a href="{{ route('admin.notifications.create') }}" class="text-reset text-decoration-none">
             <button class="btn btn-primary" id="newNotificationBtn">
                 <i class="fas fa-plus"></i> New Notification
@@ -26,6 +29,12 @@
 
 
 @section('content')
+    @if (session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+    @if (session('error'))
+        <div class="alert alert-danger">{{ session('error') }}</div>
+    @endif
     <!-- Main Content -->
     <div class="compose-panel" id="composePanel">
         <div class="compose-header">
@@ -35,10 +44,11 @@
             </button>
         </div>
 
-        <form id="notificationForm">
+        <form id="notificationForm" action="{{ route('admin.notifications.store') }}" method="POST">
+            @csrf
             <div class="form-group">
                 <label for="notificationType">Notification Type</label>
-                <select id="notificationType" required>
+                <select id="notificationType" name="type" required>
                     <option value="">Select type...</option>
                     <option value="email">Email</option>
                     <option value="sms">Text Message</option>
@@ -49,7 +59,7 @@
 
             <div class="form-group">
                 <label for="recipients">Recipients</label>
-                <select id="recipients" multiple>
+                <select id="recipientsSelect" multiple>
                     <option value="all">All Members</option>
                     <option value="active">Active Members Only</option>
                     <option value="volunteers">Volunteers</option>
@@ -57,24 +67,35 @@
                     <option value="small_group2">Small Group: Women's Fellowship</option>
                     <option value="youth">Youth Group</option>
                 </select>
+                <input type="hidden" name="recipients" id="recipientsInput" />
                 <div class="recipient-tags" id="recipientTags"></div>
             </div>
 
             <div class="form-group">
                 <label for="subject">Subject</label>
-                <input type="text" id="subject" placeholder="Enter subject..." required>
+                <input type="text" id="subject" name="subject" placeholder="Enter subject..." required>
             </div>
 
             <div class="form-group">
                 <label for="message">Message</label>
-                <textarea id="message" placeholder="Type your message here..." required></textarea>
+                <textarea id="message" name="message" placeholder="Type your message here..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" name="category">
+                    <option value="">None</option>
+                    <option value="alerts">Alerts</option>
+                    <option value="announcements">Announcements</option>
+                    <option value="system">System</option>
+                </select>
             </div>
 
             <div class="form-group">
                 <label>
-                    <input type="checkbox" id="scheduleCheckbox"> Schedule for later
+                    <input type="checkbox" id="scheduleCheckbox" name="schedule" value="1"> Schedule for later
                 </label>
-                <input type="datetime-local" id="scheduleTime" style="display: none; margin-top: 5px;">
+                <input type="datetime-local" id="scheduleTime" name="schedule_time" style="display: none; margin-top: 5px;">
             </div>
 
             <button type="submit" class="btn btn-primary">
@@ -86,120 +107,86 @@
     <!-- Notification Tabs -->
     <div class="notification-tabs">
         <div class="tab active" data-tab="all">All Notifications</div>
-        <div class="tab" data-tab="unread">Unread <span class="tab-badge">5</span></div>
+        <div class="tab" data-tab="unread">Unread <span class="tab-badge">{{ $unreadCount ?? 0 }}</span></div>
         <div class="tab" data-tab="alerts">Alerts</div>
         <div class="tab" data-tab="announcements">Announcements</div>
     </div>
 
     <!-- Notification List -->
-    <div class="notification-list">
-        <!-- Unread Notification Example -->
-        <div class="notification-item unread">
-            <div class="notification-checkbox">
-                <input type="checkbox">
-            </div>
-            <div class="notification-icon">
-                <i class="fas fa-exclamation-circle"></i>
-            </div>
-            <div class="notification-content">
-                <div class="notification-title">
-                    <span>Volunteers Needed for Food Drive</span>
-                    <span class="notification-time">Today, 10:30 AM</span>
+    <form action="{{ route('admin.notifications.bulkDestroy') }}" method="POST" id="bulkForm">
+        @csrf
+        @method('DELETE')
+        <div class="notification-list">
+            @forelse ($notifications as $notification)
+                @php
+                    $when = $notification->sent_at ?? $notification->scheduled_at ?? $notification->created_at;
+                    $icon = 'fa-bell';
+                    if ($notification->category === 'alerts') {
+                        $icon = 'fa-exclamation-circle';
+                    } elseif ($notification->category === 'announcements') {
+                        $icon = 'fa-calendar-alt';
+                    } elseif ($notification->category === 'system') {
+                        $icon = 'fa-cog';
+                    }
+                @endphp
+                <div class="notification-item {{ $notification->is_read ? '' : 'unread' }}">
+                    <div class="notification-checkbox">
+                        <input type="checkbox" name="ids[]" value="{{ $notification->id }}">
+                    </div>
+                    <div class="notification-icon">
+                        <i class="fas {{ $icon }}"></i>
+                    </div>
+                    <div class="notification-content">
+                        <div class="notification-title">
+                            <span>{{ $notification->subject }}</span>
+                            <span class="notification-time">{{ $when?->diffForHumans() }}</span>
+                        </div>
+                        <div class="notification-message">
+                            {{ Str::limit($notification->message, 160) }}
+                        </div>
+                        <div class="notification-actions">
+                            @if (!$notification->is_read)
+                                <form action="{{ route('admin.notifications.markRead', $notification) }}" method="POST"
+                                    style="display:inline-block;">
+                                    @csrf
+                                    <button type="submit" class="action-link"
+                                        style="background:none;border:0;padding:0;color:inherit;">
+                                        <i class="fas fa-eye"></i> Mark Read
+                                    </button>
+                                </form>
+                            @endif
+                            <form action="{{ route('admin.notifications.destroy', $notification) }}" method="POST"
+                                style="display:inline-block;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="action-link"
+                                    style="background:none;border:0;padding:0;color:inherit;">
+                                    <i class="fas fa-archive"></i> Delete
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-                <div class="notification-message">
-                    We need 5 more volunteers for this Saturday's community food drive. Please sign up if available.
+            @empty
+                <div class="notification-item">
+                    <div class="notification-content">
+                        <div class="notification-title">
+                            <span>No notifications</span>
+                        </div>
+                        <div class="notification-message">Create a new notification to get started.</div>
+                    </div>
                 </div>
-                <div class="notification-actions">
-                    <a href="#" class="action-link">
-                        <i class="fas fa-reply"></i> Reply
-                    </a>
-                    <a href="#" class="action-link">
-                        <i class="fas fa-archive"></i> Archive
-                    </a>
-                </div>
+            @endforelse
+        </div>
+        <div style="margin-top:12px; display:flex; gap:8px; align-items:center;">
+            <button type="submit" class="btn btn-outline" id="bulkDeleteBtn">
+                <i class="fas fa-trash"></i> Delete Selected
+            </button>
+            <div style="margin-left:auto;">
+                {{ $notifications->links() }}
             </div>
         </div>
-
-        <!-- Read Notification Example -->
-        <div class="notification-item">
-            <div class="notification-checkbox">
-                <input type="checkbox">
-            </div>
-            <div class="notification-icon">
-                <i class="fas fa-calendar-alt"></i>
-            </div>
-            <div class="notification-content">
-                <div class="notification-title">
-                    <span>Upcoming Baptism Service</span>
-                    <span class="notification-time">Yesterday, 3:45 PM</span>
-                </div>
-                <div class="notification-message">
-                    Reminder: Baptism service this Sunday after morning worship. Please arrive by 12:30 PM if
-                    participating.
-                </div>
-                <div class="notification-actions">
-                    <a href="#" class="action-link">
-                        <i class="fas fa-eye"></i> View Details
-                    </a>
-                    <a href="#" class="action-link">
-                        <i class="fas fa-archive"></i> Archive
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Alert Notification Example -->
-        <div class="notification-item unread">
-            <div class="notification-checkbox">
-                <input type="checkbox">
-            </div>
-            <div class="notification-icon">
-                <i class="fas fa-urgent"></i>
-            </div>
-            <div class="notification-content">
-                <div class="notification-title">
-                    <span>Weather Alert: Service Cancellation</span>
-                    <span class="notification-time">Jun 24, 8:15 AM</span>
-                </div>
-                <div class="notification-message">
-                    Due to severe weather warnings, tonight's Bible study has been cancelled. Stay safe!
-                </div>
-                <div class="notification-actions">
-                    <a href="#" class="action-link">
-                        <i class="fas fa-share"></i> Forward
-                    </a>
-                    <a href="#" class="action-link">
-                        <i class="fas fa-archive"></i> Archive
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- System Notification Example -->
-        <div class="notification-item">
-            <div class="notification-checkbox">
-                <input type="checkbox">
-            </div>
-            <div class="notification-icon">
-                <i class="fas fa-cog"></i>
-            </div>
-            <div class="notification-content">
-                <div class="notification-title">
-                    <span>System Update Completed</span>
-                    <span class="notification-time">Jun 23, 11:20 PM</span>
-                </div>
-                <div class="notification-message">
-                    The latest Gatherly update has been installed. New features include improved attendance
-                    tracking.
-                </div>
-                <div class="notification-actions">
-                    <a href="#" class="action-link">
-                        <i class="fas fa-info-circle"></i> Learn More
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
+    </form>
 
 @endsection
 
@@ -220,13 +207,7 @@
         document.getElementById('composePanel').classList.remove('active');
     });
 
-    // Mark All as Read
-    document.getElementById('markAllReadBtn').addEventListener('click', function () {
-        document.querySelectorAll('.notification-item.unread').forEach(item => {
-            item.classList.remove('unread');
-        });
-        alert('All notifications marked as read');
-    });
+    // Mark All as Read now handled by form POST
 
     // Tab Switching
     document.querySelectorAll('.tab').forEach(tab => {
@@ -244,7 +225,7 @@
     });
 
     // Recipient Selection
-    document.getElementById('recipients').addEventListener('change', function () {
+    document.getElementById('recipientsSelect').addEventListener('change', function () {
         const tagsContainer = document.getElementById('recipientTags');
         tagsContainer.innerHTML = '';
 
@@ -257,24 +238,29 @@
                 `;
             tagsContainer.appendChild(tag);
         });
+
+        // update hidden recipients input as comma-separated list
+        const values = Array.from(this.selectedOptions).map(o => o.value);
+        document.getElementById('recipientsInput').value = values.join(',');
     });
 
     // Remove recipient tag
     document.addEventListener('click', function (e) {
         if (e.target.classList.contains('tag-remove')) {
             const value = e.target.getAttribute('data-value');
-            const option = document.querySelector(`#recipients option[value="${value}"]`);
+            const option = document.querySelector(`#recipientsSelect option[value="${value}"]`);
             option.selected = false;
             e.target.parentElement.remove();
+            const select = document.getElementById('recipientsSelect');
+            const values = Array.from(select.selectedOptions).map(o => o.value);
+            document.getElementById('recipientsInput').value = values.join(',');
         }
     });
 
     // Form Submission
     document.getElementById('notificationForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-        alert('Notification sent successfully!');
-        this.reset();
-        document.getElementById('recipientTags').innerHTML = '';
-        document.getElementById('composePanel').classList.remove('active');
+        const select = document.getElementById('recipientsSelect');
+        const values = Array.from(select.selectedOptions).map(o => o.value);
+        document.getElementById('recipientsInput').value = values.join(',');
     });
 </script>

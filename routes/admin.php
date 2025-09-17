@@ -55,6 +55,11 @@ Route::controller(AttendanceController::class)->group(function () {
 Route::controller(NotificationController::class)->group(function () {
     Route::get('/admin/notifications', 'index')->name('admin.notifications.index');
     Route::get('/admin/notifications/create', 'create')->name('admin.notifications.create');
+    Route::post('/admin/notifications', 'store')->name('admin.notifications.store');
+    Route::post('/admin/notifications/mark-all-read', 'markAllRead')->name('admin.notifications.markAllRead');
+    Route::post('/admin/notifications/{notification}/mark-read', 'markRead')->name('admin.notifications.markRead');
+    Route::delete('/admin/notifications/{notification}', 'destroy')->name('admin.notifications.destroy');
+    Route::delete('/admin/notifications', 'bulkDestroy')->name('admin.notifications.bulkDestroy');
 });
 
 //Officer Routes

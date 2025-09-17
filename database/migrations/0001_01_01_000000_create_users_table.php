@@ -42,6 +42,8 @@ return new class extends Migration {
             $table->boolean('is_Verify')->default(false);
             $table->boolean('email_verified')->default(false);
             $table->timestamp('last_login_at')->nullable();
+            $table->string('google_id')->nullable()->unique();
+            $table->boolean('is_google_user')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });
