@@ -3,35 +3,23 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Services\NotificationService;
 use App\Models\Notification;
 use App\Models\Role;
 use Auth;
 
 class NotificationController extends Controller
 {
+
+    protected NotificationService $notificationService;
+    public function __construct(NotificationService $notificationService)
+    {
+        $this->notificationService = $notificationService;
+    }
     public function index(Request $request)
     {
         $tab = $request->query('tab', 'all');
-        $query = Notification::query();
-        switch ($tab) {
-            case 'unread':
-                $query->where('is_read', false);
-                break;
-            case 'alerts':
-                $query->where('category', 'alert');
-                break;
-            case 'announcements':
-                $query->where('category', 'announcement');
-                break;
-            case 'event':
-                $query->where('category', 'event');
-                break;
-            default:
-                // all
-                break;
-        }
-
-        $notifications = $query->latest()->paginate(5)->appends(['tab' => $tab]);
+        $notifications = $this->notificationService->getNotif($request, $tab);
         $unreadCount = Notification::where('is_read', false)->count();
         return view('admin.notifications.index', compact('notifications', 'unreadCount', 'tab'));
     }
