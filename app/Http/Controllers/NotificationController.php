@@ -26,7 +26,7 @@ class NotificationController extends Controller
                 // all
                 break;
         }
-        $notifications = $query->latest()->paginate(15)->appends(['tab' => $tab]);
+        $notifications = $query->latest()->paginate(5)->appends(['tab' => $tab]);
         $unreadCount = Notification::where('is_read', false)->count();
         return view('admin.notifications.index', compact('notifications', 'unreadCount', 'tab'));
     }

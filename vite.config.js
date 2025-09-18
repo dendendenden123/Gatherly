@@ -16,6 +16,7 @@ export default defineConfig({
                 "resources/js/admin-reports-index.js",
                 "resources/js/admin-officers-index.js",
                 "resources/js/admin-notification-create.js",
+                "resources/js/admin-notification-index.js",
             ],
             refresh: true,
         }),

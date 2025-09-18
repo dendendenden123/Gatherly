@@ -28,7 +28,6 @@
 
 @endSection
 
-
 @section('content')
     @if (session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
@@ -36,74 +35,6 @@
     @if (session('error'))
         <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
-    <!-- Main Content -->
-    <div class="compose-panel" id="composePanel">
-        <div class="compose-header">
-            <div class="compose-title">Compose New Notification</div>
-            <button id="closeCompose">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-
-        <form id="notificationForm" action="{{ route('admin.notifications.store') }}" method="POST">
-            @csrf
-            <div class="form-group">
-                <label for="notificationType">Notification Type</label>
-                <select id="notificationType" name="type" required>
-                    <option value="">Select type...</option>
-                    <option value="email">Email</option>
-                    <option value="sms">Text Message</option>
-                    <option value="app">In-App Notification</option>
-                    <option value="all">All Channels</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="recipients">Recipients</label>
-                <select id="recipientsSelect" multiple>
-                    <option value="all">All Members</option>
-                    <option value="active">Active Members Only</option>
-                    <option value="volunteers">Volunteers</option>
-                    <option value="small_group1">Small Group: Men's Bible Study</option>
-                    <option value="small_group2">Small Group: Women's Fellowship</option>
-                    <option value="youth">Youth Group</option>
-                </select>
-                <input type="hidden" name="recipients" id="recipientsInput" />
-                <div class="recipient-tags" id="recipientTags"></div>
-            </div>
-
-            <div class="form-group">
-                <label for="subject">Subject</label>
-                <input type="text" id="subject" name="subject" placeholder="Enter subject..." required>
-            </div>
-
-            <div class="form-group">
-                <label for="message">Message</label>
-                <textarea id="message" name="message" placeholder="Type your message here..." required></textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="category">Category</label>
-                <select id="category" name="category">
-                    <option value="">None</option>
-                    <option value="alerts">Alerts</option>
-                    <option value="announcements">Announcements</option>
-                    <option value="system">System</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>
-                    <input type="checkbox" id="scheduleCheckbox" name="schedule" value="1"> Schedule for later
-                </label>
-                <input type="datetime-local" id="scheduleTime" name="schedule_time" style="display: none; margin-top: 5px;">
-            </div>
-
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-paper-plane"></i> Send Notification
-            </button>
-        </form>
-    </div>
 
     <!-- Notification Tabs -->
     <div class="notification-tabs">
@@ -193,83 +124,5 @@
             </div>
         </div>
     </form>
-
+    @vite("resources/js/admin-notification-index.js")
 @endsection
-
-<script>
-    // Mobile menu toggle
-    document.getElementById('menuToggle').addEventListener('click', function () {
-        document.getElementById('sidebar').classList.toggle('active');
-    });
-
-    // New Notification Button
-    document.getElementById('newNotificationBtn').addEventListener('click', function () {
-        document.getElementById('composePanel').classList.add('active');
-    });
-
-    // Close Compose Panel
-    document.getElementById('closeCompose').addEventListener('click', function (e) {
-        e.preventDefault();
-        document.getElementById('composePanel').classList.remove('active');
-    });
-
-    // Mark All as Read now handled by form POST
-
-    // Tab Switching is now handled by anchor links
-
-    // Schedule Checkbox Toggle
-    document.getElementById('scheduleCheckbox').addEventListener('change', function () {
-        const scheduleTime = document.getElementById('scheduleTime');
-        scheduleTime.style.display = this.checked ? 'block' : 'none';
-    });
-
-    // Recipient Selection
-    document.getElementById('recipientsSelect').addEventListener('change', function () {
-        const tagsContainer = document.getElementById('recipientTags');
-        tagsContainer.innerHTML = '';
-
-        Array.from(this.selectedOptions).forEach(option => {
-            const tag = document.createElement('div');
-            tag.className = 'tag';
-            tag.innerHTML = `
-                    ${option.text}
-                    <span class="tag-remove" data-value="${option.value}">×</span>
-                `;
-            tagsContainer.appendChild(tag);
-        });
-
-        // update hidden recipients input as comma-separated list
-        const values = Array.from(this.selectedOptions).map(o => o.value);
-        document.getElementById('recipientsInput').value = values.join(',');
-    });
-
-    // Remove recipient tag
-    document.addEventListener('click', function (e) {
-        if (e.target.classList.contains('tag-remove')) {
-            const value = e.target.getAttribute('data-value');
-            const option = document.querySelector(`#recipientsSelect option[value="${value}"]`);
-            option.selected = false;
-            e.target.parentElement.remove();
-            const select = document.getElementById('recipientsSelect');
-            const values = Array.from(select.selectedOptions).map(o => o.value);
-            document.getElementById('recipientsInput').value = values.join(',');
-        }
-    });
-
-    // Form Submission: prevent double submit, show loading
-    document.getElementById('notificationForm').addEventListener('submit', function (e) {
-        const select = document.getElementById('recipientsSelect');
-        const values = Array.from(select.selectedOptions).map(o => o.value);
-        document.getElementById('recipientsInput').value = values.join(',');
-        const btn = this.querySelector('button[type="submit"]');
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-    });
-
-    // Bulk delete confirmation
-    document.getElementById('bulkForm').addEventListener('submit', function (e) {
-        if (!confirm('Are you sure you want to delete the selected notifications?')) {
-            e.preventDefault();
-        }
-    });
-</script>
