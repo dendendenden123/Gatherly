@@ -99,8 +99,8 @@
                             class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
                     </div>
                     <div class="md:hidden lg:block">
-                        <h4 class="font-medium">John Smith</h4>
-                        <p class="text-xs text-gray-500">Member since 2018</p>
+                        <h4 class="font-medium">{{ Auth::user()->first_name . " " . Auth::user()->last_name}}</h4>
+                        <p class="text-xs text-gray-500">Member since {{ Auth::user()->created_at->year }}</p>
                     </div>
                 </div>
 

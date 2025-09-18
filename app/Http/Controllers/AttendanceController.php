@@ -34,7 +34,7 @@ class AttendanceController extends Controller
         return view('admin.attendance.index', compact('filteredAttendancesPaginated', "eventIdName"));
     }
 
-    public function show(Request $request, $id)
+    public function show(Request $request, $id = Auth::id())
     {
 
         $user = User::find($id);

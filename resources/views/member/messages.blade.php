@@ -96,7 +96,7 @@
             <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
                 <h1 class="text-xl font-semibold text-gray-900">Messages</h1>
                 <div>
-                    <a href="{{ route('member.dashboard') }}"
+                    <a href="{{ route('member') }}"
                         class="text-gray-600 hover:text-gray-900 mr-4 hidden md:inline-block">
                         <i class="bi bi-house-door-fill"></i> Dashboard
                     </a>

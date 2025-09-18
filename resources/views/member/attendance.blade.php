@@ -28,8 +28,11 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-gray-500 text-sm">Monthly Attendance</p>
-                        <h3 class="text-2xl font-bold">85%</h3>
-                        <p class="text-xs text-gray-500">+8% from last month</p>
+                        <h3 class="text-2xl font-bold">{{ $monthlyAttendancePct ?? 0 }}%</h3>
+                        <p class="text-xs text-gray-500">
+                            @php $delta = $monthlyAttendanceDelta ?? 0; @endphp
+                            {{ $delta >= 0 ? '+' : '' }}{{ $delta }}% from last month
+                        </p>
                     </div>
                     <div class="relative w-16 h-16">
                         <svg class="w-full h-full" viewBox="0 0 36 36">
@@ -76,45 +79,49 @@
 
         <!-- Filters -->
         <div class="bg-white rounded-lg shadow p-4 mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                    <label for="time-period" class="block text-sm font-medium text-gray-700 mb-1">Time
-                        Period</label>
-                    <select id="time-period"
-                        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-primary focus:border-primary">
-                        <option>Last 30 Days</option>
-                        <option>Last 3 Months</option>
-                        <option>Last 6 Months</option>
-                        <option>This Year</option>
-                        <option>All Time</option>
-                    </select>
+            <form method="GET" action="{{ route('attendance') }}">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label for="time-period" class="block text-sm font-medium text-gray-700 mb-1">Time
+                            Period</label>
+                        <select id="time-period" name="time_period"
+                            class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-primary focus:border-primary">
+                            <option value="last_30_days" {{ (isset($filters['time_period']) && $filters['time_period']==='last_30_days') ? 'selected' : '' }}>Last 30 Days</option>
+                            <option value="last_3_months" {{ (isset($filters['time_period']) && $filters['time_period']==='last_3_months') ? 'selected' : '' }}>Last 3 Months</option>
+                            <option value="last_6_months" {{ (isset($filters['time_period']) && $filters['time_period']==='last_6_months') ? 'selected' : '' }}>Last 6 Months</option>
+                            <option value="this_year" {{ (isset($filters['time_period']) && $filters['time_period']==='this_year') ? 'selected' : '' }}>This Year</option>
+                            <option value="all_time" {{ (isset($filters['time_period']) && $filters['time_period']==='all_time') ? 'selected' : '' }}>All Time</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="service-type" class="block text-sm font-medium text-gray-700 mb-1">Service
+                            Type</label>
+                        <select id="service-type" name="service_type"
+                            class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-primary focus:border-primary">
+                            <option value="all" {{ (isset($filters['service_type']) && $filters['service_type']==='all') ? 'selected' : '' }}>All Services</option>
+                            @if(isset($eventNames) && count($eventNames))
+                                @foreach($eventNames as $name)
+                                    <option value="{{ $name }}" {{ (isset($filters['service_type']) && $filters['service_type'] === $name) ? 'selected' : '' }}>{{ $name }}</option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
+                    <div>
+                        <label for="attendance-status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                        <select id="attendance-status" name="attendance_status"
+                            class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-primary focus:border-primary">
+                            <option value="all" {{ (isset($filters['attendance_status']) && $filters['attendance_status']==='all') ? 'selected' : '' }}>All Attendance</option>
+                            <option value="present" {{ (isset($filters['attendance_status']) && $filters['attendance_status']==='present') ? 'selected' : '' }}>Present Only</option>
+                            <option value="absent" {{ (isset($filters['attendance_status']) && $filters['attendance_status']==='absent') ? 'selected' : '' }}>Absent Only</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button type="submit" class="bg-primary hover:bg-secondary text-white px-4 py-2 rounded-md w-full">
+                            Apply Filters
+                        </button>
+                    </div>
                 </div>
-                <div>
-                    <label for="service-type" class="block text-sm font-medium text-gray-700 mb-1">Service
-                        Type</label>
-                    <select id="service-type"
-                        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-primary focus:border-primary">
-                        <option>All Services</option>
-                        <option>Sunday Morning</option>
-                        <option>Wednesday Night</option>
-                        <option>Special Events</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="attendance-status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                    <select id="attendance-status"
-                        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-primary focus:border-primary">
-                        <option>All Attendance</option>
-                        <option>Present Only</option>
-                        <option>Absent Only</option>
-                    </select>
-                </div>
-                <div class="flex items-end">
-                    <button class="bg-primary hover:bg-secondary text-white px-4 py-2 rounded-md w-full">
-                        Apply Filters
-                    </button>
-                </div>
-            </div>
+            </form>
         </div>
 
         <!-- Detailed Attendance List -->
@@ -124,116 +131,55 @@
                 <div class="text-sm text-gray-500">Showing last 10 records</div>
             </div>
             <div class="divide-y divide-gray-200">
-                <!-- Attendance Record 1 -->
-                <div class="p-4 hover:bg-gray-50 transition attendance-card">
-                    <div class="flex items-start">
-                        <div class="bg-green-100 text-green-800 p-2 rounded text-center mr-4 flex-shrink-0">
-                            <div class="text-sm font-bold">11</div>
-                            <div class="text-xs">JUN</div>
-                        </div>
-                        <div class="flex-1">
-                            <div class="flex justify-between">
-                                <h3 class="font-medium">Sunday Morning Service</h3>
-                                <span class="text-sm bg-green-100 text-green-800 px-2 py-1 rounded-full">Present</span>
+                @forelse($attendances as $attendance)
+                    @php
+                        $occ = $attendance->event_occurrence;
+                        $event = $occ->event ?? null;
+                        $occDate = optional($occ)->occurrence_date;
+                        $day = $occDate ? $occDate->format('j') : optional($attendance->created_at)->format('j');
+                        $mon = $occDate ? strtoupper($occDate->format('M')) : strtoupper(optional($attendance->created_at)->format('M'));
+                        $isPresent = strtolower($attendance->status ?? '') === 'present';
+                    @endphp
+                    <div class="p-4 hover:bg-gray-50 transition attendance-card">
+                        <div class="flex items-start">
+                            <div class="{{ $isPresent ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }} p-2 rounded text-center mr-4 flex-shrink-0">
+                                <div class="text-sm font-bold">{{ $day }}</div>
+                                <div class="text-xs">{{ $mon }}</div>
                             </div>
-                            <p class="text-sm text-gray-500 mt-1">10:30 AM - 12:00 PM</p>
-                            <p class="text-sm mt-2">Sermon: "The Heart of Worship" (John 4:23-24)</p>
-                            <div class="mt-2 flex space-x-3 text-sm">
-                                <a href="#" class="text-primary hover:text-secondary flex items-center">
-                                    <i class="bi bi-play-circle mr-1"></i> Watch
-                                </a>
-                                <a href="#" class="text-primary hover:text-secondary flex items-center">
-                                    <i class="bi bi-journal-text mr-1"></i> Notes
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Attendance Record 2 -->
-                <div class="p-4 hover:bg-gray-50 transition attendance-card">
-                    <div class="flex items-start">
-                        <div class="bg-green-100 text-green-800 p-2 rounded text-center mr-4 flex-shrink-0">
-                            <div class="text-sm font-bold">7</div>
-                            <div class="text-xs">JUN</div>
-                        </div>
-                        <div class="flex-1">
-                            <div class="flex justify-between">
-                                <h3 class="font-medium">Wednesday Bible Study</h3>
-                                <span class="text-sm bg-green-100 text-green-800 px-2 py-1 rounded-full">Present</span>
-                            </div>
-                            <p class="text-sm text-gray-500 mt-1">7:00 PM - 8:30 PM</p>
-                            <p class="text-sm mt-2">Topic: "Faith in Action" (James 2:14-26)</p>
-                            <div class="mt-2 flex space-x-3 text-sm">
-                                <a href="#" class="text-primary hover:text-secondary flex items-center">
-                                    <i class="bi bi-play-circle mr-1"></i> Watch
-                                </a>
-                                <a href="#" class="text-primary hover:text-secondary flex items-center">
-                                    <i class="bi bi-journal-text mr-1"></i> Notes
-                                </a>
+                            <div class="flex-1">
+                                <div class="flex justify-between">
+                                    <h3 class="font-medium">{{ $event->event_name ?? 'Event' }}</h3>
+                                    @if($isPresent)
+                                        <span class="text-sm bg-green-100 text-green-800 px-2 py-1 rounded-full">Present</span>
+                                    @else
+                                        <span class="text-sm bg-red-100 text-red-800 px-2 py-1 rounded-full">Absent</span>
+                                    @endif
+                                </div>
+                                <p class="text-sm text-gray-500 mt-1">{{ $occ->start_time_formatted ?? 'N/A' }}</p>
+                                <div class="mt-2 flex space-x-3 text-sm">
+                                    <a href="#" class="text-primary hover:text-secondary flex items-center">
+                                        <i class="bi bi-play-circle mr-1"></i> Watch
+                                    </a>
+                                    <a href="#" class="text-primary hover:text-secondary flex items-center">
+                                        <i class="bi bi-journal-text mr-1"></i> Notes
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- Attendance Record 3 -->
-                <div class="p-4 hover:bg-gray-50 transition attendance-card">
-                    <div class="flex items-start">
-                        <div class="bg-green-100 text-green-800 p-2 rounded text-center mr-4 flex-shrink-0">
-                            <div class="text-sm font-bold">4</div>
-                            <div class="text-xs">JUN</div>
-                        </div>
-                        <div class="flex-1">
-                            <div class="flex justify-between">
-                                <h3 class="font-medium">Sunday Morning Service</h3>
-                                <span class="text-sm bg-green-100 text-green-800 px-2 py-1 rounded-full">Present</span>
-                            </div>
-                            <p class="text-sm text-gray-500 mt-1">10:30 AM - 12:00 PM</p>
-                            <p class="text-sm mt-2">Sermon: "Saved by Grace" (Ephesians 2:8-9)</p>
-                            <div class="mt-2 flex space-x-3 text-sm">
-                                <a href="#" class="text-primary hover:text-secondary flex items-center">
-                                    <i class="bi bi-play-circle mr-1"></i> Watch
-                                </a>
-                                <a href="#" class="text-primary hover:text-secondary flex items-center">
-                                    <i class="bi bi-journal-text mr-1"></i> Notes
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Attendance Record 4 -->
-                <div class="p-4 hover:bg-gray-50 transition attendance-card">
-                    <div class="flex items-start">
-                        <div class="bg-gray-100 text-gray-800 p-2 rounded text-center mr-4 flex-shrink-0">
-                            <div class="text-sm font-bold">28</div>
-                            <div class="text-xs">MAY</div>
-                        </div>
-                        <div class="flex-1">
-                            <div class="flex justify-between">
-                                <h3 class="font-medium">Wednesday Prayer Meeting</h3>
-                                <span class="text-sm bg-red-100 text-red-800 px-2 py-1 rounded-full">Absent</span>
-                            </div>
-                            <p class="text-sm text-gray-500 mt-1">7:00 PM - 8:00 PM</p>
-                            <p class="text-sm mt-2 text-gray-400">You missed this service</p>
-                            <div class="mt-2 flex space-x-3 text-sm">
-                                <a href="#" class="text-primary hover:text-secondary flex items-center">
-                                    <i class="bi bi-play-circle mr-1"></i> Watch
-                                </a>
-                                <a href="#" class="text-primary hover:text-secondary flex items-center">
-                                    <i class="bi bi-journal-text mr-1"></i> Notes
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- More records would appear here -->
+                @empty
+                    <div class="p-6 text-center text-gray-500">No attendance records found for the selected filters.</div>
+                @endforelse
             </div>
-            <div class="p-4 border-t border-gray-200 text-center">
-                <button class="text-primary hover:text-secondary font-medium">
-                    Load More Attendance Records
-                </button>
+            <div class="p-4 border-t border-gray-200">
+                <div class="flex items-center justify-between text-sm text-gray-500">
+                    <div>
+                        Showing {{ $attendances->count() }} of {{ $attendances->total() }} records
+                    </div>
+                    <div>
+                        {{ $attendances->onEachSide(1)->links() }}
+                    </div>
+                </div>
             </div>
         </div>
     </main>

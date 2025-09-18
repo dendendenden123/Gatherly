@@ -98,6 +98,6 @@ class GoogleAuthController extends Controller
             return redirect()->route('admin.dashboard');
         }
 
-        return redirect()->route('member.dashboard');
+        return redirect()->route('member');
     }
 }

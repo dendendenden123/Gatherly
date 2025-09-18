@@ -1,15 +1,17 @@
 <?php
 
+use App\Http\Controllers\MemberAttendanceController;
+use App\Http\Controllers\MemberDashboardController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserController;
 
-Route::get('/member', function () {
-    return view('member.dashboard');
-})->name('member.dashboard');
-
-Route::get('/member/attendance', function () {
-    return view("member.attendance");
+Route::controller(MemberDashboardController::class)->group(function () {
+    Route::get('/member', 'index')->name('member');
 });
+
+Route::controller(MemberAttendanceController::class)->group(function () {
+    Route::get('/member/attendance', 'index')->name('attendance');
+});
+
 Route::get('/member/community-group', function () {
     return view("member.community-group");
 });

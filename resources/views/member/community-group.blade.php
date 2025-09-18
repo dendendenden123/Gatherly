@@ -29,7 +29,7 @@
                             <span
                                 class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></span>
                         </div>
-                        <h3 class="text-lg font-medium">John Smith</h3>
+                        <h3 class="text-lg font-medium">{{ Auth::user()->first_name . " " . Auth::user()->last_name}}</h3>
                         <p class="text-sm text-gray-500 mb-3">Head of Household</p>
                         <div class="flex justify-center mb-3">
                             <div class="relative w-16 h-16">

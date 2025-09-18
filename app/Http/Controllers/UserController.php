@@ -277,7 +277,7 @@ class UserController extends Controller
         if ($user->officers->contains('role_id', '1')) {
             return redirect()->route('admin.dashboard');
         }
-        return redirect()->route('member.dashboard');
+        return redirect()->route('member');
     }
 
 }

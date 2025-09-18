@@ -104,7 +104,9 @@
                                                     <i class="bi bi-person text-gray-500"></i>
                                                 </div>
                                                 <div class="ml-3">
-                                                    <p class="text-sm font-medium">John Smith</p>
+                                                    <p class="text-sm font-medium">
+                                                        {{ Auth::user()->first_name . " " . Auth::user()->last_name}}
+                                                    </p>
                                                     <p class="text-xs text-gray-500">Head</p>
                                                 </div>
                                             </div>
@@ -200,7 +202,9 @@
                                 </div>
                                 <div class="p-3">
                                     <h3 class="font-medium mb-1">The Heart of Worship</h3>
-                                    <p class="text-sm text-gray-500 mb-2">Pastor John Smith | June 11, 2023</p>
+                                    <p class="text-sm text-gray-500 mb-2">
+                                        {{ Auth::user()->first_name . " " . Auth::user()->last_name}} | June 11, 2023
+                                    </p>
                                     <div class="flex justify-between items-center">
                                         <span class="text-xs bg-primary bg-opacity-10 text-primary px-2 py-1 rounded">John
                                             4:23-24</span>

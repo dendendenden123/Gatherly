@@ -129,7 +129,7 @@
                 This is a preview of how your notification will appear to recipients.
             </div>
             <div class="preview-meta">
-                <div id="sender">From: Pastor John Smith</div>
+                <div id="sender">From: Pastor {{ Auth::user()->first_name . " " . Auth::user()->last_name}}</div>
             </div>
         </div>
         <div style="text-align: center; margin-top: 15px;">
