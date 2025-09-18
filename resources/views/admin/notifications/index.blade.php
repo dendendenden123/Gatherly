@@ -47,6 +47,8 @@
             class="tab {{ ($tab ?? '') === 'alerts' ? 'active' : '' }}" data-tab="alerts">Alerts</a>
         <a href="{{ route('admin.notifications.index', ['tab' => 'announcements']) }}"
             class="tab {{ ($tab ?? '') === 'announcements' ? 'active' : '' }}" data-tab="announcements">Announcements</a>
+        <a href="{{ route('admin.notifications.index', ['tab' => 'event']) }}"
+            class="tab {{ ($tab ?? '') === 'event' ? 'active' : '' }}" data-tab="event">Event Notifications</a>
     </div>
 
     <!-- Notification List -->
@@ -83,24 +85,18 @@
                         </div>
                         <div class="notification-actions">
                             @if (!$notification->is_read)
-                                <form action="{{ route('admin.notifications.markRead', $notification) }}" method="POST"
-                                    style="display:inline-block;">
-                                    @csrf
-                                    <button type="submit" class="action-link"
-                                        style="background:none;border:0;padding:0;color:inherit;">
-                                        <i class="fas fa-eye"></i> Mark Read
-                                    </button>
-                                </form>
-                            @endif
-                            <form action="{{ route('admin.notifications.destroy', $notification) }}" method="POST"
-                                style="display:inline-block;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="action-link"
+                                <button type="button" class="action-link single-markread-btn"
+                                    data-url="{{ route('admin.notifications.markRead', $notification) }}"
                                     style="background:none;border:0;padding:0;color:inherit;">
-                                    <i class="fas fa-archive"></i> Delete
+                                    <i class="fas fa-eye"></i> Mark Read
                                 </button>
-                            </form>
+                            @endif
+
+                            <button type="button" class="action-link single-delete-btn"
+                                data-url="{{ route('admin.notifications.destroy', $notification) }}"
+                                style="background:none;border:0;padding:0;color:inherit;">
+                                <i class="fas fa-archive"></i> Delete
+                            </button>
                         </div>
                     </div>
                 </div>

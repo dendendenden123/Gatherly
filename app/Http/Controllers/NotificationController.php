@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Notification;
+use App\Models\Role;
 use Auth;
 
 class NotificationController extends Controller
@@ -17,15 +18,19 @@ class NotificationController extends Controller
                 $query->where('is_read', false);
                 break;
             case 'alerts':
-                $query->where('category', 'alerts');
+                $query->where('category', 'alert');
                 break;
             case 'announcements':
-                $query->where('category', 'announcements');
+                $query->where('category', 'announcement');
+                break;
+            case 'event':
+                $query->where('category', 'event');
                 break;
             default:
                 // all
                 break;
         }
+
         $notifications = $query->latest()->paginate(5)->appends(['tab' => $tab]);
         $unreadCount = Notification::where('is_read', false)->count();
         return view('admin.notifications.index', compact('notifications', 'unreadCount', 'tab'));
@@ -33,7 +38,8 @@ class NotificationController extends Controller
 
     public function create()
     {
-        return view('admin.notifications.create');
+        $roles = Role::query()->pluck('name');
+        return view('admin.notifications.create', compact('roles'));
     }
 
     public function store(Request $request)

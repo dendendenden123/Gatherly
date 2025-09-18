@@ -60,9 +60,7 @@
                 <select id="notificationCategory" name="category">
                     <option value="announcement">General Announcement</option>
                     <option value="event">Event Reminder</option>
-                    <option value="urgent">Urgent Alert</option>
-                    <option value="spiritual">Spiritual Message</option>
-                    <option value="volunteer">Volunteer Request</option>
+                    <option value="alert">Urgent Alert</option>
                 </select>
             </div>
         </div>
@@ -76,11 +74,16 @@
                 <select id="recipientType" name="recipient_group" required>
                     <option value="">Select recipient group...</option>
                     <option value="all">All Members</option>
-                    <option value="active">Active Members Only</option>
-                    <option value="inactive">Inactive Members</option>
-                    <option value="visitors">Recent Visitors</option>
-                    <option value="volunteers">All Volunteers</option>
-                    <option value="small_groups">Small Groups</option>
+                    <option value="volunteers">All Officers/Volunteer</option>
+                    <option value="buklod">Buklod</option>
+                    <option value="kadiwa">kadiwa</option>
+                    <option value="binhi">Binhi</option>
+                    @forelse ($roles as $role)
+                        <option value="{{  $role }}">{{  $role }}</option>
+                    @empty
+                        <option value="">No more...</option>
+                    @endforelse
+
                 </select>
             </div>
 
