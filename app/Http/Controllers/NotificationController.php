@@ -53,7 +53,7 @@ class NotificationController extends Controller
 
 
         Notification::create([
-            'recipient_group' => $validated['recipients'] ?? null,
+            'recipient_group' => $validated['recipient_group'] ?? null,
             'sender_id' => Auth::user()->id,
             'subject' => $validated['subject'],
             'message' => $validated['message'],

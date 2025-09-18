@@ -130,11 +130,6 @@
                         <i class="bi bi-list-task"></i>
                         <span class="md:hidden lg:block">Tasks</span>
                     </a>
-                    <a href="#"
-                        class="{{ Request::is('member/settings') ? 'flex items-center space-x-3 p-2 rounded-lg bg-primary bg-opacity-10 text-primary' : 'flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100' }}">
-                        <i class="bi bi-gear"></i>
-                        <span class="md:hidden lg:block">Settings</span>
-                    </a>
                     <a href="/logout"
                         class="flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100">
                         <i class="bi bi-box-arrow-right"></i>
