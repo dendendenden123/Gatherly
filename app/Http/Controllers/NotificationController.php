@@ -4,15 +4,31 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Notification;
-use Illuminate\Support\Carbon;
+use Auth;
 
 class NotificationController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $notifications = Notification::latest()->paginate(15);
+        $tab = $request->query('tab', 'all');
+        $query = Notification::query();
+        switch ($tab) {
+            case 'unread':
+                $query->where('is_read', false);
+                break;
+            case 'alerts':
+                $query->where('category', 'alerts');
+                break;
+            case 'announcements':
+                $query->where('category', 'announcements');
+                break;
+            default:
+                // all
+                break;
+        }
+        $notifications = $query->latest()->paginate(15)->appends(['tab' => $tab]);
         $unreadCount = Notification::where('is_read', false)->count();
-        return view('admin.notifications.index', compact('notifications', 'unreadCount'));
+        return view('admin.notifications.index', compact('notifications', 'unreadCount', 'tab'));
     }
 
     public function create()
@@ -23,31 +39,23 @@ class NotificationController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'type' => 'required|in:email,sms,app,all',
-            'recipients' => 'nullable|string',
+            'recipient_group' => 'nullable|string',
             'subject' => 'required|string|max:255',
             'message' => 'required|string',
             'category' => 'nullable|string|max:100',
-            'schedule' => 'nullable|boolean',
-            'schedule_time' => 'nullable|date',
         ]);
 
-        $scheduledAt = null;
-        if ($request->boolean('schedule') && $request->filled('schedule_time')) {
-            $scheduledAt = new \DateTime($request->input('schedule_time'));
-        }
 
         Notification::create([
-            'type' => $validated['type'],
             'recipient_group' => $validated['recipients'] ?? null,
+            'sender_id' => Auth::user()->id,
             'subject' => $validated['subject'],
             'message' => $validated['message'],
             'category' => $validated['category'] ?? null,
-            'scheduled_at' => $scheduledAt,
-            'sent_at' => $scheduledAt ? null : now(),
+
         ]);
 
-        return redirect()->route('admin.notifications.index')->with('success', 'Notification queued/sent successfully');
+        return back()->with('success', 'Notification queued/sent successfully');
     }
 
     public function markAllRead()

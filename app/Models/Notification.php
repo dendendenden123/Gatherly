@@ -18,4 +18,9 @@ class Notification extends Model
         'scheduled_at' => 'datetime',
         'sent_at' => 'datetime',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

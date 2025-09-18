@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 @section('styles')
-<link href="{{ asset('css/admin/notifications/index.css') }}" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href={{ asset('css/admin/notifications/index.css') }}>
 @endSection
 
 @section('header')
@@ -106,10 +107,15 @@
 
     <!-- Notification Tabs -->
     <div class="notification-tabs">
-        <div class="tab active" data-tab="all">All Notifications</div>
-        <div class="tab" data-tab="unread">Unread <span class="tab-badge">{{ $unreadCount ?? 0 }}</span></div>
-        <div class="tab" data-tab="alerts">Alerts</div>
-        <div class="tab" data-tab="announcements">Announcements</div>
+        <a href="{{ route('admin.notifications.index', ['tab' => 'all']) }}"
+            class="tab {{ ($tab ?? 'all') === 'all' ? 'active' : '' }}" data-tab="all">All Notifications</a>
+        <a href="{{ route('admin.notifications.index', ['tab' => 'unread']) }}"
+            class="tab {{ ($tab ?? '') === 'unread' ? 'active' : '' }}" data-tab="unread">Unread <span
+                class="tab-badge">{{ $unreadCount ?? 0 }}</span></a>
+        <a href="{{ route('admin.notifications.index', ['tab' => 'alerts']) }}"
+            class="tab {{ ($tab ?? '') === 'alerts' ? 'active' : '' }}" data-tab="alerts">Alerts</a>
+        <a href="{{ route('admin.notifications.index', ['tab' => 'announcements']) }}"
+            class="tab {{ ($tab ?? '') === 'announcements' ? 'active' : '' }}" data-tab="announcements">Announcements</a>
     </div>
 
     <!-- Notification List -->
@@ -209,14 +215,7 @@
 
     // Mark All as Read now handled by form POST
 
-    // Tab Switching
-    document.querySelectorAll('.tab').forEach(tab => {
-        tab.addEventListener('click', function () {
-            document.querySelector('.tab.active').classList.remove('active');
-            this.classList.add('active');
-            // In a real app, this would filter notifications
-        });
-    });
+    // Tab Switching is now handled by anchor links
 
     // Schedule Checkbox Toggle
     document.getElementById('scheduleCheckbox').addEventListener('change', function () {
@@ -257,10 +256,20 @@
         }
     });
 
-    // Form Submission
+    // Form Submission: prevent double submit, show loading
     document.getElementById('notificationForm').addEventListener('submit', function (e) {
         const select = document.getElementById('recipientsSelect');
         const values = Array.from(select.selectedOptions).map(o => o.value);
         document.getElementById('recipientsInput').value = values.join(',');
+        const btn = this.querySelector('button[type="submit"]');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+    });
+
+    // Bulk delete confirmation
+    document.getElementById('bulkForm').addEventListener('submit', function (e) {
+        if (!confirm('Are you sure you want to delete the selected notifications?')) {
+            e.preventDefault();
+        }
     });
 </script>
