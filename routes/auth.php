@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MemberAnnouncementController;
 use App\Http\Controllers\MemberAttendanceController;
 use App\Http\Controllers\MemberDashboardController;
 use Illuminate\Support\Facades\Route;
@@ -12,9 +13,10 @@ Route::controller(MemberAttendanceController::class)->group(function () {
     Route::get('/member/attendance', 'index')->name('attendance');
 });
 
-Route::get('/member/announcement', function () {
-    return view("member.announcement");
+Route::controller(MemberAnnouncementController::class)->group(function () {
+    Route::get('/member/announcement', 'index')->name('announcement');
 });
+
 Route::get('/member/sermon', function () {
     return view("member.sermon");
 });
