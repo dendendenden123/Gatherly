@@ -131,4 +131,77 @@ class AttendanceService
     {
         return Attendance::where('event_occurrence_id', $eventOccurenceId)->where('user_id', $userId)->exists();
     }
+
+    /**
+     * Retrieve filtered attendance records for a user.
+     *
+     * @param int $userId
+     * @param array $filters
+     * @param int $perPage
+     */
+    public function getFilteredAttendances(int $userId, array $filters, int $perPage = 10)
+    {
+        $query = Attendance::query()
+            ->select('attendances.*')
+            ->with(['event_occurrence.event'])
+            ->where('user_id', $userId);
+
+        // Apply filters
+        $this->applyDateFilter($query, $filters['time_period'] ?? 'last_30_days');
+        $this->applyStatusFilter($query, $filters['attendance_status'] ?? 'all');
+        $this->applyServiceTypeFilter($query, $filters['service_type'] ?? 'all');
+
+        return $query->orderByDesc('updated_at')->paginate($perPage)->appends($filters);
+    }
+
+    /**
+     * Apply date filter to the query based on the time period.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $timePeriod
+     * @return void
+     */
+    protected function applyDateFilter($query, string $timePeriod): void
+    {
+        $to = Carbon::now();
+        $from = match ($timePeriod) {
+            'last_3_months' => $to->copy()->subMonthsNoOverflow(3),
+            'last_6_months' => $to->copy()->subMonthsNoOverflow(6),
+            'this_year' => $to->copy()->startOfYear(),
+            'all_time' => null,
+            default => $to->copy()->subDays(30),
+        };
+
+        if ($from) {
+            $query->whereBetween('updated_at', [$from, $to]);
+        }
+    }
+
+    /**
+     * Apply attendance status filter to the query.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $status
+     * @return void
+     */
+    protected function applyStatusFilter($query, string $status): void
+    {
+        if (in_array($status, ['present', 'absent'])) {
+            $query->where('status', $status);
+        }
+    }
+
+    /**
+     * Apply service type filter to the query.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $serviceType
+     * @return void
+     */
+    protected function applyServiceTypeFilter($query, string $serviceType): void
+    {
+        if ($serviceType && $serviceType !== 'all') {
+            $query->whereHas('event_occurrence.event', fn($q) => $q->where('event_name', 'like', "%{$serviceType}%"));
+        }
+    }
 }

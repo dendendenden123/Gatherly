@@ -6,7 +6,7 @@
         <!-- Welcome Banner -->
         <div class="bg-gradient-to-r from-primary to-secondary rounded-lg p-6 mb-6 text-white">
             <h2 class="text-2xl font-bold mb-2">Welcome back, John!</h2>
-            <p class="opacity-90">You have 3 upcoming events and 2 unread messages</p>
+            <p class="opacity-90">You have 3 upcoming events and 2 unread notifications</p>
         </div>
 
         <!-- Quick Stats -->

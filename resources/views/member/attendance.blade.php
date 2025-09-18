@@ -27,18 +27,15 @@
             <div class="bg-white rounded-lg shadow p-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-gray-500 text-sm">Monthly Attendance</p>
+                        <p class="text-gray-500 text-sm">Last Month Attendance Rate</p>
                         <h3 class="text-2xl font-bold">{{ $monthlyAttendancePct ?? 0 }}%</h3>
-                        <p class="text-xs text-gray-500">
-                            @php $delta = $monthlyAttendanceDelta ?? 0; @endphp
-                            {{ $delta >= 0 ? '+' : '' }}{{ $delta }}% from last month
-                        </p>
                     </div>
                     <div class="relative w-16 h-16">
                         <svg class="w-full h-full" viewBox="0 0 36 36">
                             <circle cx="18" cy="18" r="16" fill="none" stroke="#e5e7eb" stroke-width="3"></circle>
                             <circle cx="18" cy="18" r="16" fill="none" stroke="#2ecc71" stroke-width="3"
-                                stroke-dasharray="100" stroke-dashoffset="15" class="progress-ring__circle">
+                                stroke-dasharray="100" stroke-dashoffset="15"
+                                style="stroke-dashoffset: {{  100 - $monthlyAttendancePct }};">
                             </circle>
                         </svg>
                         <div class="absolute inset-0 flex items-center justify-center">
@@ -86,11 +83,11 @@
                             Period</label>
                         <select id="time-period" name="time_period"
                             class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-primary focus:border-primary">
-                            <option value="last_30_days" {{ (isset($filters['time_period']) && $filters['time_period']==='last_30_days') ? 'selected' : '' }}>Last 30 Days</option>
-                            <option value="last_3_months" {{ (isset($filters['time_period']) && $filters['time_period']==='last_3_months') ? 'selected' : '' }}>Last 3 Months</option>
-                            <option value="last_6_months" {{ (isset($filters['time_period']) && $filters['time_period']==='last_6_months') ? 'selected' : '' }}>Last 6 Months</option>
-                            <option value="this_year" {{ (isset($filters['time_period']) && $filters['time_period']==='this_year') ? 'selected' : '' }}>This Year</option>
-                            <option value="all_time" {{ (isset($filters['time_period']) && $filters['time_period']==='all_time') ? 'selected' : '' }}>All Time</option>
+                            <option value="last_30_days" {{ (isset($filters['time_period']) && $filters['time_period'] === 'last_30_days') ? 'selected' : '' }}>Last 30 Days</option>
+                            <option value="last_3_months" {{ (isset($filters['time_period']) && $filters['time_period'] === 'last_3_months') ? 'selected' : '' }}>Last 3 Months</option>
+                            <option value="last_6_months" {{ (isset($filters['time_period']) && $filters['time_period'] === 'last_6_months') ? 'selected' : '' }}>Last 6 Months</option>
+                            <option value="this_year" {{ (isset($filters['time_period']) && $filters['time_period'] === 'this_year') ? 'selected' : '' }}>This Year</option>
+                            <option value="all_time" {{ (isset($filters['time_period']) && $filters['time_period'] === 'all_time') ? 'selected' : '' }}>All Time</option>
                         </select>
                     </div>
                     <div>
@@ -98,7 +95,7 @@
                             Type</label>
                         <select id="service-type" name="service_type"
                             class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-primary focus:border-primary">
-                            <option value="all" {{ (isset($filters['service_type']) && $filters['service_type']==='all') ? 'selected' : '' }}>All Services</option>
+                            <option value="all" {{ (isset($filters['service_type']) && $filters['service_type'] === 'all') ? 'selected' : '' }}>All Services</option>
                             @if(isset($eventNames) && count($eventNames))
                                 @foreach($eventNames as $name)
                                     <option value="{{ $name }}" {{ (isset($filters['service_type']) && $filters['service_type'] === $name) ? 'selected' : '' }}>{{ $name }}</option>
@@ -110,9 +107,9 @@
                         <label for="attendance-status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                         <select id="attendance-status" name="attendance_status"
                             class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-primary focus:border-primary">
-                            <option value="all" {{ (isset($filters['attendance_status']) && $filters['attendance_status']==='all') ? 'selected' : '' }}>All Attendance</option>
-                            <option value="present" {{ (isset($filters['attendance_status']) && $filters['attendance_status']==='present') ? 'selected' : '' }}>Present Only</option>
-                            <option value="absent" {{ (isset($filters['attendance_status']) && $filters['attendance_status']==='absent') ? 'selected' : '' }}>Absent Only</option>
+                            <option value="all" {{ (isset($filters['attendance_status']) && $filters['attendance_status'] === 'all') ? 'selected' : '' }}>All Attendance</option>
+                            <option value="present" {{ (isset($filters['attendance_status']) && $filters['attendance_status'] === 'present') ? 'selected' : '' }}>Present Only</option>
+                            <option value="absent" {{ (isset($filters['attendance_status']) && $filters['attendance_status'] === 'absent') ? 'selected' : '' }}>Absent Only</option>
                         </select>
                     </div>
                     <div class="flex items-end">
@@ -142,7 +139,8 @@
                     @endphp
                     <div class="p-4 hover:bg-gray-50 transition attendance-card">
                         <div class="flex items-start">
-                            <div class="{{ $isPresent ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }} p-2 rounded text-center mr-4 flex-shrink-0">
+                            <div
+                                class="{{ $isPresent ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }} p-2 rounded text-center mr-4 flex-shrink-0">
                                 <div class="text-sm font-bold">{{ $day }}</div>
                                 <div class="text-xs">{{ $mon }}</div>
                             </div>

@@ -115,11 +115,6 @@
                         <i class="bi bi-calendar-check"></i>
                         <span class="md:hidden lg:block">Attendance</span>
                     </a>
-                    <a href="/member/community-group"
-                        class="{{ Request::is('member/community-group') ? 'flex items-center space-x-3 p-2 rounded-lg bg-primary bg-opacity-10 text-primary' : 'flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100' }}">
-                        <i class="bi bi-people"></i>
-                        <span class="md:hidden lg:block">Community Group</span>
-                    </a>
                     <a href="/member/announcement"
                         class="{{ Request::is('member/announcement') ? 'flex items-center space-x-3 p-2 rounded-lg bg-primary bg-opacity-10 text-primary' : 'flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100' }}">
                         <i class="bi bi-megaphone"></i>
@@ -129,11 +124,6 @@
                         class="{{ Request::is('member/sermon') ? 'flex items-center space-x-3 p-2 rounded-lg bg-primary bg-opacity-10 text-primary' : 'flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100' }}">
                         <i class="bi bi-collection-play"></i>
                         <span class="md:hidden lg:block">Sermons</span>
-                    </a>
-                    <a href="/member/messages"
-                        class="{{ Request::is('member/messages') ? 'flex items-center space-x-3 p-2 rounded-lg bg-primary bg-opacity-10 text-primary' : 'flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100' }}">
-                        <i class="bi bi-chat-left-text"></i>
-                        <span class="md:hidden lg:block">Messages</span>
                     </a>
                     <a href="/member/tasks"
                         class="{{ Request::is('member/tasks') ? 'flex items-center space-x-3 p-2 rounded-lg bg-primary bg-opacity-10 text-primary' : 'flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100' }}">
