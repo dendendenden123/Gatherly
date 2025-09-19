@@ -78,8 +78,8 @@
                     <option value="buklod">Buklod</option>
                     <option value="kadiwa">kadiwa</option>
                     <option value="binhi">Binhi</option>
-                    @forelse ($roles as $role)
-                        <option value="{{  $role }}">{{  $role }}</option>
+                    @forelse ($roleNames as $roleName)
+                        <option value="{{  $roleName }}">{{  $roleName }}</option>
                     @empty
                         <option value="">No more...</option>
                     @endforelse

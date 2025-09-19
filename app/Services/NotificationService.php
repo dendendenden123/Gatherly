@@ -2,11 +2,20 @@
 
 namespace App\Services;
 
+use App\Services\UserService;
 use App\Models\Notification;
+use App\Models\User;
+
 
 class NotificationService
 {
-    public function getNotif($request, $tab)
+
+    protected UserService $userService;
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+    public function getNotificationsByTab($request, $tab)
     {
 
         $query = Notification::query();
@@ -29,5 +38,23 @@ class NotificationService
         }
 
         return $query->latest()->paginate(5)->appends(['tab' => $tab]);
+    }
+
+    public function getUserNotifications($userId, $userAssociation = null)
+    {
+
+        $userRoles = $this->userService->getUsersRoles($userId);
+        $audiences = array_merge(['all', $userAssociation], $userRoles);
+
+        // Fetch notifications targeted to any of the user's audiences
+        $notifications = Notification::query()
+            ->when(!empty($audiences), function ($q) use ($audiences) {
+                $q->whereIn('recipient_group', $audiences);
+            })
+            ->latest()
+            ->take(15)
+            ->get();
+
+        return $notifications;
     }
 }

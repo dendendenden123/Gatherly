@@ -9,6 +9,7 @@
     <title>Grace Community | Member Portal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -119,7 +120,12 @@
                     <a href="/member/announcement"
                         class="{{ Request::is('member/announcement') ? 'flex items-center space-x-3 p-2 rounded-lg bg-primary bg-opacity-10 text-primary' : 'flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100' }}">
                         <i class="bi bi-megaphone"></i>
-                        <span class="md:hidden lg:block">Announcements</span>
+                        <span class="md:hidden lg:block">Announcements & Events</span>
+                    </a>
+                    <a href="/member/event"
+                        class="{{ Request::is('member/event') ? 'flex items-center space-x-3 p-2 rounded-lg bg-primary bg-opacity-10 text-primary' : 'flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100' }}">
+                        <i class="bi bi-calendar-event"></i>
+                        <span class="md:hidden lg:block">Events</span>
                     </a>
                     <a href="/member/sermon"
                         class="{{ Request::is('member/sermon') ? 'flex items-center space-x-3 p-2 rounded-lg bg-primary bg-opacity-10 text-primary' : 'flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100' }}">
@@ -132,7 +138,7 @@
                         <span class="md:hidden lg:block">Tasks</span>
                     </a>
                     @secretary
-                    <a href="{{ route('member.attendance.index') }}"
+                    <a href="{{ route('my.attendance') }}"
                         class="{{ Request::is('member/attendance') ? 'flex items-center space-x-3 p-2 rounded-lg bg-primary bg-opacity-10 text-primary' : 'flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100' }}">
                         <i class="bi bi-calendar-check"></i>
                         <span class="md:hidden lg:block">Manage Attendance</span>

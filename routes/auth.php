@@ -31,8 +31,7 @@ Route::middleware(['Role:9'])->controller(AttendanceController::class)->group(fu
 });
 
 
-Route::controller(MemberAttendanceController::class)->group(function () {
-    Route::get('/member/officer/attendance', 'index')->name('member.attendance.index');
+Route::controller(AttendanceController::class)->group(function () {
     Route::get('/member/my-attendance', 'showMyAttendance')->name('my.attendance');
 });
 

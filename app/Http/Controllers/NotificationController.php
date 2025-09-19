@@ -19,15 +19,15 @@ class NotificationController extends Controller
     public function index(Request $request)
     {
         $tab = $request->query('tab', 'all');
-        $notifications = $this->notificationService->getNotif($request, $tab);
+        $notifications = $this->notificationService->getNotificationsByTab($request, $tab);
         $unreadCount = Notification::where('is_read', false)->count();
         return view('admin.notifications.index', compact('notifications', 'unreadCount', 'tab'));
     }
 
     public function create()
     {
-        $roles = Role::query()->pluck('name');
-        return view('admin.notifications.create', compact('roles'));
+        $roleNames = Role::query()->pluck('name');
+        return view('admin.notifications.create', compact('roleNames'));
     }
 
     public function store(Request $request)

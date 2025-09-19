@@ -2,37 +2,52 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreAttendanceRequest;
 use App\Services\AttendanceService;
 use App\Services\EventService;
+use App\Services\UserService;
 use App\Models\Attendance;
 use App\Models\User;
+use App\Models\Event;
 
 
 class AttendanceController extends Controller
 {
     protected AttendanceService $attendanceService;
     protected EventService $eventService;
-    public function __construct(AttendanceService $attendanceService, EventService $eventService)
+    protected UserService $userService;
+    public function __construct(AttendanceService $attendanceService, EventService $eventService, UserService $userService)
     {
         $this->eventService = $eventService;
         $this->attendanceService = $attendanceService;
+        $this->userService = $userService;
     }
 
     public function index(Request $request)
     {
         $eventIdName = $this->eventService->getEventIdName();
-        $filteredAttendancesPaginated = $this->attendanceService->getFilteredAttendancesPaginated($request);
+        $attendances = $this->attendanceService->getFilteredAttendancesPaginated($request);
 
+        // Handle AJAX request
         if ($request->ajax()) {
-            $attendancesListView = view("admin.attendance.index-attendance-list", compact('filteredAttendancesPaginated', 'eventIdName'))->render();
-            return response()->json([
-                'list' => $attendancesListView
-            ]);
+            $listView = view(
+                "admin.attendance.index-attendance-list",
+                compact('attendances', 'eventIdName')
+            )->render();
+
+            return response()->json(['list' => $listView]);
         }
-        return view('admin.attendance.index', compact('filteredAttendancesPaginated', "eventIdName"));
+
+        // Choose view based on role
+        $view = in_array('Minister', $this->userService->getUsersRoles(Auth::id()))
+            ? 'admin.attendance.index'
+            : 'member.attendances.index';
+
+        return view($view, compact('attendances', 'eventIdName'));
     }
+
 
     public function show(Request $request, $id = null)
     {
@@ -128,5 +143,28 @@ class AttendanceController extends Controller
             \Log::error($e);
             return response()->json(['error' => 'something went wrong']);
         }
+    }
+
+    public function showMyAttendance(Request $request)
+    {
+        // Get filter inputs with defaults
+        $filters = [
+            'time_period' => $request->query('time_period', 'last_30_days'),
+            'attendance_status' => $request->query('attendance_status', 'all'),
+            'service_type' => $request->query('service_type', 'all'),
+        ];
+
+        // Retrieve data using the service
+        $userId = Auth::id();
+        $eventNames = Event::query()->orderBy('event_name')->pluck('event_name');
+        $attendances = $this->attendanceService->getFilteredAttendances($userId, $filters);
+        $monthlyAttendancePct = $this->attendanceService->getAttendanceRateLastMonth($userId);
+
+        return view('member.attendances.my-attendance', [
+            'eventNames' => $eventNames,
+            'attendances' => $attendances,
+            'monthlyAttendancePct' => $monthlyAttendancePct,
+            'filters' => $filters,
+        ]);
     }
 }
