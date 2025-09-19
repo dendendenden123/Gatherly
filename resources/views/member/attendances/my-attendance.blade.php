@@ -76,7 +76,7 @@
 
         <!-- Filters -->
         <div class="bg-white rounded-lg shadow p-4 mb-6">
-            <form method="GET" action="{{ route('attendance') }}">
+            <form method="GET" action="{{ route('my.attendance') }}">
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div>
                         <label for="time-period" class="block text-sm font-medium text-gray-700 mb-1">Time

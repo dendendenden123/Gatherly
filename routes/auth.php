@@ -9,10 +9,6 @@ Route::controller(MemberDashboardController::class)->group(function () {
     Route::get('/member', 'index')->name('member');
 });
 
-Route::controller(MemberAttendanceController::class)->group(function () {
-    Route::get('/member/attendance', 'index')->name('attendance');
-});
-
 Route::controller(MemberAnnouncementController::class)->group(function () {
     Route::get('/member/announcement', 'index')->name('announcement');
 });
@@ -22,5 +18,11 @@ Route::get('/member/sermon', function () {
 });
 Route::get('/member/tasks', function () {
     return view("member.tasks");
+});
+
+
+Route::controller(MemberAttendanceController::class)->group(function () {
+    Route::get('/member/my-attendance', 'showMyAttendance')->name('my.attendance');
+    Route::get('/member/officer/attendance', 'index')->name('member.attendance.index');
 });
 
