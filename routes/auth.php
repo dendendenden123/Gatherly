@@ -22,7 +22,8 @@ Route::get('/member/tasks', function () {
 
 
 Route::controller(MemberAttendanceController::class)->group(function () {
-    Route::get('/member/my-attendance', 'showMyAttendance')->name('my.attendance');
     Route::get('/member/officer/attendance', 'index')->name('member.attendance.index');
+    Route::get('/member/officer/create', 'create')->name('member.attendance.create');
+    Route::get('/member/my-attendance', 'showMyAttendance')->name('my.attendance');
 });
 

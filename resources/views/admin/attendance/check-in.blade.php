@@ -44,12 +44,12 @@
             <div class="p-6">
                 <!-- Search Section -->
 
-                <form method="GET" action="{{ route('admin.attendance.checkIn') }}"
+                <form method="GET" action="{{ route('admin.attendance.create') }}"
                     class="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Member From</label>
                         <div class="relative w-64">
-                            <select id="locale-select" name='locale' action="{{ route('admin.attendance.checkIn') }}"
+                            <select id="locale-select" name='locale' action="{{ route('admin.attendance.create') }}"
                                 class="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent">
 
                                 <option value="">-- Select Locale --</option>
@@ -134,22 +134,22 @@
                                 class="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent">
 
                                 @if($todaysScheduleEvent->isEmpty())
-                                    <option value="">No schedule event for today</option>
+                                <option value="">No schedule event for today</option>
                                 @else
-                                    <option value="">Select Event</option>
-                                    @foreach ($todaysScheduleEvent as $eventOccurrence)
-                                        <option value="{{ $eventOccurrence->id }}">
-                                            {{ $eventOccurrence->event->event_name }}
-                                            ({{$eventOccurrence->StartTimeFormatted}})
-                                        </option>
-                                    @endforeach
+                                <option value="">Select Event</option>
+                                @foreach ($todaysScheduleEvent as $eventOccurrence)
+                                <option value="{{ $eventOccurrence->id }}">
+                                    {{ $eventOccurrence->event->event_name }}
+                                    ({{$eventOccurrence->StartTimeFormatted}})
+                                </option>
+                                @endforeach
                                 @endif
                             </select>
 
                             @if($todaysScheduleEvent->isEmpty())
-                                <a href="{{ route('admin.events.create') }}" class="text-blue-500 hover:underline">
-                                    Create New One
-                                </a>
+                            <a href="{{ route('admin.events.create') }}" class="text-blue-500 hover:underline">
+                                Create New One
+                            </a>
                             @endif
 
 
@@ -223,11 +223,11 @@
         </div>
 
         <!-- Recent Check-Ins Section -->
-        <div class="check-in-recent-attendance-list mt-8">
-            @include('admin.attendance.check-in-recent-attendance-list')
+        <div class="create-recent-attendance-list mt-8">
+            @include('admin.attendance.create-recent-attendance-list')
         </div>
     </div>
 </body>
-@vite("resources/js/admin-attendance-check-in.js")
+@vite("resources/js/admin-attendance-create.js")
 
 </html>

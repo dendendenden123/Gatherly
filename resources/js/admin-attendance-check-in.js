@@ -209,7 +209,7 @@ async function recordMemberAttendance(status) {
                     }, 2000);
                 }
 
-                $(".check-in-recent-attendance-list").html(data.list);
+                $(".create-recent-attendance-list").html(data.list);
             },
             error: function (xhr, status, error) {
                 if (status !== "abort") {

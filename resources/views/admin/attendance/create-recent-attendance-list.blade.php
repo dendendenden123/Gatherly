@@ -52,7 +52,7 @@
         </table>
     </div>
     @php
-        $containerClass = "check-in-recent-attendance-list";
+        $containerClass = "create-recent-attendance-list";
     @endphp
     <x-pagination :containerClass="$containerClass" :data="$attendance" />
 </div>

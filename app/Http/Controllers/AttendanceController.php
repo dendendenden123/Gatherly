@@ -34,7 +34,7 @@ class AttendanceController extends Controller
         return view('admin.attendance.index', compact('filteredAttendancesPaginated', "eventIdName"));
     }
 
-    public function show(Request $request, $id = Auth::id())
+    public function show(Request $request, $id = null)
     {
 
         $user = User::find($id);
@@ -71,7 +71,6 @@ class AttendanceController extends Controller
 
     public function store(StoreAttendanceRequest $request)
     {
-        logger('store method reached');
         try {
             $validated = $request->validated();
             $isUserAlreadyRecorded = $this->attendanceService->isUserAlreadyRecorded($validated['user_id'], $validated['event_occurrence_id']);
@@ -87,11 +86,11 @@ class AttendanceController extends Controller
             Attendance::create($validated);
             $attendance = $this->attendanceService->getAllAttendancePaginated();
             if (method_exists($attendance, 'withPath')) {
-                $attendance->withPath(route('admin.attendance.checkIn'));
+                $attendance->withPath(route('admin.attendance.create'));
             }
 
             if ($request->ajax()) {
-                $attendancesListView = view("admin.attendance.check-in-recent-attendance-list", compact('attendance'))->render();
+                $attendancesListView = view("admin.attendance.create-recent-attendance-list", compact('attendance'))->render();
                 return response()->json([
                     'list' => $attendancesListView,
                     'message' => 'Record recorded Successfully'
@@ -104,7 +103,7 @@ class AttendanceController extends Controller
         }
     }
 
-    public function checkIn(Request $request)
+    public function create(Request $request)
     {
         try {
             $todaysScheduleEvent = $this->eventService->getTodaysScheduledEvents();
@@ -117,14 +116,14 @@ class AttendanceController extends Controller
 
             if ($request->ajax()) {
 
-                $recentAttendance = view('admin.attendance.check-in-recent-attendance-list', compact('todaysScheduleEvent', 'attendance'))->render();
+                $recentAttendance = view('admin.attendance.create-recent-attendance-list', compact('todaysScheduleEvent', 'attendance'))->render();
                 return response()->json([
                     'autoCorrctNameList' => $autoCorrectNames,
                     'list' => $recentAttendance,
                 ]);
             }
 
-            return view('admin.attendance.check-in', compact('todaysScheduleEvent', 'attendance'));
+            return view('admin.attendance.create', compact('todaysScheduleEvent', 'attendance'));
         } catch (\Exception $e) {
             \Log::error($e);
             return response()->json(['error' => 'something went wrong']);

@@ -33,6 +33,11 @@ class MemberAttendanceController extends Controller
         }
         return view('member.attendances.index', compact('filteredAttendancesPaginated', "eventIdName"));
     }
+
+    public function create()
+    {
+        return view('member.attendances.create');
+    }
     public function showMyAttendance(Request $request)
     {
         // Get filter inputs with defaults

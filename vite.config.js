@@ -11,7 +11,7 @@ export default defineConfig({
                 "resources/js/admin-attendance-index.js",
                 "resources/js/admin-events-index.js",
                 "resources/js/admin-events-create.js",
-                "resources/js/admin-attendance-check-in.js",
+                "resources/js/admin-attendance-create.js",
                 "resources/js/admin-members-index.js",
                 "resources/js/admin-reports-index.js",
                 "resources/js/admin-officers-index.js",
