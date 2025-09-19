@@ -6,8 +6,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Services\AttendanceService;
 use App\Services\EventService;
-use App\Models\Attendance;
+use App\Services\UserService;
 use App\Models\Event;
+use App\Models\User;
 
 class MemberAttendanceController extends Controller
 {
@@ -34,10 +35,6 @@ class MemberAttendanceController extends Controller
         return view('member.attendances.index', compact('filteredAttendancesPaginated', "eventIdName"));
     }
 
-    public function create()
-    {
-        return view('member.attendances.create');
-    }
     public function showMyAttendance(Request $request)
     {
         // Get filter inputs with defaults

@@ -2,9 +2,13 @@
 
 namespace App\Providers;
 
+use Auth;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Blade;
 use App\Http\Middleware\AuthAdmin;
+use App\Models\User;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,5 +31,12 @@ class AppServiceProvider extends ServiceProvider
 
         Route::middleware(['web', 'auth', AuthAdmin::class])
             ->group(base_path('routes/admin.php'));
+
+        Blade::if('secretary', function () {
+            $userId = Auth::id();
+            $loggedUser = User::with('officers')->find($userId);
+            return ($loggedUser->officers->contains('role_id', 1) ||
+                $loggedUser->officers->contains('role_id', 9));
+        });
     }
 }

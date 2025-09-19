@@ -8,7 +8,7 @@
                     <p class="text-gray-500">Monitor the attendance and engagement in real-time</p>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <a href="{{ route('member.attendance.create') }}">
+                    <a href="{{ route('admin.attendance.create') }}">
                         <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm flex items-center">
                             <i class="bi bi-plus mr-1"></i> Record Attendance
                         </button>

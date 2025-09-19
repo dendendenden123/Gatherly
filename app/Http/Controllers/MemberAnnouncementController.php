@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Services\UserService;
 use App\Models\Notification;
 use App\Models\Event;
 use Carbon\Carbon;
@@ -73,9 +74,6 @@ class MemberAnnouncementController extends Controller
             ->take(12)
             ->get();
 
-        return view('member.announcement', [
-            'events' => $events,
-            'notifications' => $notifications,
-        ]);
+        return view('member.announcement', compact('events', 'notifications'));
     }
 }

@@ -43,13 +43,6 @@ Route::controller(UserController::class)->group(function () {
 });
 
 
-// Attendance Routes
-Route::controller(AttendanceController::class)->group(function () {
-    Route::get('/admin/attendance', 'index')->name('admin.attendance');
-    Route::post('/admin/attendance/store', 'store')->name('admin.attendance.store');
-    Route::get('/admin/attendance/create', 'create')->name('admin.attendance.create');
-    Route::get('/admin/attendance/{id}', 'show')->name('admin.attendance.show');
-});
 
 // Notification Routes
 Route::controller(NotificationController::class)->group(function () {
