@@ -112,7 +112,7 @@
                         <span class="md:hidden lg:block">Dashboard</span>
                     </a>
                     <a href="/member/my-attendance"
-                        class="{{ Request::is('member/attendance') ? 'flex items-center space-x-3 p-2 rounded-lg bg-primary bg-opacity-10 text-primary' : 'flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100' }}">
+                        class="{{ Request::is('my.attendance') ? 'flex items-center space-x-3 p-2 rounded-lg bg-primary bg-opacity-10 text-primary' : 'flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100' }}">
                         <i class="bi bi-calendar-check"></i>
                         <span class="md:hidden lg:block">MY Attendance</span>
                     </a>
@@ -138,7 +138,7 @@
                         <span class="md:hidden lg:block">Tasks</span>
                     </a>
                     @secretary
-                    <a href="{{ route('my.attendance') }}"
+                    <a href="{{ route('admin.attendance') }}"
                         class="{{ Request::is('member/attendance') ? 'flex items-center space-x-3 p-2 rounded-lg bg-primary bg-opacity-10 text-primary' : 'flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100' }}">
                         <i class="bi bi-calendar-check"></i>
                         <span class="md:hidden lg:block">Manage Attendance</span>

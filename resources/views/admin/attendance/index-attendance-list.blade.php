@@ -15,7 +15,7 @@
         </tr>
     </thead>
     <tbody class="bg-white divide-y divide-gray-200">
-        @foreach($filteredAttendancesPaginated as $record)
+        @foreach($attendances as $record)
 
         <tr class="hover:bg-gray-50">
             <td class="px-6 py-4 whitespace-nowrap">
@@ -80,4 +80,4 @@
 @php
     $containerClass = "index-attendance-list";
 @endphp
-<x-pagination :containerClass="$containerClass" :data="$filteredAttendancesPaginated" />
+<x-pagination :containerClass="$containerClass" :data="$attendances" />
