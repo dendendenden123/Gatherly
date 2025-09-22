@@ -59,8 +59,8 @@
                 <label for="notificationCategory">Category</label>
                 <select id="notificationCategory" name="category">
                     <option value="announcement">General Announcement</option>
-                    <option value="event">Event Reminder</option>
-                    <option value="alert">Urgent Alert</option>
+                    <option value="reminder">Reminder</option>
+                    <option value="alert">Urgent</option>
                 </select>
             </div>
         </div>

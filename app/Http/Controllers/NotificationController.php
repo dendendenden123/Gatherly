@@ -95,9 +95,11 @@ class NotificationController extends Controller
     {
         $userId = Auth::id();
         $tab = $request->query('tab', 'all');
+
         $userAssociation = $this->userService->getUserAssociation($userId);
         $query = $this->notificationService->getUserNotifications($userId, $userAssociation);
         $notfications = $this->notificationService->getNotificationsByTab($tab, $query);
-        return view('member.notification', compact('notfications'));
+
+        return view('member.notification', compact('notfications', 'tab'));
     }
 }

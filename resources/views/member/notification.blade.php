@@ -21,28 +21,27 @@
 @section('content')
 
     <!-- Tabs Navigation -->
-    <!-- Tabs Navigation -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
         <div class="border-b border-gray-200">
             <nav class="-mb-px flex space-x-8">
+                @php
+                    $activeClasses = 'border-b-2 border-primary text-primary';
+                    $inactiveClasses = 'border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300';
+                @endphp
                 <a href="{{ route('member.notification', ['tab' => 'all']) }}"
-                    class="border-b-2 border-primary text-primary font-medium py-4 text-sm whitespace-nowrap tab-link active"
-                    data-tab="all">
+                   class="{{ $tab === 'all' ? $activeClasses : $inactiveClasses }} font-medium py-4 text-sm whitespace-nowrap">
                     All Notifications
                 </a>
                 <a href="{{ route('member.notification', ['tab' => 'unread']) }}"
-                    class="border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-medium py-4 text-sm whitespace-nowrap tab-link"
-                    data-tab="unread">
-                    Unread <span class="ml-1 bg-accent text-white text-xs px-2 py-1 rounded-full">3</span>
+                   class="{{ $tab === 'unread' ? $activeClasses : $inactiveClasses }} font-medium py-4 text-sm whitespace-nowrap">
+                    Unread
                 </a>
-                <a href="{{ route('member.notification', ['tab' => 'alert']) }}"
-                    class="border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-medium py-4 text-sm whitespace-nowrap tab-link"
-                    data-tab="alerts">
+                <a href="{{ route('member.notification', ['tab' => 'alerts']) }}"
+                   class="{{ $tab === 'alerts' ? $activeClasses : $inactiveClasses }} font-medium py-4 text-sm whitespace-nowrap">
                     Alerts
                 </a>
-                <a href="{{ route('member.notification', ['tab' => 'announcement']) }}"
-                    class="border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-medium py-4 text-sm whitespace-nowrap tab-link"
-                    data-tab="announcements">
+                <a href="{{ route('member.notification', ['tab' => 'announcements']) }}"
+                   class="{{ $tab === 'announcements' ? $activeClasses : $inactiveClasses }} font-medium py-4 text-sm whitespace-nowrap">
                     Announcements
                 </a>
             </nav>
@@ -72,158 +71,46 @@
 
         <!-- Notifications List -->
         <div class="bg-white shadow rounded-lg overflow-hidden">
-            <!-- All Notifications Tab -->
-            <div class="tab-content active" id="all-tab">
-                @forelse ($notfications as $notif)
-                    <!-- Notification Item -->
-                    <div
-                        class="border-b border-gray-200 px-6 py-4 flex items-start hover:bg-gray-50 transition-colors duration-150">
-                        <div class="flex-shrink-0 mt-1">
-                            <div class="h-10 w-10 bg-primary bg-opacity-20 rounded-full flex items-center justify-center">
-                                <i class="fas fa-bullhorn text-primary"></i>
-                            </div>
-                        </div>
-                        <div class="ml-4 flex-1">
-                            <div class="flex items-center justify-between">
-                                <h3 class="text-lg font-medium text-gray-800">{{  $notif->subject }}</h3>
-                                <span class="text-sm text-gray-500">{{  $notif->created_at?->diffForHumans() }}</span>
-                            </div>
-                            <p class="mt-1 text-gray-600">{{  $notif->message }}</p>
-                            <div class="mt-2 flex items-center text-sm text-gray-500">
-                                <span
-                                    class="bg-primary bg-opacity-10 text-primary px-2 py-1 rounded-md text-xs">{{  $notif->category }}</span>
-                                <span class="ml-3"><i class="fas fa-users mr-1"></i> {{  $notif->message }}</span>
-                            </div>
-                        </div>
-                    </div>
-                @empty
-                    <!-- Unread Notifications Tab (hidden by default) -->
-                    <div class="tab-content hidden" id="unread-tab">
-                        <!-- Unread notifications would be displayed here -->
-                        <div class="px-6 py-8 text-center">
-                            <i class="fas fa-bell text-4xl text-gray-300 mb-3"></i>
-                            <h3 class="text-lg font-medium text-gray-700">No unread notifications</h3>
-                            <p class="mt-1 text-gray-500">You're all caught up!</p>
-                        </div>
-                    </div>
-                @endforelse
-
-
+            @forelse ($notfications as $notif)
                 <!-- Notification Item -->
-                <div
-                    class="border-b border-gray-200 px-6 py-4 flex items-start hover:bg-gray-50 transition-colors duration-150">
+                <div class="border-b border-gray-200 px-6 py-4 flex items-start hover:bg-gray-50 transition-colors duration-150">
                     <div class="flex-shrink-0 mt-1">
-                        <div class="h-10 w-10 bg-accent bg-opacity-20 rounded-full flex items-center justify-center">
-                            <i class="fas fa-exclamation-triangle text-accent"></i>
+                        <div class="h-10 w-10 bg-primary bg-opacity-20 rounded-full flex items-center justify-center">
+                            <i class="fas fa-bullhorn text-primary"></i>
                         </div>
                     </div>
                     <div class="ml-4 flex-1">
                         <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-medium text-gray-800">Security Alert</h3>
-                            <span class="text-sm text-gray-500">Yesterday</span>
+                            <h3 class="text-lg font-medium text-gray-800">{{ $notif->subject }}</h3>
+                            <span class="text-sm text-gray-500">{{ $notif->created_at?->diffForHumans() }}</span>
                         </div>
-                        <p class="mt-1 text-gray-600">We detected a login attempt from a new device. If this wasn't you,
-                            please secure your account immediately.</p>
+                        <p class="mt-1 text-gray-600">{{ $notif->message }}</p>
                         <div class="mt-2 flex items-center text-sm text-gray-500">
-                            <span class="bg-accent bg-opacity-10 text-accent px-2 py-1 rounded-md text-xs">Alert</span>
-                            <span class="ml-3"><i class="fas fa-user mr-1"></i> Personal</span>
+                            <span class="bg-primary bg-opacity-10 text-primary px-2 py-1 rounded-md text-xs">{{ $notif->category }}</span>
                         </div>
                     </div>
                 </div>
-
-                <!-- Notification Item -->
-                <div
-                    class="border-b border-gray-200 px-6 py-4 flex items-start hover:bg-gray-50 transition-colors duration-150 bg-blue-50">
-                    <div class="flex-shrink-0 mt-1">
-                        <div class="h-10 w-10 bg-blue-500 bg-opacity-20 rounded-full flex items-center justify-center">
-                            <i class="fas fa-info-circle text-blue-500"></i>
-                        </div>
-                    </div>
-                    <div class="ml-4 flex-1">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-medium text-gray-800">New Feature Released</h3>
-                            <span class="text-sm text-gray-500">2 days ago</span>
-                        </div>
-                        <p class="mt-1 text-gray-600">We've released a new dashboard feature to help you track your activity
-                            more efficiently. Check it out!</p>
-                        <div class="mt-2 flex items-center text-sm text-gray-500">
-                            <span class="bg-blue-500 bg-opacity-10 text-blue-500 px-2 py-1 rounded-md text-xs">Update</span>
-                            <span class="ml-3"><i class="fas fa-users mr-1"></i> All Members</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Notification Item -->
-                <div
-                    class="border-b border-gray-200 px-6 py-4 flex items-start hover:bg-gray-50 transition-colors duration-150">
-                    <div class="flex-shrink-0 mt-1">
-                        <div class="h-10 w-10 bg-secondary bg-opacity-20 rounded-full flex items-center justify-center">
-                            <i class="fas fa-calendar-check text-secondary"></i>
-                        </div>
-                    </div>
-                    <div class="ml-4 flex-1">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-medium text-gray-800">Event Reminder</h3>
-                            <span class="text-sm text-gray-500">Last week</span>
-                        </div>
-                        <p class="mt-1 text-gray-600">Don't forget about the annual member meeting next Friday at 3:00 PM in
-                            the main conference room.</p>
-                        <div class="mt-2 flex items-center text-sm text-gray-500">
-                            <span
-                                class="bg-secondary bg-opacity-10 text-secondary px-2 py-1 rounded-md text-xs">Event</span>
-                            <span class="ml-3"><i class="fas fa-users mr-1"></i> All Members</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Unread Notifications Tab (hidden by default) -->
-            <div class="tab-content hidden" id="unread-tab">
-                <!-- Unread notifications would be displayed here -->
+            @empty
                 <div class="px-6 py-8 text-center">
                     <i class="fas fa-bell text-4xl text-gray-300 mb-3"></i>
-                    <h3 class="text-lg font-medium text-gray-700">No unread notifications</h3>
-                    <p class="mt-1 text-gray-500">You're all caught up!</p>
+                    <h3 class="text-lg font-medium text-gray-700">No notifications found</h3>
+                    <p class="mt-1 text-gray-500">Try switching tabs or check back later.</p>
                 </div>
-            </div>
-
-            <!-- Alerts Tab (hidden by default) -->
-            <div class="tab-content hidden" id="alerts-tab">
-                <!-- Alert notifications would be displayed here -->
-                <div class="px-6 py-8 text-center">
-                    <i class="fas fa-exclamation-triangle text-4xl text-gray-300 mb-3"></i>
-                    <h3 class="text-lg font-medium text-gray-700">No alerts at this time</h3>
-                    <p class="mt-1 text-gray-500">You have no alert notifications.</p>
-                </div>
-            </div>
-
-            <!-- Announcements Tab (hidden by default) -->
-            <div class="tab-content hidden" id="announcements-tab">
-                <!-- Announcement notifications would be displayed here -->
-                <div class="px-6 py-8 text-center">
-                    <i class="fas fa-bullhorn text-4xl text-gray-300 mb-3"></i>
-                    <h3 class="text-lg font-medium text-gray-700">No announcements</h3>
-                    <p class="mt-1 text-gray-500">There are no announcements at this time.</p>
-                </div>
-            </div>
+            @endforelse
         </div>
 
         <!-- Pagination -->
         <div class="mt-6 flex items-center justify-between">
             <div class="text-sm text-gray-700">
-                Showing <span class="font-medium">1</span> to <span class="font-medium">4</span> of <span
-                    class="font-medium">24</span> results
+                @php
+                    $from = $notfications->firstItem() ?? 0;
+                    $to = $notfications->lastItem() ?? 0;
+                    $total = $notfications->total() ?? 0;
+                @endphp
+                Showing <span class="font-medium">{{ $from }}</span> to <span class="font-medium">{{ $to }}</span> of <span class="font-medium">{{ $total }}</span> results
             </div>
-            <div class="flex space-x-2">
-                <button
-                    class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled>
-                    Previous
-                </button>
-                <button
-                    class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
-                    Next
-                </button>
+            <div>
+                {{ $notfications->onEachSide(1)->links() }}
             </div>
         </div>
     </main>
