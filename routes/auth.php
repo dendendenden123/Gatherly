@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\EventController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\MemberAnnouncementController;
@@ -32,6 +33,12 @@ Route::middleware(['Role:9'])->controller(AttendanceController::class)->group(fu
 
 
 Route::controller(AttendanceController::class)->group(function () {
-    Route::get('/member/my-attendance', 'showMyAttendance')->name('my.attendance');
+    Route::get('/member/attendance', 'showMyAttendance')->name('my.attendance');
 });
+
+Route::controller(EventController::class)->group(function () {
+    Route::get('/member/event', 'showMyEvents')->name('member.event');
+});
+
+
 

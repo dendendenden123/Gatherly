@@ -124,4 +124,11 @@ class EventController extends Controller
 
         }
     }
+
+    public function showMyEvents()
+    {
+        $events = Event::all();
+        $eventOccurrences = EventOccurrence::all();
+        return view('member.event', compact('events', 'eventOccurrences'));
+    }
 }
