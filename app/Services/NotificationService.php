@@ -32,6 +32,9 @@ class NotificationService
             case 'event':
                 $query->where('category', 'event');
                 break;
+            case 'reminder':
+                $query->where('category', 'reminder');
+                break;
             default:
                 // all
                 break;
