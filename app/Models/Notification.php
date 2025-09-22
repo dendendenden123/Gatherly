@@ -17,6 +17,7 @@ class Notification extends Model
         'read_at' => 'datetime',
         'scheduled_at' => 'datetime',
         'sent_at' => 'datetime',
+        'created_at' => 'datetime',
     ];
 
     public function user()

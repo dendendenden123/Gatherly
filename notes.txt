@@ -9,6 +9,7 @@ Todo
  - make the event_type dynamic  (database based)
  - add functionality to admin/dashboard buttons
  - ass event type in event view in creating event
+ -remove event notification in the notification page
  - add event type attenddee
 
 FIRST CHECKING

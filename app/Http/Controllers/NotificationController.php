@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+
 use App\Services\NotificationService;
+use App\Services\UserService;
+use Illuminate\Http\Request;
 use App\Models\Notification;
 use App\Models\Role;
 use Auth;
@@ -12,14 +14,16 @@ class NotificationController extends Controller
 {
 
     protected NotificationService $notificationService;
-    public function __construct(NotificationService $notificationService)
+    protected UserService $userService;
+    public function __construct(NotificationService $notificationService, UserService $userService)
     {
         $this->notificationService = $notificationService;
+        $this->userService = $userService;
     }
     public function index(Request $request)
     {
         $tab = $request->query('tab', 'all');
-        $notifications = $this->notificationService->getNotificationsByTab($request, $tab);
+        $notifications = $this->notificationService->getNotificationsByTab($tab);
         $unreadCount = Notification::where('is_read', false)->count();
         return view('admin.notifications.index', compact('notifications', 'unreadCount', 'tab'));
     }
@@ -85,5 +89,15 @@ class NotificationController extends Controller
         }
         Notification::whereIn('id', $ids)->delete();
         return back()->with('success', 'Selected notifications deleted');
+    }
+
+    public function viewMyNotification(Request $request)
+    {
+        $userId = Auth::id();
+        $tab = $request->query('tab', 'all');
+        $userAssociation = $this->userService->getUserAssociation($userId);
+        $query = $this->notificationService->getUserNotifications($userId, $userAssociation);
+        $notfications = $this->notificationService->getNotificationsByTab($tab, $query);
+        return view('member.notification', compact('notfications'));
     }
 }

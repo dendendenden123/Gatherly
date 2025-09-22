@@ -15,10 +15,10 @@ class NotificationService
     {
         $this->userService = $userService;
     }
-    public function getNotificationsByTab($request, $tab)
+    public function getNotificationsByTab($tab, $query = null)
     {
 
-        $query = Notification::query();
+        $query = $query ?? Notification::query();
         switch ($tab) {
             case 'unread':
                 $query->where('is_read', false);
@@ -50,10 +50,7 @@ class NotificationService
         $notifications = Notification::query()
             ->when(!empty($audiences), function ($q) use ($audiences) {
                 $q->whereIn('recipient_group', $audiences);
-            })
-            ->latest()
-            ->take(15)
-            ->get();
+            });
 
         return $notifications;
     }
