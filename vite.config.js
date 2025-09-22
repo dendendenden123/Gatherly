@@ -17,6 +17,7 @@ export default defineConfig({
                 "resources/js/admin-officers-index.js",
                 "resources/js/admin-notification-create.js",
                 "resources/js/admin-notification-index.js",
+                "resources/js/member-my-event.js",
             ],
             refresh: true,
         }),

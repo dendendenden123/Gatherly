@@ -69,7 +69,6 @@ class EventController extends Controller
             })->join(', ');
 
             if ($overlapEventCounts > 0) {
-
                 return back()->withErrors(
                     'Failed! Your event overlaps with these existing events: '
                     . $overlappingEventNames
@@ -127,8 +126,11 @@ class EventController extends Controller
 
     public function showMyEvents()
     {
-        $events = Event::all();
-        $eventOccurrences = EventOccurrence::all();
-        return view('member.event', compact('events', 'eventOccurrences'));
+        $userId = auth()->id();
+        $upcomingEvents = $this->eventService->getUpcomingEvent();
+        $attendedEvents = $this->eventService->getEventsAttendedByUser($userId);
+        $missedEvents = $this->eventService->getEventsMissedByUser($userId);
+
+        return view('member.event', compact('upcomingEvents', 'attendedEvents', 'missedEvents'));
     }
 }

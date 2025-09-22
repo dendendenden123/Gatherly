@@ -52,4 +52,41 @@ class EventService
 
         return $upcomingEvents;
     }
+
+    public function getUpcomingEvent()
+    {
+        return Event::with('event_occurrences')
+            ->whereHas('event_occurrences', function ($query) {
+                $query->where('occurrence_date', '>=', now()->toDateString())
+                    ->where('status', 'pending');
+            })
+            ->get();
+    }
+
+    public function getEventsAttendedByUser($userId)
+    {
+        return EventOccurrence::with('event', 'attendances')
+            ->whereHas('attendances', function ($attendances) use ($userId) {
+                $attendances->where('user_id', $userId)
+                    ->where('status', 'present');
+            })
+            ->get()
+            ->map(function ($eventOccurrence) {
+                return $eventOccurrence->event;
+            });
+    }
+
+    public function getEventsMissedByUser($userId)
+    {
+        return EventOccurrence::with('event', 'attendances')
+            ->whereHas('attendances', function ($attendances) use ($userId) {
+                $attendances->where('user_id', $userId)
+                    ->where('status', 'absent');
+            })
+            ->get()
+            ->map(function ($eventOccurrence) {
+                return $eventOccurrence->event;
+            });
+
+    }
 }
