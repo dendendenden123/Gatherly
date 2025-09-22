@@ -111,7 +111,7 @@
                         <i class="bi bi-house-door"></i>
                         <span class="md:hidden lg:block">Dashboard</span>
                     </a>
-                    <a href="/member/my-attendance"
+                    <a href="{{ route('my.attendance') }}"
                         class="{{ Request::is('my.attendance') ? 'flex items-center space-x-3 p-2 rounded-lg bg-primary bg-opacity-10 text-primary' : 'flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100' }}">
                         <i class="bi bi-calendar-check"></i>
                         <span class="md:hidden lg:block">MY Attendance</span>

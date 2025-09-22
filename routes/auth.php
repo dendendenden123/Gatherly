@@ -31,7 +31,6 @@ Route::middleware(['Role:9'])->controller(AttendanceController::class)->group(fu
     Route::get('/admin/attendance/{id}', 'show')->name('admin.attendance.show');
 });
 
-
 Route::controller(AttendanceController::class)->group(function () {
     Route::get('/member/attendance', 'showMyAttendance')->name('my.attendance');
 });

@@ -9,6 +9,7 @@ Todo
  - make the event_type dynamic  (database based)
  - add functionality to admin/dashboard buttons
  - ass event type in event view in creating event
+ -if event is done, also update the status of the event
 
 FIRST CHECKING
  1. Update User Status (automatic)
