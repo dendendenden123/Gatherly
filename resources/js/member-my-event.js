@@ -1,6 +1,4 @@
 $(document).ready(function () {
-    alert("es tos loade");
-
     // Set the default active tab
     let activeTab = "upcoming";
 

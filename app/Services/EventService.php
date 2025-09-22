@@ -2,10 +2,13 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\DB;
+
 use \Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use App\Models\Event;
+use App\Models\Attendance;
 use App\Models\EventOccurrence;
+
 class EventService
 {
     public function getAllEvents()
@@ -60,33 +63,29 @@ class EventService
                 $query->where('occurrence_date', '>=', now()->toDateString())
                     ->where('status', 'pending');
             })
+            ->orderByDesc('updated_at')
             ->get();
     }
 
     public function getEventsAttendedByUser($userId)
     {
-        return EventOccurrence::with('event', 'attendances')
-            ->whereHas('attendances', function ($attendances) use ($userId) {
-                $attendances->where('user_id', $userId)
-                    ->where('status', 'present');
-            })
+        return Attendance::with('event_occurrence.event')
+            ->where('user_id', $userId)
+            ->where('status', 'present')
             ->get()
-            ->map(function ($eventOccurrence) {
-                return $eventOccurrence->event;
+            ->map(function ($attendance) {
+                return $attendance->event_occurrence->event;
             });
     }
 
     public function getEventsMissedByUser($userId)
     {
-        return EventOccurrence::with('event', 'attendances')
-            ->whereHas('attendances', function ($attendances) use ($userId) {
-                $attendances->where('user_id', $userId)
-                    ->where('status', 'absent');
-            })
+        return Attendance::with('event_occurrence.event')
+            ->where('user_id', $userId)
+            ->where('status', 'absent')
             ->get()
-            ->map(function ($eventOccurrence) {
-                return $eventOccurrence->event;
+            ->map(function ($attendance) {
+                return $attendance->event_occurrence->event;
             });
-
     }
 }

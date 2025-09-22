@@ -120,7 +120,8 @@ class AttendanceService
             ]);
         }
         EventOccurrence::find($eventOccurenceId)->update([
-            'attendance_checked' => 1
+            'attendance_checked' => 1,
+            'status' => 'ended'
         ]);
     }
 

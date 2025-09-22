@@ -88,6 +88,16 @@ class Event extends Model
         return Carbon::parse($value)->format('M d, Y');
     }
 
+    public function getStartTimeAttribute($value)
+    {
+        return Carbon::createFromFormat('H:i:s', $value)->format('h:i A');
+    }
+
+    public function getEndTimeAttribute($value)
+    {
+        return $value ? Carbon::createFromFormat('H:i:s', $value)->format('h:i A') : null;
+    }
+
 
     public function scopeFilter($query, $filters)
     {
