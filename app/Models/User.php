@@ -67,6 +67,13 @@ class User extends Authenticatable
         return $this->HasMany(Notification::class);
     }
 
+    public function receivedNotifications()
+    {
+        return $this->belongsToMany(Notification::class, 'notification_user')
+            ->withPivot('read_at')
+            ->withTimestamps();
+    }
+
     //====================================
     //=== Create an officer record for the user when the user is created
     //====================================

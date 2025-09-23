@@ -20,8 +20,15 @@ class Notification extends Model
         'created_at' => 'datetime',
     ];
 
-    public function user()
+    public function sender()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function recipients()
+    {
+        return $this->belongsToMany(User::class, 'notification_user')
+            ->withPivot('read_at')
+            ->withTimestamps();
     }
 }

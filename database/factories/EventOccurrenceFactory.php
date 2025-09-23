@@ -20,8 +20,8 @@ class EventOccurrenceFactory extends Factory
         return [
             'event_id' => $this->faker->randomElement(Event::pluck('id')->toArray()),
             'occurrence_date' => $this->faker->date(),
-            'start_time' => $this->faker->optional()->Time(),
-            'end_time' => $this->faker->optional()->Time(),
+            'start_time' => $this->faker->optional()->time('H:i:s'),
+            'end_time' => $this->faker->optional()->time('H:i:s'),
             'status' => $this->faker->randomElement(['pending', 'ongoing', 'ended', 'cancelled']),
             'attendance_checked' => $this->faker->boolean(),
         ];
