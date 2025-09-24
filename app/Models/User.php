@@ -67,6 +67,11 @@ class User extends Authenticatable
         return $this->HasMany(Notification::class);
     }
 
+    public function sermons()
+    {
+        return $this->hasMany(Sermon::class);
+    }
+
     public function receivedNotifications()
     {
         return $this->belongsToMany(Notification::class, 'notification_user')

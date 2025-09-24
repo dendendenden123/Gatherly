@@ -4,10 +4,9 @@ namespace Database\Seeders;
 
 use App\Models\Attendance;
 use App\Models\Event;
-use App\Models\EventOccurrence;
-use App\Models\Officer;
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Sermon;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -105,5 +104,6 @@ class DatabaseSeeder extends Seeder
         // Create events and related data
         Event::factory(3)->create();
         Attendance::factory(5)->create();
+        Sermon::factory(5)->create();
     }
 }
