@@ -116,12 +116,6 @@
                         <i class="bi bi-calendar-check"></i>
                         <span class="md:hidden lg:block">MY Attendance</span>
                     </a>
-
-                    <a href="/member/announcement"
-                        class="{{ Request::is('member/announcement') ? 'flex items-center space-x-3 p-2 rounded-lg bg-primary bg-opacity-10 text-primary' : 'flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100' }}">
-                        <i class="bi bi-megaphone"></i>
-                        <span class="md:hidden lg:block">Announcements & Events</span>
-                    </a>
                     <a href="{{ route('member.notification') }}"
                         class="{{ Request::is('member/notification') ? 'flex items-center space-x-3 p-2 rounded-lg bg-primary bg-opacity-10 text-primary' : 'flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100' }}">
                         <i class="bi bi-calendar-event"></i>

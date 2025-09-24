@@ -29,7 +29,7 @@
                 </a>
                 <a href="{{ route('member.notification', ['tab' => 'unread']) }}"
                     class="{{ $tab === 'unread' ? $activeClasses : $inactiveClasses }} font-medium py-4 text-sm whitespace-nowrap">
-                    Unread
+                    Unread ({{ $unreadCounts }})
                 </a>
                 <a href="{{ route('member.notification', ['tab' => 'alerts']) }}"
                     class="{{ $tab === 'alerts' ? $activeClasses : $inactiveClasses }} font-medium py-4 text-sm whitespace-nowrap">

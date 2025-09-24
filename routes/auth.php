@@ -12,10 +12,6 @@ Route::controller(MemberDashboardController::class)->group(function () {
     Route::get('/member', 'index')->name('member');
 });
 
-Route::controller(MemberAnnouncementController::class)->group(function () {
-    Route::get('/member/announcement', 'index')->name('announcement');
-});
-
 Route::get('/member/sermon', function () {
     return view("member.sermon");
 });

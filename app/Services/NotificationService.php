@@ -4,7 +4,6 @@ namespace App\Services;
 
 use Auth;
 use App\Services\UserService;
-use App\Models\Notification;
 use App\Models\User;
 
 
@@ -12,14 +11,17 @@ class NotificationService
 {
 
     protected UserService $userService;
+    protected $userId;
+    protected $user;
     public function __construct(UserService $userService)
     {
         $this->userService = $userService;
+        $this->userId = Auth::id();
+        $this->user = User::find($this->userId);
     }
     public function getNotificationsByTab($tab, $query = null)
     {
-        $user = User::find(Auth::id());
-        $query = $query ?? $user->receivedNotifications();
+        $query = $query ?? $this->user->receivedNotifications();
         switch ($tab) {
             case 'unread':
                 $query->wherePivot('read_at', null);
@@ -41,22 +43,18 @@ class NotificationService
                 break;
         }
 
-        return $query->latest()->paginate(5)->appends(['tab' => $tab]);
+        return $query->orderByDesc('notifications.created_at')->paginate(5)->appends(['tab' => $tab]);
     }
 
     public function getUserNotifications($userId, $userAssociation = null)
     {
-
         $userRoles = $this->userService->getUsersRoles($userId);
         $audiences = array_merge(['all', $userAssociation], $userRoles);
 
-        // Fetch notifications targeted to any of the user's audiences
-        $notifications = Notification::query()
+        return $this->user->receivedNotifications()
             ->when(!empty($audiences), function ($q) use ($audiences) {
                 $q->whereIn('recipient_group', $audiences);
             });
-
-        return $notifications;
     }
 
     public function getUserUnreadNotif($userId)
@@ -65,5 +63,12 @@ class NotificationService
         return $user->receivedNotifications()
             ->wherePivot('read_at', null)
             ->get();
+    }
+
+    public function markAllNotificationsAsRead()
+    {
+        $unreadNotifIds = $this->user->receivedNotifications()->wherePivot('read_at', null)->pluck('notifications.id');
+        $this->user->receivedNotifications()
+            ->updateExistingPivot($unreadNotifIds, ['read_at' => now()]);
     }
 }

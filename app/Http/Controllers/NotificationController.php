@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\Services\NotificationService;
 use App\Services\UserService;
 use App\Models\Notification;
@@ -65,10 +66,7 @@ class NotificationController extends Controller
 
     public function markAllRead()
     {
-        $unreadNotifIds = $this->user->receivedNotifications()->wherePivot('read_at', null)->pluck('notifications.id');
-        $this->user->receivedNotifications()
-            ->updateExistingPivot($unreadNotifIds, ['read_at' => now()]);
-
+        $this->notificationService->markAllNotificationsAsRead();
         return back()->with('success', 'All notifications marked as read');
     }
 
@@ -98,13 +96,17 @@ class NotificationController extends Controller
 
     public function viewMyNotification(Request $request)
     {
-        $userId = Auth::id();
-        $tab = $request->query('tab', 'all');
+        $previousUrl = url()->previous();
+        if (Str::contains($previousUrl, 'tab=unread')) {
+            $this->notificationService->markAllNotificationsAsRead();
+        }
 
-        $userAssociation = $this->userService->getUserAssociation($userId);
-        $query = $this->notificationService->getUserNotifications($userId, $userAssociation);
+        $tab = $request->query('tab', 'all');
+        $userAssociation = $this->userService->getUserAssociation($this->userId);
+        $query = $this->notificationService->getUserNotifications($this->userId, $userAssociation);
+        $unreadCounts = $this->notificationService->getUserUnreadNotif($this->userId)->count();
         $notfications = $this->notificationService->getNotificationsByTab($tab, $query);
 
-        return view('member.notification', compact('notfications', 'tab'));
+        return view('member.notification', compact('notfications', 'tab', 'unreadCounts'));
     }
 }
