@@ -116,7 +116,7 @@
             <div class="nav-item {{ request()->is('admin/officers') ? 'active' : '' }}">
                 <a href="{{ route('admin.officers') }}" class="text-decoration-none text-reset">
                     <i class="fas fa-user-tie"></i>
-                    <span>Officers</span>
+                    <span>Users</span>
                 </a>
             </div>
             <div
