@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 
+
+use Illuminate\Http\Request;
 use App\Services\NotificationService;
 use App\Services\UserService;
-use Illuminate\Http\Request;
 use App\Models\Notification;
 use App\Models\Role;
+use App\Models\User;
 use Auth;
 
 class NotificationController extends Controller
@@ -15,16 +17,21 @@ class NotificationController extends Controller
 
     protected NotificationService $notificationService;
     protected UserService $userService;
+    protected $user;
+    protected $userId;
     public function __construct(NotificationService $notificationService, UserService $userService)
     {
         $this->notificationService = $notificationService;
         $this->userService = $userService;
+        $this->userId = Auth::id();
+        $this->user = User::find($this->userId);
     }
     public function index(Request $request)
     {
         $tab = $request->query('tab', 'all');
         $notifications = $this->notificationService->getNotificationsByTab($tab);
-        $unreadCount = Notification::where('is_read', false)->count();
+        $unreadCount = $this->notificationService->getUserUnreadNotif($this->userId)->count();
+
         return view('admin.notifications.index', compact('notifications', 'unreadCount', 'tab'));
     }
 
@@ -46,7 +53,7 @@ class NotificationController extends Controller
 
         Notification::create([
             'recipient_group' => $validated['recipient_group'] ?? null,
-            'sender_id' => Auth::user()->id,
+            'sender_id' => $this->userId,
             'subject' => $validated['subject'],
             'message' => $validated['message'],
             'category' => $validated['category'] ?? null,
@@ -58,20 +65,18 @@ class NotificationController extends Controller
 
     public function markAllRead()
     {
-        Notification::where('is_read', false)->update([
-            'is_read' => true,
-            'read_at' => now(),
-        ]);
+        $unreadNotifIds = $this->user->receivedNotifications()->wherePivot('read_at', null)->pluck('notifications.id');
+        $this->user->receivedNotifications()
+            ->updateExistingPivot($unreadNotifIds, ['read_at' => now()]);
+
         return back()->with('success', 'All notifications marked as read');
     }
 
     public function markRead(Notification $notification)
     {
-        if (!$notification->is_read) {
-            $notification->is_read = true;
-            $notification->read_at = now();
-            $notification->save();
-        }
+        $this->user->receivedNotifications()
+            ->updateExistingPivot($notification->id, ['read_at' => now()]);
+
         return back()->with('success', 'Notification marked as read');
     }
 

@@ -15,8 +15,8 @@ return new class extends Migration {
     {
         Schema::create('notification_user', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class)->constrained()->onDelete('cascade')->onUpdate('cascade');
-            $table->foreignIdFor(Notification::class)->constrained()->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
+            $table->foreignIdFor(Notification::class)->constrained()->onDelete('cascade');
             $table->timestamp('read_at')->nullable();
             $table->timestamps();
         });

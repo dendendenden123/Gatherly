@@ -18,7 +18,6 @@ return new class extends Migration {
             $table->string('subject');
             $table->text('message');
             $table->string('category')->nullable();
-            $table->timestamp('read_at')->nullable();
             $table->timestamp('sent_at')->nullable();
             $table->timestamps();
         });

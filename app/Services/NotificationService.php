@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Auth;
 use App\Services\UserService;
 use App\Models\Notification;
 use App\Models\User;
@@ -17,11 +18,11 @@ class NotificationService
     }
     public function getNotificationsByTab($tab, $query = null)
     {
-
-        $query = $query ?? Notification::query();
+        $user = User::find(Auth::id());
+        $query = $query ?? $user->receivedNotifications();
         switch ($tab) {
             case 'unread':
-                $query->where('is_read', false);
+                $query->wherePivot('read_at', null);
                 break;
             case 'alerts':
                 $query->where('category', 'alert');
@@ -56,5 +57,13 @@ class NotificationService
             });
 
         return $notifications;
+    }
+
+    public function getUserUnreadNotif($userId)
+    {
+        $user = User::find($userId);
+        return $user->receivedNotifications()
+            ->wherePivot('read_at', null)
+            ->get();
     }
 }

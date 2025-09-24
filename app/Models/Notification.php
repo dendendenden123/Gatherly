@@ -31,4 +31,12 @@ class Notification extends Model
             ->withPivot('read_at')
             ->withTimestamps();
     }
+
+    protected static function booted()
+    {
+        static::created(function ($notification) {
+            $usersId = User::pluck('id')->toArray();
+            $notification->recipients()->attach($usersId, ['read_at' => null]);
+        });
+    }
 }
