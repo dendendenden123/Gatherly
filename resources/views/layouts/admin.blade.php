@@ -86,10 +86,23 @@
                 </a>
             </div>
             <div
+                class="nav-item {{ request()->is('admin/sermons') || request()->is('admin/sermons/*') ? 'active' : '' }}">
+                <a href="{{ route('admin.sermons.index') }}" class="text-decoration-none text-reset">
+                    <i class="fas fa-users"></i>
+                    <span>Sermons</span>
+                </a>
+            </div>
+            <div
                 class="nav-item {{ request()->is('admin/members') || request()->is('admin/members/*') ? 'active' : '' }}">
                 <a href="{{ route('admin.members') }}" class="text-decoration-none text-reset">
                     <i class="fas fa-users"></i>
                     <span>Members</span>
+                </a>
+            </div>
+            <div class="nav-item {{ request()->is('admin/officers') ? 'active' : '' }}">
+                <a href="{{ route('admin.officers') }}" class="text-decoration-none text-reset">
+                    <i class="fas fa-user-tie"></i>
+                    <span>Users</span>
                 </a>
             </div>
             <div
@@ -97,12 +110,6 @@
                 <a href="{{ route('admin.attendance') }}" class="text-decoration-none text-reset">
                     <i class="fas fa-calendar-check"></i>
                     <span>Attendance</span>
-                </a>
-            </div>
-            <div class="nav-item {{ request()->is('admin/reports') ? 'active' : '' }}">
-                <a href="{{ route('admin.reports') }}" class="text-decoration-none text-reset">
-                    <i class="fas fa-chart-bar"></i>
-                    <span>Reports</span>
                 </a>
             </div>
             <div
@@ -113,12 +120,7 @@
                 </a>
             </div>
 
-            <div class="nav-item {{ request()->is('admin/officers') ? 'active' : '' }}">
-                <a href="{{ route('admin.officers') }}" class="text-decoration-none text-reset">
-                    <i class="fas fa-user-tie"></i>
-                    <span>Users</span>
-                </a>
-            </div>
+
             <div
                 class="nav-item {{ request()->is('admin/events') || request()->is('admin/events/*') ? 'active' : '' }}">
                 <a href="{{ route('admin.events.index') }}" class="text-decoration-none text-reset">
@@ -126,10 +128,10 @@
                     <span>Events</span>
                 </a>
             </div>
-            <div class="nav-item {{ request()->is('admin/settings') ? 'active' : '' }}">
-                <a href="#" class="text-decoration-none text-reset">
-                    <i class="fas fa-cog"></i>
-                    <span>Settings</span>
+            <div class="nav-item {{ request()->is('admin/reports') ? 'active' : '' }}">
+                <a href="{{ route('admin.reports') }}" class="text-decoration-none text-reset">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Reports</span>
                 </a>
             </div>
             <div class="nav-item {{ request()->is('logout') ? 'active' : '' }}">

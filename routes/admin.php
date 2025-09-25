@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\SermonController;
 use App\Models\Report;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -42,8 +43,6 @@ Route::controller(UserController::class)->group(function () {
     Route::delete('/admin/members/destroy/{id}', 'destroy')->name('admin.members.destroy');
 });
 
-
-
 // Notification Routes
 Route::controller(NotificationController::class)->group(function () {
     Route::get('/admin/notifications', 'index')->name('admin.notifications.index');
@@ -72,4 +71,10 @@ Route::controller(EventController::class)->group(function () {
     Route::get('/admin/events/show/{id}', 'show')->name('admin.events.show');
     Route::get('admin/events/edit/{id}', 'edit')->name('admin.events.edit');
     Route::put('admin/events/update/{id}', 'update')->name('admin.events.update');
+});
+
+//Events Routes
+Route::controller(SermonController::class)->group(function () {
+    Route::get('/admin/sermons/', 'index')->name('admin.sermons.index');
+    Route::get('/admin/sermons/create', 'create')->name('admin.sermons.create');
 });
