@@ -72,9 +72,10 @@ Route::controller(EventController::class)->group(function () {
     Route::get('admin/events/edit/{id}', 'edit')->name('admin.events.edit');
     Route::put('admin/events/update/{id}', 'update')->name('admin.events.update');
 });
-
-//Events Routes
+// Sermons Routes
 Route::controller(SermonController::class)->group(function () {
     Route::get('/admin/sermons/', 'index')->name('admin.sermons.index');
     Route::get('/admin/sermons/create', 'create')->name('admin.sermons.create');
+    Route::post('/admin/sermons/store', 'store')->name('admin.sermons.store');
+    Route::post('/admin/sermons/upload-video', 'uploadVideo')->name('admin.sermons.uploadVideo');
 });

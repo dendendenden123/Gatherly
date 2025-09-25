@@ -7,109 +7,9 @@
     <title>Add New Sermon - Admin Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href={{ asset('css/admin/sermons/create.css') }}>
     <script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/ckeditor.js"></script>
-    <style>
-        .form-section {
-            transition: all 0.3s ease;
-        }
-
-        .form-section.collapsed {
-            margin-bottom: 0;
-        }
-
-        .form-section.collapsed .section-content {
-            display: none;
-        }
-
-        .section-header {
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .section-header:hover {
-            background-color: #f9fafb;
-        }
-
-        .required::after {
-            content: " *";
-            color: #e74c3c;
-        }
-
-        .file-upload-area {
-            border: 2px dashed #d1d5db;
-            transition: all 0.3s ease;
-        }
-
-        .file-upload-area.dragover {
-            border-color: #2ecc71;
-            background-color: #f0f9f0;
-        }
-
-        .preview-image {
-            max-height: 200px;
-            object-fit: cover;
-        }
-
-        .tag-input-container {
-            border: 1px solid #d1d5db;
-            border-radius: 0.375rem;
-            padding: 0.5rem;
-            min-height: 42px;
-        }
-
-        .tag {
-            display: inline-flex;
-            align-items: center;
-            background-color: #e8f5e8;
-            color: #2ecc71;
-            padding: 0.25rem 0.5rem;
-            border-radius: 9999px;
-            margin: 0.125rem;
-            font-size: 0.875rem;
-        }
-
-        .tag-remove {
-            margin-left: 0.25rem;
-            cursor: pointer;
-            color: #27ae60;
-        }
-
-        .tag-input {
-            border: none;
-            outline: none;
-            flex: 1;
-            min-width: 120px;
-        }
-
-        /* Custom color scheme */
-        .bg-primary {
-            background-color: #2ecc71;
-        }
-
-        .bg-secondary {
-            background-color: #27ae60;
-        }
-
-        .text-primary {
-            color: #2ecc71;
-        }
-
-        .text-secondary {
-            color: #27ae60;
-        }
-
-        .border-primary {
-            border-color: #2ecc71;
-        }
-
-        .focus\:ring-primary:focus {
-            --tw-ring-color: rgb(46 204 113 / 0.5);
-        }
-
-        .hover\:bg-primary:hover {
-            background-color: #2ecc71;
-        }
-    </style>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 
 <body class="bg-gray-50 min-h-screen">
@@ -164,7 +64,9 @@
         <div id="form-messages" class="hidden mb-6 p-4 rounded-lg"></div>
 
         <!-- Sermon Creation Form -->
-        <form id="sermon-form" class="bg-white rounded-xl shadow-sm overflow-hidden">
+        <form id="sermon-form" method="POST" action="{{ route('admin.sermons.store') }}"
+            class="bg-white rounded-xl shadow-sm overflow-hidden">
+            @csrf
             <!-- Basic Information Section -->
             <div class="form-section border-b border-gray-200">
                 <div class="section-header p-6 bg-gray-50 flex justify-between items-center">
@@ -194,11 +96,16 @@
                             <select id="preacher" name="preacher_id" required
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
                                 <option value="">Select a preacher</option>
-                                <option value="1">Pastor John Smith</option>
-                                <option value="2">Rev. Sarah Johnson</option>
-                                <option value="3">Dr. Michael Brown</option>
-                                <option value="4">Guest Speaker</option>
-                                <option value="0">Other</option>
+                                @forelse ($preachers as $preacher)
+                                    <option value="{{ $preacher->id }}">
+                                        {{ $preacher->first_name . ' ' . $preacher->last_name}}
+                                    </option>
+                                @empty
+                                    <option value="" diabled>
+                                        No Minister assigned
+                                    </option>
+                                @endforelse
+
                             </select>
                         </div>
 
@@ -316,201 +223,7 @@
             </div>
         </form>
     </div>
-
-    <script>
-        // Form section collapse/expand functionality
-        document.querySelectorAll('.section-header').forEach(header => {
-            header.addEventListener('click', function () {
-                const section = this.parentElement;
-                const icon = this.querySelector('i');
-
-                section.classList.toggle('collapsed');
-
-                if (section.classList.contains('collapsed')) {
-                    icon.classList.remove('fa-chevron-down');
-                    icon.classList.add('fa-chevron-right');
-                } else {
-                    icon.classList.remove('fa-chevron-right');
-                    icon.classList.add('fa-chevron-down');
-                }
-            });
-        });
-
-        // Thumbnail upload functionality
-        const thumbnailUpload = document.getElementById('thumbnail-upload');
-        const thumbnailInput = document.getElementById('thumbnail');
-        const thumbnailPreview = document.getElementById('thumbnail-preview');
-        const previewImage = document.getElementById('preview-image');
-        const removeThumbnail = document.getElementById('remove-thumbnail');
-
-        thumbnailUpload.addEventListener('click', () => {
-            thumbnailInput.click();
-        });
-
-        thumbnailUpload.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            thumbnailUpload.classList.add('dragover');
-        });
-
-        thumbnailUpload.addEventListener('dragleave', () => {
-            thumbnailUpload.classList.remove('dragover');
-        });
-
-        thumbnailUpload.addEventListener('drop', (e) => {
-            e.preventDefault();
-            thumbnailUpload.classList.remove('dragover');
-
-            if (e.dataTransfer.files.length) {
-                thumbnailInput.files = e.dataTransfer.files;
-                handleThumbnailSelection(e.dataTransfer.files[0]);
-            }
-        });
-
-        thumbnailInput.addEventListener('change', (e) => {
-            if (e.target.files.length) {
-                handleThumbnailSelection(e.target.files[0]);
-            }
-        });
-
-        function handleThumbnailSelection(file) {
-            if (file.type.startsWith('image/')) {
-                const reader = new FileReader();
-
-                reader.onload = (e) => {
-                    previewImage.src = e.target.result;
-                    thumbnailPreview.classList.remove('hidden');
-                };
-
-                reader.readAsDataURL(file);
-            } else {
-                showMessage('Please select a valid image file.', 'error');
-            }
-        }
-
-        removeThumbnail.addEventListener('click', () => {
-            thumbnailInput.value = '';
-            thumbnailPreview.classList.add('hidden');
-        });
-
-        // File browse buttons
-        document.getElementById('browse-audio').addEventListener('click', () => {
-            document.getElementById('audio_file').click();
-        });
-
-        document.getElementById('browse-video').addEventListener('click', () => {
-            document.getElementById('video_file').click();
-        });
-
-        document.getElementById('audio_file').addEventListener('change', (e) => {
-            document.getElementById('audio_file_name').value = e.target.files[0]?.name || 'No file selected';
-        });
-
-        document.getElementById('video_file').addEventListener('change', (e) => {
-            document.getElementById('video_file_name').value = e.target.files[0]?.name || 'No file selected';
-        });
-
-        // Tag functionality
-        const tagInput = document.getElementById('tag-input');
-        const tagContainer = document.querySelector('.tag-input-container');
-        let tags = [];
-
-        tagInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && tagInput.value.trim() !== '') {
-                e.preventDefault();
-                addTag(tagInput.value.trim());
-                tagInput.value = '';
-            }
-        });
-
-        // Suggested tags
-        document.querySelectorAll('.tag-suggestion').forEach(suggestion => {
-            suggestion.addEventListener('click', () => {
-                addTag(suggestion.textContent);
-            });
-        });
-
-        function addTag(tagText) {
-            if (tags.includes(tagText)) return;
-
-            tags.push(tagText);
-
-            const tagElement = document.createElement('span');
-            tagElement.className = 'tag';
-            tagElement.innerHTML = `
-                ${tagText}
-                <span class="tag-remove" data-tag="${tagText}">
-                    <i class="fas fa-times"></i>
-                </span>
-            `;
-
-            tagContainer.insertBefore(tagElement, tagInput);
-
-            // Add remove functionality
-            tagElement.querySelector('.tag-remove').addEventListener('click', (e) => {
-                e.stopPropagation();
-                removeTag(tagText, tagElement);
-            });
-        }
-
-        function removeTag(tagText, tagElement) {
-            tags = tags.filter(tag => tag !== tagText);
-            tagElement.remove();
-        }
-
-        // Form submission
-        document.getElementById('sermon-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            // Basic validation
-            const title = document.getElementById('title').value;
-            const preacher = document.getElementById('preacher').value;
-            const datePreached = document.getElementById('date_preached').value;
-
-            if (!title || !preacher || !datePreached) {
-                showMessage('Please fill in all required fields.', 'error');
-                return;
-            }
-
-            // In a real application, you would submit the form data to the server here
-            showMessage('Sermon created successfully!', 'success');
-
-            // Simulate redirect after success
-            setTimeout(() => {
-                window.location.href = 'sermons.html';
-            }, 2000);
-        });
-
-        // Save draft functionality
-        document.getElementById('save-draft').addEventListener('click', () => {
-            showMessage('Draft saved successfully.', 'info');
-        });
-
-        // Message display function
-        function showMessage(message, type) {
-            const messageDiv = document.getElementById('form-messages');
-            messageDiv.className = `p-4 rounded-lg ${type === 'error' ? 'bg-red-100 text-red-700' :
-                type === 'success' ? 'bg-green-100 text-green-700' :
-                    'bg-blue-100 text-blue-700'}`;
-            messageDiv.innerHTML = `
-                <div class="flex items-center">
-                    <i class="fas fa-${type === 'error' ? 'exclamation-triangle' :
-                    type === 'success' ? 'check-circle' : 'info-circle'} mr-2"></i>
-                    <span>${message}</span>
-                </div>
-            `;
-            messageDiv.classList.remove('hidden');
-
-            // Auto-hide success messages after 5 seconds
-            if (type === 'success') {
-                setTimeout(() => {
-                    messageDiv.classList.add('hidden');
-                }, 5000);
-            }
-        }
-
-        // Set today's date as default for date preached
-        document.getElementById('date_preached').valueAsDate = new Date();
-    </script>
+    @vite('resources/js/admin-sermon-create.js')
 </body>
 
 </html>
