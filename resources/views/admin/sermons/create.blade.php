@@ -10,6 +10,7 @@
     <link rel="stylesheet" href={{ asset('css/admin/sermons/create.css') }}>
     <script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/ckeditor.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body class="bg-gray-50 min-h-screen">
