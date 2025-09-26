@@ -79,6 +79,11 @@ class User extends Authenticatable
             ->withTimestamps();
     }
 
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
+
     //====================================
     //=== Create an officer record for the user when the user is created
     //====================================

@@ -7,7 +7,8 @@ use App\Models\Event;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Sermon;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Task;
+
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -102,8 +103,9 @@ class DatabaseSeeder extends Seeder
         User::factory(5)->create();
 
         // Create events and related data
-        Event::factory(3)->create();
-        Attendance::factory(5)->create();
+        // Event::factory(3)->create();
+        // Attendance::factory(5)->create();
         Sermon::factory(5)->create();
+        Task::factory(5)->create();
     }
 }

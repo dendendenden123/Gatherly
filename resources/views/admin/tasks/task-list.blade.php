@@ -1,0 +1,86 @@
+<!-- Task Table Header -->
+<div
+    class="hidden md:grid grid-cols-12 gap-4 p-4 border-b border-gray-200 bg-gray-50 text-sm font-medium text-gray-500">
+    <div class="col-span-5">Task</div>
+    <div class="col-span-2">Due Date</div>
+    <div class="col-span-2">Priority</div>
+    <div class="col-span-2">Action</div>
+</div>
+
+<!-- Task Items -->
+<div class="divide-y divide-gray-200">
+    @forelse ($tasks as $task)
+        <div class="p-4 hover:bg-gray-50 task-card transition priority-{{ $task?->priority }}">
+            <div class="grid grid-cols-12 gap-4 items-center">
+                <div class="col-span-12 md:col-span-5">
+                    <h3 class="font-medium">{{ $task?->title }}</h3>
+                    <p class="text-sm text-gray-500">{{ $task?->assignee }}</p>
+                </div>
+                <div class="col-span-6 md:col-span-2 text-sm">
+                    <div class="flex items-center">
+                        <i class="bi bi-calendar-week mr-2 text-gray-400"></i>
+                        <span class="text-gray-700">{{ \Carbon\Carbon::parse($task?->due_date)->format('M d, Y') }}</span>
+                    </div>
+                    <div class="text-xs text-red-500 mt-1">
+                        @php
+                            $due = \Carbon\Carbon::parse($task?->due_date);
+                            $now = \Carbon\Carbon::now();
+                            $diff = $now->diffInDays($due, false);
+                        @endphp
+                        @if ($diff === 1)
+                            Tomorrow
+                        @elseif ($diff === 0)
+                            Today
+                        @elseif ($diff > 1 && $diff <= 7)
+                            {{ $diff }} days left
+                        @elseif ($diff > 7 && $diff <= 30)
+                            {{ ceil($diff / 7) }} week{{ ceil($diff / 7) > 1 ? 's' : '' }} left
+                        @elseif ($diff > 30)
+                            {{ ceil($diff / 30) }} month{{ ceil($diff / 30) > 1 ? 's' : '' }} left
+                        @elseif ($diff === -1)
+                            Overdue by 1 day
+                        @elseif ($diff < -1 && $diff >= -7)
+                            Overdue by {{ abs($diff) }} days
+                        @elseif ($diff < -7 && $diff >= -30)
+                            Overdue by {{ ceil(abs($diff) / 7) }} week{{ ceil(abs($diff) / 7) > 1 ? 's' : '' }}
+                        @elseif ($diff < -30)
+                            Overdue by {{ ceil(abs($diff) / 30) }} month{{ ceil(abs($diff) / 30) > 1 ? 's' : '' }}
+                        @endif
+                    </div>
+                </div>
+                <div class="col-span-6 md:col-span-2">
+                    <span
+                        class="px-2 py-1 text-xs rounded-full
+                                                                                           @if($task?->priority == 'high') bg-red-100 text-red-800
+                                                                                           @elseif($task?->priority == 'medium') bg-yellow-100 text-yellow-800
+                                                                                        @else bg-blue-100 text-blue-800
+                                                                                          @endif
+                                                                                          ">{{ ucfirst($task?->priority) }}</span>
+                </div>
+                <div class="col-span-12 md:col-span-2">
+                    <div class="w-full bg-gray-200 progress-bar">
+                        <div class="bg-primary h-full progress-bar" style="width: 30%"></div>
+                    </div>
+                    <button class="action-btn edit-btn text-primary border border-primary px-2 py-1 rounded">Edit</button>
+                    <button class="action-btn delete-btn text-accent border border-accent px-2 py-1 rounded">Delete</button>
+                </div>
+            </div>
+        </div>
+    @empty
+        <div class="p-4 hover:bg-gray-50 task-card transition priority-high">
+            <div class="grid grid-cols-12 gap-4 items-center"> <button
+                    class="action-btn edit-btn text-primary border border-primary px-2 py-1 rounded">Edit</button>
+                <button class="action-btn delete-btn text-accent border border-accent px-2 py-1 rounded">Delete</button>
+                <div class="col-span-12 md:col-span-5">
+                    <h3 class="font-medium">No more task</h3>
+                </div>
+
+            </div>
+        </div>
+    @endforelse
+</div>
+
+@php
+    $containerClass = "task-list";
+@endphp
+<x-pagination :containerClass="$containerClass" :data="$tasks" />

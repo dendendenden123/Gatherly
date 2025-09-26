@@ -3,6 +3,7 @@
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SermonController;
+use App\Http\Controllers\TaskController;
 use App\Models\Report;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -72,10 +73,23 @@ Route::controller(EventController::class)->group(function () {
     Route::get('admin/events/edit/{id}', 'edit')->name('admin.events.edit');
     Route::put('admin/events/update/{id}', 'update')->name('admin.events.update');
 });
+
 // Sermons Routes
 Route::controller(SermonController::class)->group(function () {
     Route::get('/admin/sermons/', 'index')->name('admin.sermons.index');
     Route::get('/admin/sermons/create', 'create')->name('admin.sermons.create');
     Route::post('/admin/sermons/store', 'store')->name('admin.sermons.store');
     Route::post('/admin/sermons/upload-video', 'uploadVideo')->name('admin.sermons.uploadVideo');
+});
+
+// Sermons Routes
+Route::controller(TaskController::class)->group(function () {
+    Route::get('/admin/tasks/', 'index')->name('admin.tasks.index');
+    // Route::get('/admin/tasks/', 'show')->name('admin.tasks.show');
+    // Route::get('/admin/tasks/create', 'create')->name('admin.tasks.create');
+    // Route::post('/admin/tasks/store', 'store')->name('admin.tasks.store');
+    // Route::get('/admin/tasks/edit', 'edit')->name('admin.tasks.edit');
+    // Route::put('/admin/tasks/update', 'update')->name('admin.tasks.update');
+    // Route::delete('/admin/tasks/delete', 'delete')->name('admin.tasks.delete');
+    // Route::delete('/admin/tasks/bulkDelete', 'bulkDelete')->name('admin.tasks.bulkDelete');
 });
