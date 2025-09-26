@@ -16,7 +16,7 @@ class OfficerController extends Controller
     public function __construct(OfficerService $officerService, UserService $userService)
     {
         $this->officerService = $officerService;
-        $this->usersCollection = $this->userService->getAllUsers();
+        $this->userService = $userService;
     }
 
     public function index()

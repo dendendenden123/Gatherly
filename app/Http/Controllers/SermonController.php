@@ -59,15 +59,14 @@ class SermonController extends Controller
 
     public function create()
     {
-
-        $preachers = User::with('officers')->whereHas('officers', fn($officer) => $officer->where('role_id', 1))->get(['id', 'first_name', 'last_name']);
+        $preachers = User::with('officers')
+            ->whereHas('officers', fn($officer) =>
+                $officer->where('role_id', 1))->get(['id', 'first_name', 'last_name']);
         return view('admin.sermons.create', compact('preachers'));
     }
 
     public function store(Request $request)
     {
-        // Validate incoming form. We accept either a direct video URL or a URL that was
-        // produced by the async upload step. Exactly one is required.
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
@@ -76,13 +75,6 @@ class SermonController extends Controller
             'date_preached' => ['required', 'date'],
             'tags' => ['nullable', 'string', 'max:1024'],
         ]);
-
-        // Enforce that at least one of video_url is provided
-        if (empty($validated['video_url'])) {
-            return back()
-                ->withInput()
-                ->withErrors(['video_url' => 'Please provide a video URL or upload a video file.']);
-        }
 
         $sermon = new Sermon();
         $sermon->title = $validated['title'];

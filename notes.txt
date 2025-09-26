@@ -11,6 +11,7 @@ Todo
  - ass event type in event view in creating event
  -remove event notification in the notification page
  - add event type attenddee
+ -fix users module. can add and edit roles
 
 FIRST CHECKING
  1. Update User Status (automatic)

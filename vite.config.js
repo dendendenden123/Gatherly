@@ -18,7 +18,7 @@ export default defineConfig({
                 "resources/js/admin-notification-create.js",
                 "resources/js/admin-notification-index.js",
                 "resources/js/member-my-event.js",
-                "resources/jsadmin-sermon-create.js",
+                "resources/js/admin-sermon-create.js",
             ],
             refresh: true,
         }),
