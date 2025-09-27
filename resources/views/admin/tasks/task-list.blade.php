@@ -49,20 +49,44 @@
                     </div>
                 </div>
                 <div class="col-span-6 md:col-span-2">
-                    <span
-                        class="px-2 py-1 text-xs rounded-full
-                                                                                           @if($task?->priority == 'high') bg-red-100 text-red-800
-                                                                                           @elseif($task?->priority == 'medium') bg-yellow-100 text-yellow-800
-                                                                                        @else bg-blue-100 text-blue-800
-                                                                                          @endif
-                                                                                          ">{{ ucfirst($task?->priority) }}</span>
+                    <span class=`px-2 py-1 text-xs rounded-full @if($task?->priority == 'high') bg-red-100 text-red-800
+                    @elseif($task?->priority == 'medium') bg-yellow-100 text-yellow-800 @else bg-blue-100 text-blue-800
+                        @endif `>{{ ucfirst($task?->priority) }}</span>
                 </div>
                 <div class="col-span-12 md:col-span-2">
                     <div class="w-full bg-gray-200 progress-bar">
                         <div class="bg-primary h-full progress-bar" style="width: 30%"></div>
                     </div>
                     <button class="action-btn edit-btn text-primary border border-primary px-2 py-1 rounded">Edit</button>
-                    <button class="action-btn delete-btn text-accent border border-accent px-2 py-1 rounded">Delete</button>
+
+                    <form action="{{ route('admin.tasks.destroy', $task->id) }}" method="POST" style="display:inline;">
+                        @csrf
+                        @method('DELETE')
+                        @if (session('success'))
+                            <script>
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success!',
+                                    text: '{{ session('success') }}',
+                                    confirmButtonColor: '#3085d6',
+                                });
+                            </script>
+                        @elseif(session('error'))
+                            <script>
+                                Swal.fire({
+                                    icon: 'Failed',
+                                    title: 'Failed!',
+                                    text: '{{ session('error') }}',
+                                    confirmButtonColor: '#d63030ff',
+                                });
+                            </script>
+                        @endif
+                        <button type="submit" id="delete_{{ $task->id }}"
+                            class="action-btn delete-btn text-accent border border-accent px-2 py-1 rounded"
+                            onclick="()=>submitDeleteBtnConfirmation(e)">
+                            Delete
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

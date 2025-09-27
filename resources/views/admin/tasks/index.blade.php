@@ -31,10 +31,10 @@
 <main class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
     <!-- Task Filters -->
     <div class="bg-white rounded-lg shadow-md p-4 mb-6">
-        <form action="{{ route('admin.tasks.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <form action="{{ route('admin.tasks.index') }}" id="filter-form" class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
                 <label for="task-status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                <select id="task-status"
+                <select id="task-status" name="status"
                     class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-primary focus:border-primary">
                     <option value="*">All Tasks</option>
                     <option value="pendig">Pending</option>
@@ -45,7 +45,7 @@
             </div>
             <div>
                 <label for="task-priority" class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
-                <select id="task-priority"
+                <select id="task-priority" name="priority"
                     class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-primary focus:border-primary">
                     <option value="*">All Priorities</option>
                     <option value="high">High</option>
@@ -55,7 +55,7 @@
             </div>
             <div>
                 <label for="task-category" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                <select id="task-category"
+                <select id="task-category" name="category"
                     class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-primary focus:border-primary">
                     <option value="*">All Members</option>
                     <option value="volunteers">All Officers/Volunteer</option>

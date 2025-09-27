@@ -90,6 +90,6 @@ Route::controller(TaskController::class)->group(function () {
     // Route::post('/admin/tasks/store', 'store')->name('admin.tasks.store');
     // Route::get('/admin/tasks/edit', 'edit')->name('admin.tasks.edit');
     // Route::put('/admin/tasks/update', 'update')->name('admin.tasks.update');
-    // Route::delete('/admin/tasks/delete', 'delete')->name('admin.tasks.delete');
+    Route::delete('/admin/tasks/destroy/{taskId}', 'destroy')->name('admin.tasks.destroy');
     // Route::delete('/admin/tasks/bulkDelete', 'bulkDelete')->name('admin.tasks.bulkDelete');
 });
