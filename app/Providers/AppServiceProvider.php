@@ -38,5 +38,11 @@ class AppServiceProvider extends ServiceProvider
             return ($loggedUser->officers->contains('role_id', 1) ||
                 $loggedUser->officers->contains('role_id', 9));
         });
+
+        Blade::if('admin', function () {
+            $userId = Auth::id();
+            $loggedUser = User::with('officers')->find($userId);
+            return ($loggedUser->officers->contains('role_id', 1));
+        });
     }
 }

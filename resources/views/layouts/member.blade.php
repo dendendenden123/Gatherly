@@ -132,7 +132,7 @@
                         <i class="bi bi-collection-play"></i>
                         <span class="md:hidden lg:block">Sermons</span>
                     </a>
-                    <a href="/member/tasks"
+                    <a href="{{ route('member.task') }}"
                         class="{{ Request::is('member/tasks') ? 'flex items-center space-x-3 p-2 rounded-lg bg-primary bg-opacity-10 text-primary' : 'flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100' }}">
                         <i class="bi bi-list-task"></i>
                         <span class="md:hidden lg:block">Tasks</span>

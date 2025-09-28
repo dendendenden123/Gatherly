@@ -69,11 +69,6 @@
                     @endforelse
                 </select>
             </div>
-            <div class="flex items-end">
-                <button class="bg-primary hover:bg-secondary text-white px-4 py-2 rounded-md w-full">
-                    Apply Filters
-                </button>
-            </div>
         </form>
     </div>
 

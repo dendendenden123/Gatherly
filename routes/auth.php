@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\MemberAnnouncementController;
@@ -38,6 +39,10 @@ Route::controller(EventController::class)->group(function () {
 
 Route::controller(NotificationController::class)->group(function () {
     Route::get('/member/notification', 'viewMyNotification')->name('member.notification');
+});
+
+Route::controller(TaskController::class)->group(function () {
+    Route::get('/member/task', 'viewMytask')->name('member.task');
 });
 
 

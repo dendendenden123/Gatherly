@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreTaskRequest;
 use App\Services\TaskService;
+use App\Services\UserService;
 use App\Models\Task;
 use App\Models\Role;
 use Throwable;
@@ -13,9 +14,13 @@ use Auth;
 class TaskController extends Controller
 {
     protected TaskService $taskService;
-    public function __construct(TaskService $taskService)
+    protected UserService $userService;
+    protected $userId;
+    public function __construct(TaskService $taskService, UserService $userService)
     {
         $this->taskService = $taskService;
+        $this->userService = $userService;
+        $this->userId = Auth::id();
     }
     public function index(Request $request)
     {
@@ -57,11 +62,9 @@ class TaskController extends Controller
     public function store(StoreTaskRequest $request)
     {
         $validated = $request->validated();
-        $taskCreatorId = Auth::id();
-
         Task::create([
             ...$validated,
-            'task_creator_id' => $taskCreatorId
+            'task_creator_id' => $this->userId
         ]);
         return redirect()->back()->with('success', 'Task created successfully!');
     }
@@ -81,13 +84,13 @@ class TaskController extends Controller
 
         $task->update([
             ...$validated,
-            'task_creator_id' => $taskCreatorId
+            'task_creator_id' => $this->userId
         ]);
         return redirect()->back()->with('success', 'Task updated successfully!');
     }
 
 
-    public function destroy(Request $request, $taskId)
+    public function destroy($taskId)
     {
         try {
             Task::findOrFail($taskId)->delete();
@@ -97,5 +100,38 @@ class TaskController extends Controller
             return back()->with(['error' => 'Task failed deleted']);
         }
 
+    }
+
+    public function viewMytask(Request $request)
+    {
+        $useAssoc = $this->userService->getUserAssociation($this->userId);
+        $rawTask = $this->taskService->getUserTasks($this->userId, $useAssoc);
+        $tasks = $rawTask->simplePaginate(5);
+        $totalTaskCount = $rawTask->count();
+        $pendingTaskCount = $rawTask->where('status', 'pending')->count();
+        $inProgressTaskCount = $rawTask->where('status', 'in_progress')->count();
+        $completedTaskCount = $rawTask->where('status', 'completed')->count();
+        $overdueTaskCount = $rawTask->where('status', 'overdue')->count();
+        $roleNames = Role::query()->pluck('name');
+
+        if ($request->wantsJson()) {
+            $taskList = view('admin.tasks.task-list', compact('tasks'))->render();
+            return response()->json(['taskList' => $taskList]);
+        }
+
+        if ($request->ajax()) {
+            $taskList = view('admin.tasks.task-list', compact('tasks'))->render();
+            return response()->json(['list' => $taskList]);
+        }
+
+        return view('member.tasks', compact(
+            'tasks',
+            'totalTaskCount',
+            'pendingTaskCount',
+            'inProgressTaskCount',
+            'completedTaskCount',
+            'overdueTaskCount',
+            'roleNames'
+        ));
     }
 }

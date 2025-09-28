@@ -3,8 +3,21 @@
 namespace App\Services;
 
 use App\Models\Task;
+use App\Models\User;
+use App\Services\UserService;
+use Auth;
 class TaskService
 {
+    protected UserService $userService;
+    protected $userId;
+    protected $user;
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+        $this->userId = Auth::id();
+        $this->user = User::find($this->userId);
+    }
+
     public function getFilteredTask($request)
     {
         $status = $request->input('status') == '*' ? null : $request->input('status');
@@ -17,5 +30,15 @@ class TaskService
             ->when($category, fn($task) => $task->where('assignee', $category))
             ->orderByDesc('id')
             ->simplePaginate(5);
+    }
+
+    public function getUserTasks($userId, $userAssociation = null)
+    {
+        $userRoles = $this->userService->getUsersRoles($userId);
+        $audiences = array_merge(['all', $userAssociation], $userRoles);
+
+        return Task::when(!empty($audiences), function ($q) use ($audiences) {
+            $q->whereIn('assignee', $audiences);
+        });
     }
 }
