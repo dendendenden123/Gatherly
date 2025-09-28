@@ -2,12 +2,14 @@
 
 namespace App\Providers;
 
+use App\Observers\TaskObserver;
 use Auth;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Blade;
 use App\Http\Middleware\AuthAdmin;
 use App\Models\User;
+use App\Models\Task;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -44,5 +46,7 @@ class AppServiceProvider extends ServiceProvider
             $loggedUser = User::with('officers')->find($userId);
             return ($loggedUser->officers->contains('role_id', 1));
         });
+
+        Task::observe(TaskObserver::class);
     }
 }

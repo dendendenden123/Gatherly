@@ -84,6 +84,12 @@ class User extends Authenticatable
         return $this->hasMany(Task::class);
     }
 
+    public function assignedTasks()
+    {
+        return $this->belongsToMany(Task::class)->withPivot('status', 'comment')
+            ->withTimestamps();
+    }
+
     //====================================
     //=== Create an officer record for the user when the user is created
     //====================================
