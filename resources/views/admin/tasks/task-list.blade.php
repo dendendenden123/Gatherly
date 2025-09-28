@@ -23,8 +23,8 @@
                     </div>
                     <div class="text-xs text-red-500 mt-1">
                         @php
-                            $due = \Carbon\Carbon::parse($task?->due_date);
-                            $now = \Carbon\Carbon::now();
+                            $due = $task?->due_date;
+                            $now = now();
                             $diff = $now->diffInDays($due, false);
                         @endphp
                         @if ($diff === 1)
@@ -32,19 +32,19 @@
                         @elseif ($diff === 0)
                             Today
                         @elseif ($diff > 1 && $diff <= 7)
-                            {{ $diff }} days left
+                            {{ (int) $diff }} days left
                         @elseif ($diff > 7 && $diff <= 30)
-                            {{ ceil($diff / 7) }} week{{ ceil($diff / 7) > 1 ? 's' : '' }} left
+                            {{(int) ceil($diff / 7) }} week{{ ceil($diff / 7) > 1 ? 's' : '' }} left
                         @elseif ($diff > 30)
-                            {{ ceil($diff / 30) }} month{{ ceil($diff / 30) > 1 ? 's' : '' }} left
+                            {{ (int) ceil($diff / 30) }} month{{ ceil($diff / 30) > 1 ? 's' : '' }} left
                         @elseif ($diff === -1)
                             Overdue by 1 day
                         @elseif ($diff < -1 && $diff >= -7)
-                            Overdue by {{ abs($diff) }} days
+                            Overdue by {{(int) abs($diff) }} days
                         @elseif ($diff < -7 && $diff >= -30)
-                            Overdue by {{ ceil(abs($diff) / 7) }} week{{ ceil(abs($diff) / 7) > 1 ? 's' : '' }}
+                            Overdue by {{(int) ceil(abs($diff) / 7) }} week{{ ceil(abs($diff) / 7) > 1 ? 's' : '' }}
                         @elseif ($diff < -30)
-                            Overdue by {{ ceil(abs($diff) / 30) }} month{{ ceil(abs($diff) / 30) > 1 ? 's' : '' }}
+                            Overdue by {{(int) ceil(abs($diff) / 30) }} month{{ ceil(abs($diff) / 30) > 1 ? 's' : '' }}
                         @endif
                     </div>
                 </div>

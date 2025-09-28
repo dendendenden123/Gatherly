@@ -69,13 +69,21 @@ class TaskController extends Controller
     public function edit(Request $request, $taskId)
     {
         $roleNames = Role::query()->pluck('name');
-        $task = Task::findOrFail($taskId)->first();
+        $task = Task::findOrFail($taskId);
         return view('admin.tasks.edit', compact('roleNames', 'task'));
     }
 
-    public function update(Request $request, $taskId)
+    public function update(StoreTaskRequest $request, $taskId)
     {
-        dd('hello');
+        $validated = $request->validated();
+        $task = Task::findOrFail($taskId);
+        $taskCreatorId = Auth::id();
+
+        $task->update([
+            ...$validated,
+            'task_creator_id' => $taskCreatorId
+        ]);
+        return redirect()->back()->with('success', 'Task updated successfully!');
     }
 
 

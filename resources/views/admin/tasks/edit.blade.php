@@ -126,7 +126,7 @@
                 </button>
             </a>
             <button type="submit" class="btn btn-primary">
-                <i class="fas fa-paper-plane"></i> Send Notification
+                <i class="fas fa-paper-plane"></i> Update Task
             </button>
         </div>
     </form>
