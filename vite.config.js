@@ -20,6 +20,7 @@ export default defineConfig({
                 "resources/js/member-my-event.js",
                 "resources/js/admin-sermon-create.js",
                 "resources/js/admin-tasks-index.js",
+                "resources/js/admin-tasks-create.js",
             ],
             refresh: true,
         }),

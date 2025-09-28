@@ -1,22 +1,16 @@
 <?php
 
-use App\Http\Controllers\GuestController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\OfficerController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SermonController;
-use App\Http\Controllers\TaskController;
-use App\Models\Report;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\OfficerController;
 use App\Http\Controllers\EventController;
-use App\Http\Controllers\EngagementController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\AttendanceController;
-
+use App\Http\Controllers\TaskController;
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/admin', [DashboardController::class, 'index'])->name('admin.dashboard');
-
 Route::get('/admin/members', function () {
     return view('admin.members');
 })->name('admin.members');
@@ -24,14 +18,10 @@ Route::get('/admin/members', function () {
 //Users Routes
 Route::controller(ReportController::class)->group(function () {
     Route::get('/admin/reports/', 'index')->name('admin.reports');
-    Route::get('/admin/reports/attendance-list', 'attendanceList')
-        ->name('admin.reports.attendance.list');
-    Route::get('/admin/reports/attendance-print', 'attendancePrint')
-        ->name('admin.reports.attendance.print');
-    Route::get('/admin/reports/attendance-export-csv', 'attendanceExportCsv')
-        ->name('admin.reports.attendance.export.csv');
-    Route::get('/admin/reports/attendance-export-excel', 'attendanceExportExcel')
-        ->name('admin.reports.attendance.export.excel');
+    Route::get('/admin/reports/attendance-list', 'attendanceList')->name('admin.reports.attendance.list');
+    Route::get('/admin/reports/attendance-print', 'attendancePrint')->name('admin.reports.attendance.print');
+    Route::get('/admin/reports/attendance-export-csv', 'attendanceExportCsv')->name('admin.reports.attendance.export.csv');
+    Route::get('/admin/reports/attendance-export-excel', 'attendanceExportExcel')->name('admin.reports.attendance.export.excel');
 });
 
 //Users Routes
@@ -82,14 +72,12 @@ Route::controller(SermonController::class)->group(function () {
     Route::post('/admin/sermons/upload-video', 'uploadVideo')->name('admin.sermons.uploadVideo');
 });
 
-// Sermons Routes
+// Tasks Routes
 Route::controller(TaskController::class)->group(function () {
     Route::get('/admin/tasks/', 'index')->name('admin.tasks.index');
-    // Route::get('/admin/tasks/', 'show')->name('admin.tasks.show');
-    // Route::get('/admin/tasks/create', 'create')->name('admin.tasks.create');
-    // Route::post('/admin/tasks/store', 'store')->name('admin.tasks.store');
-    // Route::get('/admin/tasks/edit', 'edit')->name('admin.tasks.edit');
-    // Route::put('/admin/tasks/update', 'update')->name('admin.tasks.update');
+    Route::get('/admin/tasks/create', 'create')->name('admin.tasks.create');
+    Route::post('/admin/tasks/store', 'store')->name('admin.tasks.store');
+    Route::get('/admin/tasks/edit/{taskId}', 'edit')->name('admin.tasks.edit');
+    Route::put('/admin/tasks/update/{taskId}', 'update')->name('admin.tasks.update');
     Route::delete('/admin/tasks/destroy/{taskId}', 'destroy')->name('admin.tasks.destroy');
-    // Route::delete('/admin/tasks/bulkDelete', 'bulkDelete')->name('admin.tasks.bulkDelete');
 });

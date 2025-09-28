@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreTaskRequest;
 use App\Services\TaskService;
 use App\Models\Task;
 use App\Models\Role;
 use Throwable;
+use Auth;
 
 class TaskController extends Controller
 {
@@ -45,6 +47,37 @@ class TaskController extends Controller
             'roleNames'
         ));
     }
+
+    public function create()
+    {
+        $roleNames = Role::query()->pluck('name');
+        return view('admin.tasks.create', compact('roleNames'));
+    }
+
+    public function store(StoreTaskRequest $request)
+    {
+        $validated = $request->validated();
+        $taskCreatorId = Auth::id();
+
+        Task::create([
+            ...$validated,
+            'task_creator_id' => $taskCreatorId
+        ]);
+        return redirect()->back()->with('success', 'Task created successfully!');
+    }
+
+    public function edit(Request $request, $taskId)
+    {
+        $roleNames = Role::query()->pluck('name');
+        $task = Task::findOrFail($taskId)->first();
+        return view('admin.tasks.edit', compact('roleNames', 'task'));
+    }
+
+    public function update(Request $request, $taskId)
+    {
+        dd('hello');
+    }
+
 
     public function destroy(Request $request, $taskId)
     {

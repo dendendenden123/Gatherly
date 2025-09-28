@@ -57,7 +57,9 @@
                     <div class="w-full bg-gray-200 progress-bar">
                         <div class="bg-primary h-full progress-bar" style="width: 30%"></div>
                     </div>
-                    <button class="action-btn edit-btn text-primary border border-primary px-2 py-1 rounded">Edit</button>
+                    <a href="{{ route('admin.tasks.edit', $task->id) }}"> <button
+                            class="action-btn edit-btn text-primary border border-primary px-2 py-1 rounded">Edit</button>
+                    </a>
 
                     <form action="{{ route('admin.tasks.destroy', $task->id) }}" method="POST" style="display:inline;">
                         @csrf
@@ -92,9 +94,7 @@
         </div>
     @empty
         <div class="p-4 hover:bg-gray-50 task-card transition priority-high">
-            <div class="grid grid-cols-12 gap-4 items-center"> <button
-                    class="action-btn edit-btn text-primary border border-primary px-2 py-1 rounded">Edit</button>
-                <button class="action-btn delete-btn text-accent border border-accent px-2 py-1 rounded">Delete</button>
+            <div class="grid grid-cols-12 gap-4 items-center">
                 <div class="col-span-12 md:col-span-5">
                     <h3 class="font-medium">No more task</h3>
                 </div>
