@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-    alert("page loaded");
     let controller;
     const taskListContainer = document.querySelector(".task-list");
     const filterForm = document.querySelector("#filter-form");

@@ -20,7 +20,7 @@
     <!-- Task Filters -->
     <!-- Task Filters -->
     <div class="bg-white rounded-lg shadow-md p-4 mb-6">
-        <form action="{{ route('admin.tasks.index') }}" id="filter-form" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <form action="{{ route('member.task') }}" id="filter-form" class="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div>
                 <label for="task-status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                 <select id="task-status" name="status"
@@ -57,11 +57,6 @@
                         <option value="">No more...</option>
                     @endforelse
                 </select>
-            </div>
-            <div class="flex items-end">
-                <button class="bg-primary hover:bg-secondary text-white px-4 py-2 rounded-md w-full">
-                    Apply Filters
-                </button>
             </div>
         </form>
     </div>
@@ -135,5 +130,5 @@
 </main>
 </div>
 
-@vite("resources/js/admin-taks-index.js")
+@vite("resources/js/admin-tasks-index.js")
 @endSection
