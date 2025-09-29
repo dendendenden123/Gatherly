@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Observers\TaskObserver;
+use App\Observers\UserObserver;
 use Auth;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
@@ -48,5 +49,6 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Task::observe(TaskObserver::class);
+        User::observe(UserObserver::class);
     }
 }
