@@ -17,6 +17,7 @@ class TaskController extends Controller
 {
     protected TaskService $taskService;
     protected UserService $userService;
+    protected $roleNames;
     protected $userId;
     protected $user;
     public function __construct(TaskService $taskService, UserService $userService)
@@ -25,6 +26,8 @@ class TaskController extends Controller
         $this->userService = $userService;
         $this->userId = Auth::id();
         $this->user = User::find($this->userId);
+        $this->roleNames = Role::query()->pluck('name');
+
     }
     public function index(Request $request)
     {
@@ -37,8 +40,7 @@ class TaskController extends Controller
         $inProgressTaskCount = (clone $taskUserTable)->where('status', 'in_progress')->count();
         $completedTaskCount = (clone $taskUserTable)->where('status', 'completed')->count();
         $overdueTaskCount = (clone $taskUserTable)->where('status', 'overdue')->count();
-        $roleNames = Role::query()->pluck('name');
-
+        $roleNames = $this->roleNames;
 
         if ($request->wantsJson()) {
             $taskList = view('admin.tasks.task-list', compact('tasks'))->render();
@@ -62,9 +64,17 @@ class TaskController extends Controller
         ));
     }
 
+    public function show($taskId)
+    {
+        $task = Task::find($taskId);
+        $assignedTask = $task->assignedUsers()->get();
+        $roleNames = $this->roleNames;
+        return view('admin.tasks.show', compact('assignedTask', 'roleNames'));
+    }
+
     public function create()
     {
-        $roleNames = Role::query()->pluck('name');
+        $roleNames = $this->roleNames;
         return view('admin.tasks.create', compact('roleNames'));
     }
 
@@ -80,7 +90,7 @@ class TaskController extends Controller
 
     public function edit(Request $request, $taskId)
     {
-        $roleNames = Role::query()->pluck('name');
+        $roleNames = $this->roleNames;
         $task = Task::findOrFail($taskId);
         return view('admin.tasks.edit', compact('roleNames', 'task'));
     }
@@ -120,7 +130,7 @@ class TaskController extends Controller
         $inProgressTaskCount = (clone $assignedTask)->where('status', 'in_progress')->count();
         $completedTaskCount = (clone $assignedTask)->where('status', 'completed')->count();
         $overdueTaskCount = (clone $assignedTask)->where('status', 'overdue')->count();
-        $roleNames = Role::query()->pluck('name');
+        $roleNames = $this->roleNames;
 
         if ($request->wantsJson()) {
             $taskList = view('admin.tasks.task-list', compact('tasks'))->render();

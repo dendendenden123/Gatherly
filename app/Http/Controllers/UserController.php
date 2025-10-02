@@ -224,19 +224,19 @@ class UserController extends Controller
     //===========================================
     public function logout()
     {
-        $user = auth()->user();
 
-        // Check if user is a Google user
-        if ($user && $user->is_google_user) {
-            // For Google users, redirect to Google logout URL
-            auth()->logout();
-            request()->session()->invalidate();
-            request()->session()->regenerateToken();
+        //  $user = auth()->user();
+        // // Check if user is a Google user
+        // if ($user && $user->is_google_user) {
+        //     // For Google users, redirect to Google logout URL
+        //     auth()->logout();
+        //     request()->session()->invalidate();
+        //     request()->session()->regenerateToken();
 
-            // Google logout URL - this will log the user out of Google as well
-            $googleLogoutUrl = 'https://accounts.google.com/logout?continue=' . urlencode(route('landing_page'));
-            return redirect($googleLogoutUrl);
-        }
+        //     // Google logout URL - this will log the user out of Google as well
+        //     $googleLogoutUrl = 'https://accounts.google.com/logout?continue=' . urlencode(route('landing_page'));
+        //     return redirect($googleLogoutUrl);
+        // }
 
         // Regular logout for non-Google users
         auth()->logout();
