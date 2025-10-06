@@ -21,6 +21,7 @@ export default defineConfig({
                 "resources/js/admin-sermon-create.js",
                 "resources/js/admin-tasks-index.js",
                 "resources/js/admin-tasks-create.js",
+                "resources/js/chat.js",
             ],
             refresh: true,
         }),
