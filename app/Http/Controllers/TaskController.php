@@ -8,7 +8,9 @@ use App\Services\TaskService;
 use App\Services\UserService;
 use App\Models\Task;
 use App\Models\Role;
+use App\Models\User;
 use Throwable;
+use DB;
 use Auth;
 
 class TaskController extends Controller
@@ -16,27 +18,27 @@ class TaskController extends Controller
     protected TaskService $taskService;
     protected UserService $userService;
     protected $userId;
+    protected $user;
     public function __construct(TaskService $taskService, UserService $userService)
     {
         $this->taskService = $taskService;
         $this->userService = $userService;
         $this->userId = Auth::id();
+        $this->user = User::find($this->userId);
     }
     public function index(Request $request)
     {
+
+        $taskUserTable = DB::table('task_user');
         $tasks = $this->taskService->getFilteredTask($request);
         $totalTaskCount = Task::count();
-        // $pendingTaskCount = Task::where('status', 'pending')->count() ;
-        // $inProgressTaskCount = Task::where('status', 'in_progress')->count();
-        // $completedTaskCount = Task::where('status', 'completed')->count();
-        // $overdueTaskCount = Task::where('status', 'overdue')->count();
-
-
-        $pendingTaskCount = 999;
-        $inProgressTaskCount = 999;
-        $completedTaskCount = 999;
-        $overdueTaskCount = 999;
+        $distributedTaskCount = (clone $taskUserTable)->count();
+        $pendingTaskCount = (clone $taskUserTable)->where('status', 'pending')->count();
+        $inProgressTaskCount = (clone $taskUserTable)->where('status', 'in_progress')->count();
+        $completedTaskCount = (clone $taskUserTable)->where('status', 'completed')->count();
+        $overdueTaskCount = (clone $taskUserTable)->where('status', 'overdue')->count();
         $roleNames = Role::query()->pluck('name');
+
 
         if ($request->wantsJson()) {
             $taskList = view('admin.tasks.task-list', compact('tasks'))->render();
@@ -51,6 +53,7 @@ class TaskController extends Controller
         return view('admin.tasks.index', compact(
             'tasks',
             'totalTaskCount',
+            'distributedTaskCount',
             'pendingTaskCount',
             'inProgressTaskCount',
             'completedTaskCount',
@@ -110,14 +113,13 @@ class TaskController extends Controller
 
     public function viewMytask(Request $request)
     {
-        $useAssoc = $this->userService->getUserAssociation($this->userId);
-        $rawTask = $this->taskService->getUserTasks($this->userId, $useAssoc);
-        $tasks = $tasks = $this->taskService->getFilteredTask($request, $rawTask);
-        $totalTaskCount = $rawTask->count();
-        $pendingTaskCount = $rawTask->where('status', 'pending')->count();
-        $inProgressTaskCount = $rawTask->where('status', 'in_progress')->count();
-        $completedTaskCount = $rawTask->where('status', 'completed')->count();
-        $overdueTaskCount = $rawTask->where('status', 'overdue')->count();
+        $assignedTask = $this->user->assignedTasks();
+        $tasks = $this->taskService->getFilteredTask($request, (clone $assignedTask));
+        $totalTaskCount = (clone $assignedTask)->count();
+        $pendingTaskCount = (clone $assignedTask)->where('status', 'pending')->count();
+        $inProgressTaskCount = (clone $assignedTask)->where('status', 'in_progress')->count();
+        $completedTaskCount = (clone $assignedTask)->where('status', 'completed')->count();
+        $overdueTaskCount = (clone $assignedTask)->where('status', 'overdue')->count();
         $roleNames = Role::query()->pluck('name');
 
         if ($request->wantsJson()) {

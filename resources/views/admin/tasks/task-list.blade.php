@@ -3,9 +3,9 @@
     class="hidden md:grid grid-cols-12 gap-4 p-4 border-b border-gray-200 bg-gray-50 text-sm font-medium text-gray-500">
     <div class="col-span-5">Task</div>
     <div class="col-span-3">Due Date</div>
-    <div class="col-span-3">Priority</div>
+    <div class="col-span-2">Priority</div>
     @admin
-    <div class="col-span-1">Action</div>
+    <div class="col-span-2">Action</div>
     @endadmin
 </div>
 
@@ -50,13 +50,13 @@
                     @endif
                 </div>
             </div>
-            <div class="col-span-6 md:col-span-3">
+            <div class="col-span-6 md:col-span-2">
                 <span class=`px-2 py-1 text-xs rounded-full @if($task?->priority == 'high') bg-red-100 text-red-800
                 @elseif($task?->priority == 'medium') bg-yellow-100 text-yellow-800 @else bg-blue-100 text-blue-800
                     @endif `>{{ ucfirst($task?->priority) }}</span>
             </div>
             @admin
-            <div class="col-span-12 md:col-span-1`">
+            <div class="col-span-12 md:col-span-2">
                 <a href="{{ route('admin.tasks.edit', $task->id) }}"> <button
                         class="action-btn edit-btn text-primary border border-primary px-2 py-1 rounded">Edit</button>
                 </a>
