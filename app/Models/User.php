@@ -81,14 +81,7 @@ class User extends Authenticatable
 
     public function createdTasks()
     {
-        return $this->hasMany(Task::class, 'task_creator_id');
-    }
-
-    public function receivedTasks()
-    {
-        return $this->belongsToMany(Task::class, 'task_user')
-            ->withPivot('comment', 'status')
-            ->withTimestamps();
+        return $this->hasMany(Task::class);
     }
 
     public function assignedTasks()

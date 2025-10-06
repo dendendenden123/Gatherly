@@ -75,6 +75,7 @@ Route::controller(SermonController::class)->group(function () {
 // Tasks Routes
 Route::controller(TaskController::class)->group(function () {
     Route::get('/admin/tasks/', 'index')->name('admin.tasks.index');
+    Route::get('/admin/tasks/show/{taskID}', 'show')->name('admin.tasks.show');
     Route::get('/admin/tasks/create', 'create')->name('admin.tasks.create');
     Route::post('/admin/tasks/store', 'store')->name('admin.tasks.store');
     Route::get('/admin/tasks/edit/{taskId}', 'edit')->name('admin.tasks.edit');

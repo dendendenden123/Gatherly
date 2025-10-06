@@ -24,7 +24,7 @@ class TaskService
         $priority = $request->input('priority') == '*' ? null : $request->input('priority');
         $category = $request->input('category') == '*' ? null : $request->input('category');
 
-        $task = $task ?? Task::query();
+        $task = $task ?? Task::with(['user:id,first_name,middle_name,last_name']);
 
         return $task
             ->when($status, fn($task) => $task->where('status', $status))

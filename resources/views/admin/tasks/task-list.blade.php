@@ -1,24 +1,51 @@
 <!-- Task Table Header -->
 <div
     class="hidden md:grid grid-cols-12 gap-4 p-4 border-b border-gray-200 bg-gray-50 text-sm font-medium text-gray-500">
-    <div class="col-span-5">Task</div>
-    <div class="col-span-3">Due Date</div>
+    <div class="col-span-2">Title</div>
+    <div class="col-span-2">Created By</div>
+    <div class="col-span-2">Description</div>
     <div class="col-span-2">Priority</div>
+    <div class="col-span-2">Due Date</div>
+    <div class="col-span-1">Created_at</div>
     @admin
-    <div class="col-span-2">Action</div>
+    <div class="col-span-1">Action</div>
     @endadmin
 </div>
 
 <!-- Task Items -->
 <div class="divide-y divide-gray-200">
     @forelse ($tasks as $task)
-    <div class="p-4 hover:bg-gray-50 task-card transition priority-{{ $task?->priority }}">
+    <div class="p-4 hover:bg-gray-50 task-card transition priority-{{ $task?->priority }}"
+        onclick="window.location.href='{{ route('admin.tasks.show', $task->id) }}'">
+
         <div class="grid grid-cols-12 gap-4 items-center">
-            <div class="col-span-12 md:col-span-5">
+
+            <!-- Task Title and Assignee -->
+            <div class="col-span-12 md:col-span-2">
                 <h3 class="font-medium">{{ $task?->title }}</h3>
                 <p class="text-sm text-gray-500">{{ $task?->assignee }}</p>
             </div>
-            <div class="col-span-6 md:col-span-3 text-sm">
+
+            <!-- Task Creator -->
+            <div class="col-span-6 md:col-span-2">
+                <span>{{ $task?->user->first_name . ' ' . $task?->user->last_name }}</span>
+            </div>
+
+            <!-- Task Description -->
+            <div class="col-span-6 md:col-span-2">
+                <span>{{ $task?->description }}</span>
+            </div>
+
+            <!-- Task Priority -->
+            <div class="col-span-6 md:col-span-2">
+                <span class=`px-2 py-1 text-xs rounded-full @if($task?->priority == 'high') bg-red-100 text-red-800
+                @elseif($task?->priority == 'medium') bg-yellow-100 text-yellow-800 @else bg-blue-100 text-blue-800
+                    @endif `>{{ ucfirst($task?->priority) }}</span>
+            </div>
+
+
+            <!-- Task Due date -->
+            <div class="col-span-6 md:col-span-2 text-sm">
                 <div class="flex items-center">
                     <i class="bi bi-calendar-week mr-2 text-gray-400"></i>
                     <span class="text-gray-700">{{ \Carbon\Carbon::parse($task?->due_date)->format('M d, Y') }}</span>
@@ -50,13 +77,16 @@
                     @endif
                 </div>
             </div>
-            <div class="col-span-6 md:col-span-2">
-                <span class=`px-2 py-1 text-xs rounded-full @if($task?->priority == 'high') bg-red-100 text-red-800
-                @elseif($task?->priority == 'medium') bg-yellow-100 text-yellow-800 @else bg-blue-100 text-blue-800
-                    @endif `>{{ ucfirst($task?->priority) }}</span>
+
+
+            <!-- Created_at -->
+            <div class="col-span-6 md:col-span-1">
+                <span>{{ $task?->created_at->format('M d, Y') }}</span>
             </div>
+
+            <!-- Action Edit and Delete -->
             @admin
-            <div class="col-span-12 md:col-span-2">
+            <div class="col-span-12 md:col-span-1">
                 <a href="{{ route('admin.tasks.edit', $task->id) }}"> <button
                         class="action-btn edit-btn text-primary border border-primary px-2 py-1 rounded">Edit</button>
                 </a>
