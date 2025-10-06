@@ -106,7 +106,7 @@ class TaskController extends Controller
     {
         $useAssoc = $this->userService->getUserAssociation($this->userId);
         $rawTask = $this->taskService->getUserTasks($this->userId, $useAssoc);
-        $tasks = $rawTask->simplePaginate(5);
+        $tasks = $tasks = $this->taskService->getFilteredTask($request, $rawTask);
         $totalTaskCount = $rawTask->count();
         $pendingTaskCount = $rawTask->where('status', 'pending')->count();
         $inProgressTaskCount = $rawTask->where('status', 'in_progress')->count();

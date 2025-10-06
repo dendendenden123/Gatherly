@@ -18,13 +18,15 @@ class TaskService
         $this->user = User::find($this->userId);
     }
 
-    public function getFilteredTask($request)
+    public function getFilteredTask($request, $task = null)
     {
         $status = $request->input('status') == '*' ? null : $request->input('status');
         $priority = $request->input('priority') == '*' ? null : $request->input('priority');
         $category = $request->input('category') == '*' ? null : $request->input('category');
 
-        return Task::query()
+        $task = $task ?? Task::query();
+
+        return $task
             ->when($status, fn($task) => $task->where('status', $status))
             ->when($priority, fn($task) => $task->where('priority', $priority))
             ->when($category, fn($task) => $task->where('assignee', $category))
