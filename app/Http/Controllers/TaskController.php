@@ -26,10 +26,16 @@ class TaskController extends Controller
     {
         $tasks = $this->taskService->getFilteredTask($request);
         $totalTaskCount = Task::count();
-        $pendingTaskCount = Task::where('status', 'pending')->count();
-        $inProgressTaskCount = Task::where('status', 'in_progress')->count();
-        $completedTaskCount = Task::where('status', 'completed')->count();
-        $overdueTaskCount = Task::where('status', 'overdue')->count();
+        // $pendingTaskCount = Task::where('status', 'pending')->count() ;
+        // $inProgressTaskCount = Task::where('status', 'in_progress')->count();
+        // $completedTaskCount = Task::where('status', 'completed')->count();
+        // $overdueTaskCount = Task::where('status', 'overdue')->count();
+
+
+        $pendingTaskCount = 999;
+        $inProgressTaskCount = 999;
+        $completedTaskCount = 999;
+        $overdueTaskCount = 999;
         $roleNames = Role::query()->pluck('name');
 
         if ($request->wantsJson()) {
