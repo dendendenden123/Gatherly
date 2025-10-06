@@ -28,7 +28,6 @@ class TaskFactory extends Factory
             ]), // since it's a group of people (string)
             'title' => $this->faker->sentence(4),
             'description' => $this->faker->optional()->paragraph(),
-            'status' => $this->faker->randomElement(['pending', 'in_progress', 'completed']),
             'priority' => $this->faker->randomElement(['high', 'medium', 'low']),
             'due_date' => $this->faker->optional()->dateTimeBetween('now', '+1 month'),
         ];

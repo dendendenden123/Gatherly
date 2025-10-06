@@ -79,9 +79,16 @@ class User extends Authenticatable
             ->withTimestamps();
     }
 
-    public function tasks()
+    public function createdTasks()
     {
-        return $this->hasMany(Task::class);
+        return $this->hasMany(Task::class, 'task_creator_id');
+    }
+
+    public function receivedTasks()
+    {
+        return $this->belongsToMany(Task::class, 'task_user')
+            ->withPivot('comment', 'status')
+            ->withTimestamps();
     }
 
     //====================================
