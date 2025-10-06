@@ -90,7 +90,7 @@ class Event extends Model
 
     public function getStartTimeAttribute($value)
     {
-        return Carbon::createFromFormat('H:i:s', $value)->format('h:i A');
+        return Carbon::createFromFormat('H:i', $value)->format('h:i A');
     }
 
     public function getEndTimeAttribute($value)
