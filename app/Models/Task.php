@@ -22,4 +22,10 @@ class Task extends Model
     {
         return $this->belongsTo(User::class, 'task_creator_id');
     }
+
+    public function assignedUsers()
+    {
+        return $this->belongsToMany(User::class)->withPivot('status', 'comment')
+            ->withTimestamps();
+    }
 }
