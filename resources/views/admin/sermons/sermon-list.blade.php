@@ -3,12 +3,32 @@
     @forelse ($sermons as $sermon)
         <div class="bg-white rounded-xl shadow sermon-card overflow-hidden flex flex-col">
             <div class="relative">
-                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
-                    alt="Sermon thumbnail" class="w-full h-48 object-cover">
+                @php
+                    $videoUrl = $sermon->video_url;
+                    $thumbnail = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80';
+                    if ($videoUrl) {
+                        if (preg_match('/(?:youtube\\.com\\/watch\\?v=|youtu\\.be\\/)([\\w-]+)/', $videoUrl, $ytMatch)) {
+                            $thumbnail = 'https://img.youtube.com/vi/' . $ytMatch[1] . '/hqdefault.jpg';
+                        } elseif (preg_match('/vimeo\\.com\\/(\\d+)/', $videoUrl, $vimeoMatch)) {
+                            $thumbnail = 'https://vumbnail.com/' . $vimeoMatch[1] . '.jpg';
+                        } elseif (
+                            strpos($videoUrl, '/storage') === 0 ||
+                            strpos($videoUrl, 'storage') === 0 ||
+                            strpos($videoUrl, '/uploads') === 0 ||
+                            (strpos($videoUrl, 'http') === 0 && !preg_match('/(youtube|vimeo)/i', $videoUrl))
+                        ) {
+                            // For uploaded videos, fallback to a public video icon
+                            $thumbnail = 'https://cdn-icons-png.flaticon.com/512/727/727245.png';
+                        }
+                    }
+                @endphp
+                <img src="{{ $thumbnail }}" alt="Sermon thumbnail" class="w-full h-48 object-cover">
                 <div
                     class="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
                     <button
-                        class="play-button bg-primary hover:bg-secondary text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg">
+                        class="play-button bg-primary hover:bg-secondary text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg"
+                        data-video-url="{{ $sermon->video_url }}" data-title="{{ $sermon->title }}"
+                        data-description="{{ $sermon->description }}">
                         <i class="fas fa-play text-2xl pl-1"></i>
                     </button>
                 </div>
@@ -73,3 +93,51 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modal = document.getElementById('video-modal');
+        const videoPlayer = document.getElementById('video-player');
+        const modalTitle = document.getElementById('modal-title');
+        const modalDescription = document.getElementById('modal-description');
+        const closeModalBtn = document.getElementById('close-modal');
+        document.querySelectorAll('.play-button').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const videoUrl = btn.getAttribute('data-video-url');
+                const title = btn.getAttribute('data-title');
+                const description = btn.getAttribute('data-description');
+                if (videoUrl) {
+                    // If YouTube or Vimeo, embed, else direct video
+                    let embedUrl = videoUrl;
+                    if (/youtube\.com|youtu\.be/.test(videoUrl)) {
+                        const match = videoUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/);
+                        if (match && match[1]) {
+                            embedUrl = `https://www.youtube.com/embed/${match[1]}`;
+                        }
+                    } else if (/vimeo\.com/.test(videoUrl)) {
+                        const match = videoUrl.match(/vimeo\.com\/(\d+)/);
+                        if (match && match[1]) {
+                            embedUrl = `https://player.vimeo.com/video/${match[1]}`;
+                        }
+                    }
+                    videoPlayer.src = embedUrl;
+                } else {
+                    videoPlayer.src = '';
+                }
+                modalTitle.textContent = title || '';
+                modalDescription.textContent = description || '';
+                modal.classList.remove('hidden');
+            });
+        });
+        closeModalBtn.addEventListener('click', function () {
+            modal.classList.add('hidden');
+            videoPlayer.src = '';
+        });
+        // Optional: close modal on outside click
+        modal.addEventListener('click', function (e) {
+            if (e.target === modal) {
+                modal.classList.add('hidden');
+                videoPlayer.src = '';
+            }
+        });
+    });
+</script>
