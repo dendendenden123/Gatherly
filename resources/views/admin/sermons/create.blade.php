@@ -69,9 +69,31 @@
         <div id="form-messages" class="hidden mb-6 p-4 rounded-lg"></div>
 
         <!-- Sermon Creation Form -->
-        <form id="sermon-form" method="POST" action="{{ route('admin.sermons.store') }}"
+        <form id="sermon-form" method="POST" action="{{ route('admin.sermons.store') }}" enctype="multipart/form-data"
             class="bg-white rounded-xl shadow-sm overflow-hidden">
+
             @csrf
+            @if (session('success'))
+                <script>
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: '{{ session('success') }}',
+                        confirmButtonColor: '#3085d6',
+                    });
+                </script>
+            @endif
+            @if ($errors->any())
+                <script>
+                    Swal.fire({
+                        icon: 'Failed',
+                        title: 'Failed!',
+                        text: '{{ $errors->first() }}',
+                        confirmButtonColor: '#d63030ff',
+                    });
+                </script>
+            @endif
+
             <!-- Basic Information Section -->
             <div class="form-section border-b border-gray-200">
                 <div class="section-header p-6 bg-gray-50 flex justify-between items-center">
@@ -87,7 +109,7 @@
                         <div class="md:col-span-2">
                             <label for="title" class="block text-sm font-medium text-gray-700 mb-1 required">Sermon
                                 Title</label>
-                            <input type="text" id="title" name="title" required
+                            <input type="text" id="title" name="title" value="{{ old('title') }}" required
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                                 placeholder="Enter a compelling title for your sermon">
                             <p class="text-xs text-gray-500 mt-1">Make it descriptive and engaging to attract listeners
@@ -118,7 +140,8 @@
                         <div>
                             <label for="date_preached"
                                 class="block text-sm font-medium text-gray-700 mb-1 required">Date Preached</label>
-                            <input type="date" id="date_preached" name="date_preached" required
+                            <input type="date" id="date_preached" name="date_preached"
+                                value="{{ old('date_preached') }}" required
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
                         </div>
 
@@ -130,7 +153,7 @@
                                 class="block text-sm font-medium text-gray-700 mb-1">Description</label>
                             <textarea id="description" name="description" rows="4"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-                                placeholder="Provide a brief description or summary of the sermon"></textarea>
+                                placeholder="Provide a brief description or summary of the sermon">{{ old('description') }}</textarea>
                         </div>
 
                     </div>
@@ -148,47 +171,15 @@
                 </div>
                 <div class="section-content p-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Thumbnail Image -->
+                        <!-- Video File Upload -->
                         <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Thumbnail Image</label>
-                            <div id="thumbnail-upload"
-                                class="file-upload-area rounded-lg p-6 text-center cursor-pointer">
-                                <i class="fas fa-image text-4xl text-gray-400 mb-2"></i>
-                                <p class="text-gray-600">Drag & drop your thumbnail image here or <span
-                                        class="text-primary font-medium">browse files</span></p>
-                                <p class="text-xs text-gray-500 mt-1">Recommended: 16:9 ratio, at least 800x450 pixels
-                                </p>
-                                <input type="file" id="thumbnail" name="thumbnail" accept="image/*" class="hidden">
-                            </div>
-                            <div id="thumbnail-preview" class="mt-4 hidden">
-                                <img id="preview-image" src="" alt="Thumbnail preview"
-                                    class="preview-image rounded-lg mx-auto">
-                                <button type="button" id="remove-thumbnail"
-                                    class="mt-2 text-red-600 hover:text-red-800 text-sm flex items-center mx-auto">
-                                    <i class="fas fa-times mr-1"></i> Remove image
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Video URL -->
-                        <div>
-                            <label for="video_url" class="block text-sm font-medium text-gray-700 mb-1">Video
-                                URL</label>
-                            <input type="url" id="video_url" name="video_url"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-                                placeholder="https://youtube.com/watch?v=...">
-                            <p class="text-xs text-gray-500 mt-1">Link to YouTube, Vimeo, or your video hosting service
-                            </p>
-                        </div>
-
-                        <!-- Video File -->
-                        <div class="md:col-span-2">
-                            <label for="video_file" class="block text-sm font-medium text-gray-700 mb-1">Video File
-                                (Alternative)</label>
+                            <label for="video_file" class="block text-sm font-medium text-gray-700 mb-1">Video
+                                file</label>
                             <div class="flex">
-                                <input type="file" id="video_file" name="video_file" accept="video/*" class="hidden">
+                                <input type="file" id="video_file" name="video_file" value="{{ old('video_file') }}"
+                                    accept="video/*" class="hidden">
                                 <input type="text" id="video_file_name" readonly
-                                    class="flex-1 px-4 py-2 border border-gray-300 rounded-l-lg border-r-0"
+                                    class="flex-1 px-4 py-2 border border-gray-300 rounded-l-lg border-r-0 bg-gray-100 cursor-not-allowed"
                                     placeholder="No file selected">
                                 <button type="button" id="browse-video"
                                     class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-r-lg border border-gray-300">
@@ -197,6 +188,9 @@
                             </div>
                             <p class="text-xs text-gray-500 mt-1">Upload MP4 or other video format if not using a URL
                                 (max 500MB)</p>
+                            <div id="video-upload-progress" class="hidden mt-2 w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -229,6 +223,27 @@
         </form>
     </div>
     @vite('resources/js/admin-sermon-create.js')
+    <script>
+        // Video file browse button logic
+        document.addEventListener('DOMContentLoaded', function () {
+            const fileInput = document.getElementById('video_file');
+            const fileNameInput = document.getElementById('video_file_name');
+            const browseBtn = document.getElementById('browse-video');
+
+            if (browseBtn && fileInput && fileNameInput) {
+                browseBtn.addEventListener('click', function () {
+                    fileInput.click();
+                });
+                fileInput.addEventListener('change', function () {
+                    if (fileInput.files.length > 0) {
+                        fileNameInput.value = fileInput.files[0].name;
+                    } else {
+                        fileNameInput.value = '';
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>

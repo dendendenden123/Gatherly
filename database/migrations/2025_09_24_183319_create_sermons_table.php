@@ -18,7 +18,6 @@ return new class extends Migration {
             $table->foreignIdFor(User::class, 'preacher_id')->nullable();
             $table->string('video_url')->nullable();
             $table->date('date_preached')->nullable();
-            $table->string('tags')->nullable();
             $table->timestamps();
         });
     }

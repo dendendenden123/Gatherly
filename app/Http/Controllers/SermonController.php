@@ -8,6 +8,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class SermonController extends Controller
 {
@@ -67,59 +68,39 @@ class SermonController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-            'preacher_id' => ['required', 'integer', 'exists:users,id'],
-            'video_url' => ['nullable', 'string', 'max:2048'],
-            'date_preached' => ['required', 'date'],
-            'tags' => ['nullable', 'string', 'max:1024'],
-        ]);
-
-        $sermon = new Sermon();
-        $sermon->title = $validated['title'];
-        $sermon->description = $validated['description'] ?? null;
-        $sermon->preacher_id = $validated['preacher_id'];
-        $sermon->video_url = $validated['video_url'];
-        $sermon->date_preached = $validated['date_preached'];
-        $sermon->tags = $validated['tags'] ?? null;
-        $sermon->save();
-
-        return redirect()
-            ->route('admin.sermons.index')
-            ->with('success', 'Sermon created successfully.');
-    }
-
-    /**
-     * Handle async video upload from the create form. Stores the video on the public disk
-     * and returns a JSON payload with the public URL that can be saved as video_url.
-     */
-    public function uploadVideo(Request $request)
-    {
-        $request->validate([
-            'video_file' => ['required', 'file', 'mimetypes:video/mp4,video/quicktime,video/x-msvideo,video/x-matroska,video/webm', 'max:512000'], // 500MB
-        ]);
-
         try {
-            $file = $request->file('video_file');
-            $path = $file->store('sermons/videos', 'public');
-            $url = Storage::disk('public')->url($path);
-
-            return response()->json([
-                'success' => true,
-                'url' => $url,
-                'path' => $path,
-                'message' => 'Video uploaded successfully.'
-            ]);
-        } catch (\Throwable $e) {
-            Log::error('Sermon video upload failed', [
-                'error' => $e->getMessage(),
+            $validated = $request->validate([
+                'title' => ['required', 'string', 'max:255'],
+                'description' => ['nullable', 'string'],
+                'preacher_id' => ['required', 'integer', 'exists:users,id'],
+                'video_file' => ['nullable', 'file', 'mimes:mp4,avi,mov,webm,wmv,flv,mkv'], // max 500MB
+                'date_preached' => ['required', 'date'],
             ]);
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to upload video. Please try again.'
-            ], 422);
+            $sermon = new Sermon();
+            $sermon->title = $validated['title'];
+            $sermon->description = $validated['description'] ?? null;
+            $sermon->preacher_id = $validated['preacher_id'];
+
+            // Handle video file upload
+            if ($request->hasFile('video_file')) {
+                $videoPath = $request->file('video_file')->store('sermons', 'public');
+                $sermon->video_url = Storage::url($videoPath);
+            } else {
+                $sermon->video_url = null;
+            }
+
+            $sermon->date_preached = $validated['date_preached'];
+            $sermon->save();
+
+            logger('success', ['data' => $sermon->toArray()]);
+
+            return redirect()
+                ->route('admin.sermons.index')
+                ->with('success', 'Sermon created successfully.');
+        } catch (Throwable $e) {
+            \Log::error('failed to upload sermons', ['error' => $e]);
+            return back()->withErrors('success', 'Sermon failed to upload.');
         }
     }
 }
