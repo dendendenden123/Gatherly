@@ -194,6 +194,7 @@ class AttendanceController extends Controller
     // Step 2: Scan / Mark Attendance
     public function scan(Request $request)
     {
+        logger('request is received', ['data' => $request->all()]);
         $request->validate(['photo' => 'required|image']);
         $imageUrl = $this->aws->uploadToS3($request->file('photo'), 'captures');
         $imageKey = parse_url($imageUrl, PHP_URL_PATH);
@@ -211,8 +212,10 @@ class AttendanceController extends Controller
             if ($user) {
                 Attendance::create([
                     'user_id' => $user->id,
+                    'event_occurrence_id' => $request['event_occurrence_id'],
                     'similarity' => $similarity,
                     'image_url' => $imageUrl,
+                    'status' => 'present',
                 ]);
                 return response()->json(['status' => 'success', 'user' => $user->name, 'similarity' => $similarity]);
             }

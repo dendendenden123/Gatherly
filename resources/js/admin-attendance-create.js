@@ -289,3 +289,214 @@ function filterNameSuggestionByLocaleCongregation() {
         });
     }, 100);
 }
+
+// AI GENERATED CODE BELOW
+// Tab switching logic
+document.addEventListener("DOMContentLoaded", function () {
+    const tabButtons = document.querySelectorAll(".tab-button");
+    const tabContents = document.querySelectorAll(".tab-content");
+
+    tabButtons.forEach((button) => {
+        button.addEventListener("click", function () {
+            const tabId = this.getAttribute("data-tab");
+
+            // Update active tab button
+            tabButtons.forEach((btn) => btn.classList.remove("active"));
+            this.classList.add("active");
+
+            // Show active tab content
+            tabContents.forEach((content) =>
+                content.classList.remove("active")
+            );
+            document.getElementById(tabId).classList.add("active");
+        });
+    });
+});
+
+// Camera modal logic
+let cameraStream = null;
+const cameraModal = document.getElementById("cameraModal");
+const openCameraBtn = document.getElementById("openCameraBtn");
+const closeCameraModal = document.getElementById("closeCameraModal");
+const cameraPreview = document.getElementById("cameraPreview");
+const cameraCanvas = document.getElementById("cameraCanvas");
+const capturePhotoBtn = document.getElementById("capturePhotoBtn");
+let scanPhotoDataUrl = null;
+const cameraError = document.getElementById("cameraError");
+
+if (openCameraBtn) {
+    openCameraBtn.addEventListener("click", async function () {
+        cameraError.classList.add("hidden");
+        cameraError.textContent = "";
+        cameraModal.classList.remove("hidden");
+        try {
+            cameraStream = await navigator.mediaDevices.getUserMedia({
+                video: {
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 },
+                },
+            });
+            cameraPreview.srcObject = cameraStream;
+        } catch (err) {
+            cameraError.textContent = "Unable to access camera: " + err.message;
+            cameraError.classList.remove("hidden");
+        }
+    });
+}
+
+if (closeCameraModal) {
+    closeCameraModal.addEventListener("click", function () {
+        cameraModal.classList.add("hidden");
+        if (cameraStream) {
+            cameraStream.getTracks().forEach((track) => track.stop());
+            cameraPreview.srcObject = null;
+        }
+    });
+}
+
+if (capturePhotoBtn) {
+    capturePhotoBtn.addEventListener("click", function () {
+        if (!cameraStream) return;
+        const width = cameraPreview.videoWidth;
+        const height = cameraPreview.videoHeight;
+        cameraCanvas.width = width;
+        cameraCanvas.height = height;
+        cameraCanvas
+            .getContext("2d")
+            .drawImage(cameraPreview, 0, 0, width, height);
+        scanPhotoDataUrl = cameraCanvas.toDataURL("image/jpeg");
+        // Hide modal and stop camera
+        cameraModal.classList.add("hidden");
+        cameraStream.getTracks().forEach((track) => track.stop());
+        cameraPreview.srcObject = null;
+        Swal.fire({
+            icon: "success",
+            title: "Photo Captured",
+            text: "Photo ready for submission.",
+            timer: 1500,
+            showConfirmButton: false,
+        });
+    });
+}
+
+// AJAX submit for forms to show pop-up without reload
+$(function () {
+    $("#enrollForm").on("submit", function (e) {
+        e.preventDefault();
+        var form = this;
+        var formData = new FormData(form);
+        var action = $(form).attr("action");
+        $.ajax({
+            url: action,
+            method: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            success: function (response) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Success",
+                    text: response.message || "Member enrolled successfully!",
+                    timer: 2000,
+                    showConfirmButton: false,
+                });
+                form.reset();
+            },
+            error: function (xhr) {
+                let msg = "An error occurred.";
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    msg = xhr.responseJSON.message;
+                }
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: msg,
+                    timer: 3000,
+                    showConfirmButton: false,
+                });
+            },
+        });
+    });
+
+    $("#scanForm").on("submit", function (e) {
+        e.preventDefault();
+        var form = this;
+        var formData = new FormData();
+        var action = $(form).attr("action");
+        // If no photo, show error
+        if (!scanPhotoDataUrl) {
+            Swal.fire({
+                icon: "error",
+                title: "No Photo",
+                text: "Please scan and capture a photo first.",
+                timer: 2000,
+                showConfirmButton: false,
+            });
+            return;
+        }
+        // Convert base64 to Blob and append as file
+        function dataURLtoFile(dataurl, filename) {
+            var arr = dataurl.split(","),
+                mime = arr[0].match(/:(.*?);/)[1],
+                bstr = atob(arr[1]),
+                n = bstr.length,
+                u8arr = new Uint8Array(n);
+            while (n--) {
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            return new File([u8arr], filename, { type: mime });
+        }
+        var photoFile = dataURLtoFile(scanPhotoDataUrl, "photo.jpg");
+        formData.append("photo", photoFile);
+        // Add CSRF token
+        formData.append("_token", $('meta[name="csrf-token"]').attr("content"));
+        var eventId = $('#scanForm select[name="event_occurrence_id"]').val();
+        formData.append("event_occurrence_id", eventId || "");
+        $.ajax({
+            url: action,
+            method: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Success",
+                    text:
+                        response.message || "Attendance scanned successfully!",
+
+                    showConfirmButton: true,
+                });
+                form.reset();
+                scanPhotoDataUrl = null;
+            },
+            error: function (xhr) {
+                let msg = "An error occurred.";
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    msg = xhr.responseJSON.message;
+                }
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: msg,
+                    timer: 3000,
+                    showConfirmButton: false,
+                });
+            },
+        });
+    });
+});
+
+// File upload preview
+document
+    .getElementById("photo-upload")
+    .addEventListener("change", function (e) {
+        const fileName = e.target.files[0]
+            ? e.target.files[0].name
+            : "No file chosen";
+        document.querySelector('label[for="photo-upload"] p').textContent =
+            fileName;
+    });
