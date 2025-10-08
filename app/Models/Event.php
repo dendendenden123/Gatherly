@@ -28,12 +28,24 @@ class Event extends Model
             $startDate = Carbon::parse($model->start_date);
             $endDate = Carbon::parse($model->end_date);
 
+            // Normalize start_time to H:i:s (24-hour) format if not null
+            $startTime = $model->start_time;
+            if ($startTime) {
+                try {
+                    // Try to parse as 12-hour or 24-hour, fallback to original if fails
+                    $startTime = Carbon::parse($startTime)->format('H:i:s');
+                } catch (\Exception $e) {
+                    // fallback: set to null if invalid
+                    $startTime = null;
+                }
+            }
+
             switch ($model->repeat) {
                 case 'once':
                     EventOccurrence::create([
                         'event_id' => $model->id,
                         'occurrence_date' => $model->start_date,
-                        'start_time' => $model->start_time,
+                        'start_time' => $startTime,
                     ]);
                     break;
 
@@ -43,7 +55,7 @@ class Event extends Model
                         EventOccurrence::create([
                             'event_id' => $model->id,
                             'occurrence_date' => $startDate->copy()->addDays($i),
-                            'start_time' => $model->start_time,
+                            'start_time' => $startTime,
                         ]);
                     }
                     break;
@@ -54,7 +66,7 @@ class Event extends Model
                         EventOccurrence::create([
                             'event_id' => $model->id,
                             'occurrence_date' => $startDate->copy()->addWeeks($i),
-                            'start_time' => $model->start_time,
+                            'start_time' => $startTime,
                         ]);
                     }
                     break;
@@ -65,7 +77,7 @@ class Event extends Model
                         EventOccurrence::create([
                             'event_id' => $model->id,
                             'occurrence_date' => $startDate->copy()->addMonths($i),
-                            'start_time' => $model->start_time,
+                            'start_time' => $startTime,
                         ]);
                     }
                     break;
@@ -75,7 +87,7 @@ class Event extends Model
                         EventOccurrence::create([
                             'event_id' => $model->id,
                             'occurrence_date' => $startDate->copy()->addYears($i),
-                            'start_time' => $model->start_time,
+                            'start_time' => $startTime,
                         ]);
                     }
                     break;
@@ -90,7 +102,20 @@ class Event extends Model
 
     public function getStartTimeAttribute($value)
     {
-        return Carbon::createFromFormat('H:i', $value)->format('h:i A');
+        if (!$value)
+            return null;
+        try {
+            // Try full time with seconds
+            return Carbon::createFromFormat('H:i:s', $value)->format('h:i A');
+        } catch (\Exception $e) {
+            try {
+                // Try time without seconds
+                return Carbon::createFromFormat('H:i', $value)->format('h:i A');
+            } catch (\Exception $e) {
+                // Fallback: return as is or null
+                return $value;
+            }
+        }
     }
 
     public function getEndTimeAttribute($value)
