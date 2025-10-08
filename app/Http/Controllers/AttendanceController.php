@@ -89,7 +89,6 @@ class AttendanceController extends Controller
 
     public function store(StoreAttendanceRequest $request)
     {
-        dd($request->all());
         try {
             $validated = $request->validated();
             $isUserAlreadyRecorded = $this->attendanceService->isUserAlreadyRecorded($validated['user_id'], $validated['event_occurrence_id']);

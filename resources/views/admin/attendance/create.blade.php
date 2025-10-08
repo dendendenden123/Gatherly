@@ -259,7 +259,7 @@
                     </div>
 
                     <!-- Search and Filters -->
-                    <form method="GET" action="{{ route('admin.attendance.create') }}" class="mb-8">
+                    <form method="GET" action="{{ route('admin.attendance.create') }}" id="manual-form" class="mb-8">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Member Locale</label>
@@ -349,7 +349,7 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2">Select Event</label>
                             <div class="flex items-center gap-4">
                                 <div class="relative flex-grow">
-                                    <select id="eventNameSelection" name="event_occurrence_id"
+                                    <select id="manualEventNameSelection" name="event_occurrence_id"
                                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent appearance-none bg-white">
                                         @if($todaysScheduleEvent->isEmpty())
                                             <option value="">No scheduled events for today</option>

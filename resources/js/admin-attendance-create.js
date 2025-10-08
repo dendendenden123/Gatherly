@@ -76,7 +76,7 @@ function handleSelectionClick(event) {
 //===================================
 function getAutoCompleteNameSuggestion(e) {
     e.preventDefault();
-    const url = $("form").attr("action");
+    const url = $("#manual-form").attr("action");
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(() => {
         // Abort previous request if still active
@@ -87,7 +87,7 @@ function getAutoCompleteNameSuggestion(e) {
         ajaxRequest = $.ajax({
             url: url,
             type: "GET",
-            data: $("form").serialize(),
+            data: $("#manual-form").serialize(),
             success: function (data) {
                 let arrList = data.autoCorrctNameList || [];
                 $("#autocomplete-results").empty();
@@ -156,7 +156,13 @@ function showInfoSelectedMember(memberData) {
 //===================================
 async function recordMemberAttendance(status) {
     const userId = $("#id-selected").text();
-    const event_occurence_id = $("#eventNameSelection").val();
+    const event_occurence_id = $("#manualEventNameSelection").val();
+
+    console.log(
+        "checking",
+        "user id: " + userId,
+        "event id: " + event_occurence_id
+    );
 
     if (
         (!userId ||
@@ -229,7 +235,7 @@ async function recordMemberAttendance(status) {
 //===Mark event as done. Create record for absent members
 //===================================
 async function markEventAsDone() {
-    const event_occurence_id = $("#eventNameSelection").val();
+    const event_occurence_id = $("#manualEventNameSelection").val();
     console.log(event_occurence_id);
     if (!event_occurence_id || event_occurence_id.length == 0) {
         return $("#responeMessage").html(`
