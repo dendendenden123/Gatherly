@@ -44,6 +44,7 @@ return new class extends Migration {
             $table->timestamp('last_login_at')->nullable();
             $table->string('google_id')->nullable()->unique();
             $table->boolean('is_google_user')->default(false);
+            $table->string('rekognition_face_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

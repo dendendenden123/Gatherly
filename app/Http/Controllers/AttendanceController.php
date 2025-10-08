@@ -8,6 +8,7 @@ use App\Http\Requests\StoreAttendanceRequest;
 use App\Services\AttendanceService;
 use App\Services\EventService;
 use App\Services\UserService;
+use App\Services\AwsRekognitionService;
 use App\Models\Attendance;
 use App\Models\User;
 use App\Models\Event;
@@ -18,11 +19,13 @@ class AttendanceController extends Controller
     protected AttendanceService $attendanceService;
     protected EventService $eventService;
     protected UserService $userService;
-    public function __construct(AttendanceService $attendanceService, EventService $eventService, UserService $userService)
+    private $aws;
+    public function __construct(AttendanceService $attendanceService, EventService $eventService, UserService $userService, AwsRekognitionService $aws)
     {
         $this->eventService = $eventService;
         $this->attendanceService = $attendanceService;
         $this->userService = $userService;
+        $this->aws = $aws;
     }
 
     public function index(Request $request)
@@ -166,5 +169,53 @@ class AttendanceController extends Controller
             'monthlyAttendancePct' => $monthlyAttendancePct,
             'filters' => $filters,
         ]);
+    }
+
+
+    public function enroll(Request $request)
+    {
+        $request->validate(['photo' => 'required|image', 'email' => 'required|email']);
+        $user = User::where('email', $request->email)->firstOrFail();
+
+        // Upload to S3
+        $imageUrl = $this->aws->uploadToS3($request->file('photo'), 'enroll');
+        $imageKey = parse_url($imageUrl, PHP_URL_PATH);
+        $imageKey = ltrim($imageKey, '/');
+
+        // Index face in Rekognition
+        $faceId = $this->aws->indexFace($imageKey, $user->id);
+
+        $user->update(['rekognition_face_id' => $faceId]);
+
+        return back()->with('success', 'Face enrolled successfully!');
+    }
+
+    // Step 2: Scan / Mark Attendance
+    public function scan(Request $request)
+    {
+        $request->validate(['photo' => 'required|image']);
+
+        $imageUrl = $this->aws->uploadToS3($request->file('photo'), 'captures');
+        $imageKey = parse_url($imageUrl, PHP_URL_PATH);
+        $imageKey = ltrim($imageKey, '/');
+
+        $match = $this->aws->searchFace($imageKey);
+
+        if ($match) {
+            $faceId = $match['Face']['FaceId'];
+            $similarity = $match['Similarity'];
+            $user = User::where('rekognition_face_id', $faceId)->first();
+
+            if ($user) {
+                Attendance::create([
+                    'user_id' => $user->id,
+                    'similarity' => $similarity,
+                    'image_url' => $imageUrl,
+                ]);
+                return response()->json(['status' => 'success', 'user' => $user->name, 'similarity' => $similarity]);
+            }
+        }
+
+        return response()->json(['status' => 'failed', 'message' => 'No match found'], 404);
     }
 }

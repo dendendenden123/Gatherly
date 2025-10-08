@@ -24,6 +24,9 @@ return new class extends Migration {
             $table->foreignId('recorded_by')->nullable()->constrained('users')->onDelete('cascade')->onUpdate('cascade');
             $table->enum('status', ['present', 'absent'])->default('absent');
             $table->string('notes')->nullable();
+            $table->timestamp('scanned_at')->default(now());
+            $table->float('similarity')->nullable();
+            $table->string('image_url')->nullable();
             $table->timestamps();
         });
     }
