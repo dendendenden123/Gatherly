@@ -89,6 +89,7 @@ class AttendanceController extends Controller
 
     public function store(StoreAttendanceRequest $request)
     {
+        dd($request->all());
         try {
             $validated = $request->validated();
             $isUserAlreadyRecorded = $this->attendanceService->isUserAlreadyRecorded($validated['user_id'], $validated['event_occurrence_id']);
@@ -194,7 +195,6 @@ class AttendanceController extends Controller
     public function scan(Request $request)
     {
         $request->validate(['photo' => 'required|image']);
-
         $imageUrl = $this->aws->uploadToS3($request->file('photo'), 'captures');
         $imageKey = parse_url($imageUrl, PHP_URL_PATH);
         $imageKey = ltrim($imageKey, '/');
@@ -205,6 +205,8 @@ class AttendanceController extends Controller
             $faceId = $match['Face']['FaceId'];
             $similarity = $match['Similarity'];
             $user = User::where('rekognition_face_id', $faceId)->first();
+
+            logger('match', ['match' => $user]);
 
             if ($user) {
                 Attendance::create([

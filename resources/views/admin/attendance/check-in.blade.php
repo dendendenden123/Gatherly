@@ -134,22 +134,22 @@
                                 class="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent">
 
                                 @if($todaysScheduleEvent->isEmpty())
-                                <option value="">No schedule event for today</option>
+                                    <option value="">No schedule event for today</option>
                                 @else
-                                <option value="">Select Event</option>
-                                @foreach ($todaysScheduleEvent as $eventOccurrence)
-                                <option value="{{ $eventOccurrence->id }}">
-                                    {{ $eventOccurrence->event->event_name }}
-                                    ({{$eventOccurrence->StartTimeFormatted}})
-                                </option>
-                                @endforeach
+                                    <option value="">Select Event</option>
+                                    @foreach ($todaysScheduleEvent as $eventOccurrence)
+                                        <option value="{{ $eventOccurrence->id }}">
+                                            {{ $eventOccurrence->event->event_name }}
+                                            ({{$eventOccurrence->StartTimeFormatted}})
+                                        </option>
+                                    @endforeach
                                 @endif
                             </select>
 
                             @if($todaysScheduleEvent->isEmpty())
-                            <a href="{{ route('admin.events.create') }}" class="text-blue-500 hover:underline">
-                                Create New One
-                            </a>
+                                <a href="{{ route('admin.events.create') }}" class="text-blue-500 hover:underline">
+                                    Create New One
+                                </a>
                             @endif
 
 

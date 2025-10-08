@@ -27,6 +27,48 @@
 
 <body class="bg-light-gray min-h-screen font-sans">
     <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- Enroll Face Form -->
+        <form id="enrollForm" method="POST" enctype="multipart/form-data"
+            action="{{ route('admin.attendance.enroll') }}" class="mb-4">
+            @csrf
+            <div class="flex flex-col md:flex-row gap-2 items-center">
+                <input type="email" name="email" placeholder="Enter Email" required class="border px-2 py-1 rounded">
+                <input type="file" name="photo" required class="border px-2 py-1 rounded">
+                <button type="submit" class="bg-primary text-white px-4 py-2 rounded">Enroll Face</button>
+            </div>
+        </form>
+        <!-- Scan Attendance Form with Camera Modal -->
+        <form id="scanForm" method="POST" enctype="multipart/form-data" action="{{ route('admin.attendance.scan') }}"
+            class="mb-8">
+            @csrf
+            <!-- Removed hidden input. Photo will be appended as a real file via JS. -->
+            <div class="flex flex-col md:flex-row gap-2 items-center">
+                <button type="button" id="openCameraBtn"
+                    class="bg-secondary text-white px-4 py-2 rounded flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 7h2l2-3h6l2 3h2a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9a2 2 0 012-2z" />
+                    </svg>
+                    Scan with Camera
+                </button>
+                <button type="submit" class="bg-primary text-white px-4 py-2 rounded">Submit Attendance</button>
+            </div>
+        </form>
+
+        <!-- Camera Modal -->
+        <div id="cameraModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 hidden">
+            <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative flex flex-col items-center">
+                <button id="closeCameraModal"
+                    class="absolute top-2 right-2 text-gray-500 hover:text-red-500 text-xl">&times;</button>
+                <h3 class="text-lg font-semibold mb-2 text-secondary">Scan Attendance - Take Photo</h3>
+                <video id="cameraPreview" autoplay playsinline
+                    class="rounded border mb-4 w-full h-64 object-cover bg-black"></video>
+                <canvas id="cameraCanvas" class="hidden"></canvas>
+                <button id="capturePhotoBtn" class="bg-primary text-white px-4 py-2 rounded">Capture Photo</button>
+                <div id="cameraError" class="text-red-500 mt-2 hidden"></div>
+            </div>
+        </div>
         <!-- Header -->
         <header class="mb-8 text-center">
             <h1 class="text-3xl font-bold text-secondary mb-2">Attendance Check-In</h1>
@@ -227,7 +269,197 @@
             @include('admin.attendance.create-recent-attendance-list')
         </div>
     </div>
+    <!-- SweetAlert2 Pop-up for Session Messages -->
+    @if(session('success'))
+        <script>
+            $(function () {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: @json(session('success')),
+                    timer: 2500,
+                    showConfirmButton: false
+                });
+            });
+        </script>
+    @endif
+    @if(session('error'))
+        <script>
+            $(function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: @json(session('error')),
+                    timer: 3000,
+                    showConfirmButton: false
+                });
+            });
+        </script>
+    @endif
+
+    <script>
+        // Camera modal logic
+        let cameraStream = null;
+        const cameraModal = document.getElementById('cameraModal');
+        const openCameraBtn = document.getElementById('openCameraBtn');
+        const closeCameraModal = document.getElementById('closeCameraModal');
+        const cameraPreview = document.getElementById('cameraPreview');
+        const cameraCanvas = document.getElementById('cameraCanvas');
+        const capturePhotoBtn = document.getElementById('capturePhotoBtn');
+        let scanPhotoDataUrl = null;
+        const cameraError = document.getElementById('cameraError');
+
+        if (openCameraBtn) {
+            openCameraBtn.addEventListener('click', async function () {
+                cameraError.classList.add('hidden');
+                cameraError.textContent = '';
+                cameraModal.classList.remove('hidden');
+                try {
+                    cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                    cameraPreview.srcObject = cameraStream;
+                } catch (err) {
+                    cameraError.textContent = 'Unable to access camera: ' + err.message;
+                    cameraError.classList.remove('hidden');
+                }
+            });
+        }
+        if (closeCameraModal) {
+            closeCameraModal.addEventListener('click', function () {
+                cameraModal.classList.add('hidden');
+                if (cameraStream) {
+                    cameraStream.getTracks().forEach(track => track.stop());
+                    cameraPreview.srcObject = null;
+                }
+            });
+        }
+        if (capturePhotoBtn) {
+            capturePhotoBtn.addEventListener('click', function () {
+                if (!cameraStream) return;
+                const width = cameraPreview.videoWidth;
+                const height = cameraPreview.videoHeight;
+                cameraCanvas.width = width;
+                cameraCanvas.height = height;
+                cameraCanvas.getContext('2d').drawImage(cameraPreview, 0, 0, width, height);
+                scanPhotoDataUrl = cameraCanvas.toDataURL('image/jpeg');
+                // Hide modal and stop camera
+                cameraModal.classList.add('hidden');
+                cameraStream.getTracks().forEach(track => track.stop());
+                cameraPreview.srcObject = null;
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Photo Captured',
+                    text: 'Photo ready for submission.',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            });
+        }
+
+        // AJAX submit for forms to show pop-up without reload
+        $(function () {
+            $('#enrollForm').on('submit', function (e) {
+                e.preventDefault();
+                var form = this;
+                var formData = new FormData(form);
+                var action = $(form).attr('action');
+                $.ajax({
+                    url: action,
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function (response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.message || 'Operation successful!',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                        form.reset();
+                    },
+                    error: function (xhr) {
+                        let msg = 'An error occurred.';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            msg = xhr.responseJSON.message;
+                        }
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: msg,
+                            timer: 3000,
+                            showConfirmButton: false
+                        });
+                    }
+                });
+            });
+            $('#scanForm').on('submit', function (e) {
+                e.preventDefault();
+                var form = this;
+                var formData = new FormData();
+                var action = $(form).attr('action');
+                // If no photo, show error
+                if (!scanPhotoDataUrl) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'No Photo',
+                        text: 'Please scan and capture a photo first.',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                    return;
+                }
+                // Convert base64 to Blob and append as file
+                function dataURLtoFile(dataurl, filename) {
+                    var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+                        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+                    while (n--) {
+                        u8arr[n] = bstr.charCodeAt(n);
+                    }
+                    return new File([u8arr], filename, { type: mime });
+                }
+                var photoFile = dataURLtoFile(scanPhotoDataUrl, 'photo.jpg');
+                formData.append('photo', photoFile);
+                // Add CSRF token
+                formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+                $.ajax({
+                    url: action,
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.message || 'Attendance scanned!',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                        form.reset();
+                        scanPhotoDataUrl = null;
+                    },
+                    error: function (xhr) {
+                        let msg = 'An error occurred.';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            msg = xhr.responseJSON.message;
+                        }
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: msg,
+                            timer: 3000,
+                            showConfirmButton: false
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+    @vite("resources/js/admin-attendance-create.js")
 </body>
-@vite("resources/js/admin-attendance-create.js")
 
 </html>

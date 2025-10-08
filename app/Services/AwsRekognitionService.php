@@ -44,7 +44,7 @@ class AwsRekognitionService
             'Bucket' => $this->bucket,
             'Key' => $key,
             'SourceFile' => $file->getRealPath(),
-            'ACL' => 'public-read'
+            // 'ACL' => 'public-read'
         ]);
 
         return "https://{$this->bucket}.s3.amazonaws.com/{$key}";
@@ -60,7 +60,7 @@ class AwsRekognitionService
                     'Name' => $imageKey,
                 ],
             ],
-            'ExternalImageId' => $externalImageId,
+            'ExternalImageId' => (string) $externalImageId,
         ]);
 
         return $result['FaceRecords'][0]['Face']['FaceId'] ?? null;
