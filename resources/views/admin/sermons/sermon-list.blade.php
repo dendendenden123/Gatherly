@@ -3,26 +3,8 @@
     @forelse ($sermons as $sermon)
         <div class="bg-white rounded-xl shadow sermon-card overflow-hidden flex flex-col">
             <div class="relative">
-                @php
-                    $videoUrl = $sermon->video_url;
-                    $thumbnail = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80';
-                    if ($videoUrl) {
-                        if (preg_match('/(?:youtube\\.com\\/watch\\?v=|youtu\\.be\\/)([\\w-]+)/', $videoUrl, $ytMatch)) {
-                            $thumbnail = 'https://img.youtube.com/vi/' . $ytMatch[1] . '/hqdefault.jpg';
-                        } elseif (preg_match('/vimeo\\.com\\/(\\d+)/', $videoUrl, $vimeoMatch)) {
-                            $thumbnail = 'https://vumbnail.com/' . $vimeoMatch[1] . '.jpg';
-                        } elseif (
-                            strpos($videoUrl, '/storage') === 0 ||
-                            strpos($videoUrl, 'storage') === 0 ||
-                            strpos($videoUrl, '/uploads') === 0 ||
-                            (strpos($videoUrl, 'http') === 0 && !preg_match('/(youtube|vimeo)/i', $videoUrl))
-                        ) {
-                            // For uploaded videos, fallback to a public video icon
-                            $thumbnail = 'https://cdn-icons-png.flaticon.com/512/727/727245.png';
-                        }
-                    }
-                @endphp
-                <img src="{{ $thumbnail }}" alt="Sermon thumbnail" class="w-full h-48 object-cover">
+                <img src="https://cdn-icons-png.flaticon.com/512/727/727245.png" alt="Sermon thumbnail"
+                    class="w-full h-48 object-cover">
                 <div
                     class="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
                     <button

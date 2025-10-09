@@ -82,4 +82,13 @@ class AwsRekognitionService
 
         return $result['FaceMatches'][0] ?? null;
     }
+
+    public function listFaces()
+    {
+        $result = $this->rekognition->listFaces([
+            'CollectionId' => $this->collectionId,
+        ]);
+
+        return $result['Faces'];
+    }
 }
