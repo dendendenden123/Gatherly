@@ -194,12 +194,10 @@ class AttendanceController extends Controller
     // Step 2: Scan / Mark Attendance
     public function scan(Request $request)
     {
-        logger('request is received', ['data' => $request->all()]);
         $request->validate(['photo' => 'required|image']);
         $imageUrl = $this->aws->uploadToS3($request->file('photo'), 'captures');
         $imageKey = parse_url($imageUrl, PHP_URL_PATH);
         $imageKey = ltrim($imageKey, '/');
-
         $match = $this->aws->searchFace($imageKey);
 
         if ($match) {
@@ -207,7 +205,10 @@ class AttendanceController extends Controller
             $similarity = $match['Similarity'];
             $user = User::where('rekognition_face_id', $faceId)->first();
 
-            logger('match', ['match' => $user]);
+            $isUserAlreadyRecorded = $this->attendanceService->isUserAlreadyRecorded($user->id, $request['event_occurrence_id']);
+            if ($isUserAlreadyRecorded) {
+                return response()->json(['error' => 'User already has record for this event', 'user' => $user, 'similarity' => $similarity, 'status' => '409']);
+            }
 
             if ($user) {
                 Attendance::create([
@@ -217,11 +218,11 @@ class AttendanceController extends Controller
                     'image_url' => $imageUrl,
                     'status' => 'present',
                 ]);
-                return response()->json(['status' => 'success', 'user' => $user->name, 'similarity' => $similarity]);
+                return response()->json(['user' => $user, 'similarity' => $similarity, 'status' => '200']);
             }
         }
 
-        return response()->json(['status' => 'failed', 'message' => 'No match found'], 404);
+        return response()->json(['status' => '404', 'message' => 'No match found'], 404);
     }
 
     function isEmailValidForEnrollment(Request $request)

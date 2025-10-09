@@ -518,15 +518,75 @@ $(function () {
             processData: false,
             contentType: false,
             success: function (response) {
-                Swal.fire({
-                    icon: "success",
-                    title: "Success",
-                    text:
-                        response.message || "Attendance scanned successfully!",
+                if (response.status == "409") {
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Already Recorded",
+                        html: `
+                            <div style="font-size:1.1em;line-height:1.7;">
+                                <span style="color:#e67e22;font-size:2em;">&#9888;&#65039;</span>
+                                <b style="color:#e67e22;">Attendance already recorded for this user at this event.</b> <br>
+                                 <b>Name:</b> <span style="color:#2ecc71 ;">${
+                                     response.user.full_name ||
+                                     response.user.first_name +
+                                         " " +
+                                         (response.user.middle_name
+                                             ? response.user.middle_name + " "
+                                             : "") +
+                                         response.user.last_name
+                                 }</span><br/>
+                            <b>Similarity:</b> <span style="color:#2ecc71 ;">${Number(
+                                response.similarity
+                            ).toFixed(2)}%</span>
+                            </div>
+                        `,
+                        showConfirmButton: true,
+                    });
+                }
+                if (response.status == "404") {
+                    Swal.fire({
+                        icon: "error",
+                        title: "User Not Found",
+                        html: `
+                            <div style="font-size:1.15em;line-height:1.8; text-align:center;">
+                                <span style="color:#e74c3c;font-size:2.5em;display:block;margin-bottom:0.3em;">&#10060;</span>
+                                <b style="color:#e74c3c;font-size:1.2em;">No matching user was found for this scan.</b>
+                                <div style="margin-top:0.7em;color:#888;">
+                                    Please try again or check the event selection.
+                                </div>
+                            </div>
+                        `,
+                        confirmButtonColor: "#e74c3c",
+                        confirmButtonText: "OK",
+                        customClass: {
+                            popup: "swal2-border-radius",
+                        },
+                    });
+                }
 
-                    showConfirmButton: true,
-                });
-                form.reset();
+                if (response.status == "200") {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Attendance Scanned!",
+                        html: `<div style="font-size:1.1em;line-height:1.7;">
+                            <span style="color:#2ecc71 ;font-size:1.5em;">✅</span> <b>Attendance recorded successfully!</b><br/>
+                            <b>Name:</b> <span style="color:#2ecc71 ;">${
+                                response.user.full_name ||
+                                response.user.first_name +
+                                    " " +
+                                    (response.user.middle_name
+                                        ? response.user.middle_name + " "
+                                        : "") +
+                                    response.user.last_name
+                            }</span><br/>
+                            <b>Similarity:</b> <span style="color:#2ecc71 ;">${Number(
+                                response.similarity
+                            ).toFixed(2)}%</span>
+                        </div>`,
+                        showConfirmButton: true,
+                    });
+                }
+
                 scanPhotoDataUrl = null;
             },
             error: function (xhr) {
