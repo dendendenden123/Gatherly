@@ -9,6 +9,7 @@ use App\Models\EventOccurrence;
 class AttendanceService
 {
 
+
     public function getAllAttendancePaginated()
     {
         return Attendance::with(['user', 'event_occurrence'])->orderByDesc('id')->paginate(5);

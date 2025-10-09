@@ -12,6 +12,7 @@ use App\Services\AwsRekognitionService;
 use App\Models\Attendance;
 use App\Models\User;
 use App\Models\Event;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 
 
 class AttendanceController extends Controller
@@ -187,7 +188,7 @@ class AttendanceController extends Controller
 
         $user->update(['rekognition_face_id' => $faceId]);
 
-        return back()->with('success', 'Face enrolled successfully!');
+        return response()->json(['message' => 'Face enrolled successfully!', 'data' => $user], 200);
     }
 
     // Step 2: Scan / Mark Attendance
@@ -221,5 +222,18 @@ class AttendanceController extends Controller
         }
 
         return response()->json(['status' => 'failed', 'message' => 'No match found'], 404);
+    }
+
+    function isEmailValidForEnrollment(Request $request)
+    {
+        if (!$this->userService->isMailExist($request->email)) {
+            return response()->json(['message' => 'Email not found', 'status' => '404']);
+        }
+
+        if ($this->userService->isEmailHasFaceId($request->email)) {
+            return response()->json(['message' => 'Email already has Face ID', 'status' => '409']);
+        }
+
+        return response()->json(['message' => 'Email is Valid', 'status' => '200']);
     }
 }

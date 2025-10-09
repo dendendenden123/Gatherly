@@ -104,8 +104,11 @@
                         <div class="space-y-5">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                                <input type="email" name="email" placeholder="member@example.com" required
+                                <input type="email" id="email" name="email" placeholder="member@example.com"
+                                    data-email-verify-url="{{ route('admin.attendance.isEmailValidForEnrollment') }}"
+                                    required
                                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                <div class="emailVerifyFeedback"></div>
                             </div>
 
                             <div>
@@ -128,8 +131,9 @@
                                 </div>
                             </div>
 
-                            <button type="submit"
-                                class="w-full btn-primary py-3 rounded-lg font-medium flex items-center justify-center gap-2 text-lg">
+                            <button type="submit" id="emailVerifyBtn"
+                                class="w-full btn-primary py-3 rounded-lg font-medium flex items-center justify-center gap-2 text-lg"
+                                disabled>
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

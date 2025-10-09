@@ -28,7 +28,57 @@ $("#locale-select").on("input change", () =>
     filterNameSuggestionByLocaleCongregation()
 );
 
+$("#email").on("input change", function (e) {
+    e.preventDefault();
+    isEmailValidForEnrollment(this);
+});
+
 //===Functions===
+
+function isEmailValidForEnrollment(form) {
+    let emailurl = $(form).data("email-verify-url");
+    let emailInput = $(form).val();
+
+    console.log(emailurl, emailInput);
+
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+        // Abort previous request if still active
+        if (ajaxRequest) {
+            ajaxRequest.abort();
+        }
+
+        ajaxRequest = $.ajax({
+            url: emailurl,
+            type: "GET",
+            data: { email: emailInput },
+            success: function (data) {
+                if (data.status == "404") {
+                    $(".emailVerifyFeedback").html(
+                        `<span class="text-red-500"> ${data.message} </span>`
+                    );
+                    $("#emailVerifyBtn").prop("disabled", true);
+                } else if (data.status == "409") {
+                    $(".emailVerifyFeedback").html(
+                        `<span class="text-blue-500"> ${data.message} </span>`
+                    );
+                    $("#emailVerifyBtn").prop("disabled", true);
+                } else if (data.status == "200") {
+                    $(".emailVerifyFeedback").html(
+                        `<span class="text-green-500"> ${data.message} </span>`
+                    );
+
+                    $("#emailVerifyBtn").prop("disabled", false);
+                }
+            },
+            error: function (xhr, status, error) {
+                if (status !== "abort") {
+                    console.error("Pagination error:", error);
+                }
+            },
+        });
+    }, 50);
+}
 
 //====================================
 //===Show members name suggestions

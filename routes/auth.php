@@ -26,9 +26,10 @@ Route::middleware(['Role:9'])->controller(AttendanceController::class)->group(fu
     Route::get('/admin/attendance', 'index')->name('admin.attendance');
     Route::post('/admin/attendance/store', 'store')->name('admin.attendance.store');
     Route::get('/admin/attendance/create', 'create')->name('admin.attendance.create');
-    Route::get('/admin/attendance/{id}', 'show')->name('admin.attendance.show');
     Route::post('/admin/attendance/enroll', 'enroll')->name('admin.attendance.enroll');
     Route::post('/admin/attendance/scan', 'scan')->name('admin.attendance.scan');
+    Route::get('/admin/attendance/isEmailValidForEnrollment', 'isEmailValidForEnrollment')->name('admin.attendance.isEmailValidForEnrollment');
+    Route::get('/admin/attendance/{id}', 'show')->name('admin.attendance.show');
 });
 
 Route::controller(AttendanceController::class)->group(function () {

@@ -70,4 +70,14 @@ class UserService
             \log::error('failed to get users role', ['error' => $e]);
         }
     }
+
+    public function isMailExist($mail)
+    {
+        return User::where('email', $mail)->count() > 0;
+    }
+
+    public function isEmailHasFaceId($email)
+    {
+        return User::where('email', $email)->whereNotNull('rekognition_face_id')->exists();
+    }
 }
