@@ -439,6 +439,11 @@ if (capturePhotoBtn) {
 $(function () {
     $("#enrollForm").on("submit", function (e) {
         e.preventDefault();
+        $("#emailVerifyBtn").prop("disabled", true);
+        $("#enrollBtnSpinner").removeClass("hidden");
+        $("#enrollBtnText").text("Enrolling...");
+        $("#enrollErrorMsg").addClass("hidden").text("");
+
         var form = this;
         var formData = new FormData(form);
         var action = $(form).attr("action");
@@ -452,6 +457,9 @@ $(function () {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
             },
             success: function (response) {
+                $("#emailVerifyBtn").prop("disabled", false);
+                $("#enrollBtnSpinner").addClass("hidden");
+                $("#enrollBtnText").text("Enroll Member");
                 Swal.fire({
                     icon: "success",
                     title: "Success",
@@ -479,6 +487,10 @@ $(function () {
 
     $("#scanForm").on("submit", function (e) {
         e.preventDefault();
+        $("#scanSubmitBtn").prop("disabled", true);
+        $("#scanBtnSpinner").removeClass("hidden");
+        $("#scanBtnText").text("Submitting...");
+        $("#scanErrorMsg").addClass("hidden").text("");
         var form = this;
         var formData = new FormData();
         var action = $(form).attr("action");
@@ -588,6 +600,9 @@ $(function () {
                 }
 
                 scanPhotoDataUrl = null;
+                $("#scanSubmitBtn").prop("disabled", false);
+                $("#scanBtnSpinner").addClass("hidden");
+                $("#scanBtnText").text("Submit Attendance");
             },
             error: function (xhr) {
                 let msg = "An error occurred.";

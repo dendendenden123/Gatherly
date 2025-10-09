@@ -132,15 +132,24 @@
                             </div>
 
                             <button type="submit" id="emailVerifyBtn"
-                                class="w-full btn-primary py-3 rounded-lg font-medium flex items-center justify-center gap-2 text-lg"
+                                class="w-full btn-primary py-3 rounded-lg font-medium flex items-center justify-center gap-2 text-lg relative"
                                 disabled>
+                                <span id="enrollBtnSpinner" class="hidden absolute left-4">
+                                    <svg class="animate-spin h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                            stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                                    </svg>
+                                </span>
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                                 </svg>
-                                Enroll Member
+                                <span id="enrollBtnText">Enroll Member</span>
                             </button>
+                            <div id="enrollErrorMsg" class="text-red-600 text-sm mt-2 hidden"></div>
                         </div>
                     </form>
                 </div>
@@ -234,15 +243,24 @@
                                 </div>
                             </div>
 
-                            <button type="submit"
-                                class="w-full btn-primary py-3 rounded-lg font-medium flex items-center justify-center gap-2 text-lg">
+                            <button type="submit" id="scanSubmitBtn"
+                                class="w-full btn-primary py-3 rounded-lg font-medium flex items-center justify-center gap-2 text-lg relative">
+                                <span id="scanBtnSpinner" class="hidden absolute left-4">
+                                    <svg class="animate-spin h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                            stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                                    </svg>
+                                </span>
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7" />
                                 </svg>
-                                Submit Attendance
+                                <span id="scanBtnText">Submit Attendance</span>
                             </button>
+                            <div id="scanErrorMsg" class="text-red-600 text-sm mt-2 hidden"></div>
                         </div>
                     </form>
                 </div>
@@ -524,6 +542,27 @@
             });
         </script>
     @endif
+    <script>
+        $(function () {
+            // Scan form loading/error
+            $('#scanForm').on('submit', function (e) {
+                $('#scanSubmitBtn').prop('disabled', true);
+                $('#scanBtnSpinner').removeClass('hidden');
+                $('#scanBtnText').text('Submitting...');
+                $('#scanErrorMsg').addClass('hidden').text('');
+                // Optionally, handle AJAX here
+                // e.preventDefault();
+                // $.ajax({ ... })
+                //   .done(function() { ... })
+                //   .fail(function(xhr) {
+                //       $('#scanErrorMsg').removeClass('hidden').text('Failed to submit attendance. Please try again.');
+                //       $('#scanSubmitBtn').prop('disabled', false);
+                //       $('#scanBtnSpinner').addClass('hidden');
+                //       $('#scanBtnText').text('Submit Attendance');
+                //   });
+            });
+        });
+    </script>
     @vite("resources/js/admin-attendance-create.js")
 </body>
 
