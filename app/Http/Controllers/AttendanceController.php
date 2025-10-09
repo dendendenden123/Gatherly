@@ -13,6 +13,7 @@ use App\Models\Attendance;
 use App\Models\User;
 use App\Models\Event;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Throwable;
 
 
 class AttendanceController extends Controller
@@ -194,35 +195,41 @@ class AttendanceController extends Controller
     // Step 2: Scan / Mark Attendance
     public function scan(Request $request)
     {
-        $request->validate(['photo' => 'required|image']);
-        $imageUrl = $this->aws->uploadToS3($request->file('photo'), 'captures');
-        $imageKey = parse_url($imageUrl, PHP_URL_PATH);
-        $imageKey = ltrim($imageKey, '/');
-        $match = $this->aws->searchFace($imageKey);
+        try {
+            $request->validate(['photo' => 'required|image']);
+            $imageUrl = $this->aws->uploadToS3($request->file('photo'), 'captures');
+            $imageKey = parse_url($imageUrl, PHP_URL_PATH);
+            $imageKey = ltrim($imageKey, '/');
+            $match = $this->aws->searchFace($imageKey);
 
-        if ($match) {
-            $faceId = $match['Face']['FaceId'];
-            $similarity = $match['Similarity'];
-            $user = User::where('rekognition_face_id', $faceId)->first();
+            if ($match) {
+                $faceId = $match['Face']['FaceId'];
+                $similarity = $match['Similarity'];
+                $user = User::where('rekognition_face_id', $faceId)->first();
 
-            $isUserAlreadyRecorded = $this->attendanceService->isUserAlreadyRecorded($user->id, $request['event_occurrence_id']);
-            if ($isUserAlreadyRecorded) {
-                return response()->json(['error' => 'User already has record for this event', 'user' => $user, 'similarity' => $similarity, 'status' => '409']);
+                $isUserAlreadyRecorded = $this->attendanceService->isUserAlreadyRecorded($user->id, $request['event_occurrence_id']);
+                if ($isUserAlreadyRecorded) {
+                    return response()->json(['error' => 'User already has record for this event', 'user' => $user, 'similarity' => $similarity, 'status' => '409']);
+                }
+
+                if ($user) {
+                    Attendance::create([
+                        'user_id' => $user->id,
+                        'event_occurrence_id' => $request['event_occurrence_id'],
+                        'similarity' => $similarity,
+                        'image_url' => $imageUrl,
+                        'status' => 'present',
+                    ]);
+                    return response()->json(['user' => $user, 'similarity' => $similarity, 'status' => '200']);
+                }
             }
-
-            if ($user) {
-                Attendance::create([
-                    'user_id' => $user->id,
-                    'event_occurrence_id' => $request['event_occurrence_id'],
-                    'similarity' => $similarity,
-                    'image_url' => $imageUrl,
-                    'status' => 'present',
-                ]);
-                return response()->json(['user' => $user, 'similarity' => $similarity, 'status' => '200']);
-            }
+        } catch (Throwable $e) {
+            \Log::error('failed to scan', ['error' => $e]);
+            return response()->json(['status' => '404', 'message' => 'No match found'], 404);
         }
 
-        return response()->json(['status' => '404', 'message' => 'No match found'], 404);
+
+
     }
 
     function isEmailValidForEnrollment(Request $request)

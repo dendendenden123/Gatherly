@@ -93,8 +93,6 @@ class SermonController extends Controller
             $sermon->date_preached = $validated['date_preached'];
             $sermon->save();
 
-            logger('success', ['data' => $sermon->toArray()]);
-
             return redirect()
                 ->route('admin.sermons.index')
                 ->with('success', 'Sermon created successfully.');

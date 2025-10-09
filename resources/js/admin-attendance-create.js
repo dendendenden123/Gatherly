@@ -616,6 +616,11 @@ $(function () {
                     timer: 3000,
                     showConfirmButton: false,
                 });
+
+                scanPhotoDataUrl = null;
+                $("#scanSubmitBtn").prop("disabled", false);
+                $("#scanBtnSpinner").addClass("hidden");
+                $("#scanBtnText").text("Submit Attendance");
             },
         });
     });
