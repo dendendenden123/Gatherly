@@ -22,7 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->reportable(function (Throwable $e) {
             try {
-                $message = "🚨 *Laravel Error Alert*\n"
+                $message = "🚨 *Gatherly Error Alert*\n"
                     . "*Message:* " . $e->getMessage() . "\n"
                     . "*File:* `" . $e->getFile() . "`\n"
                     . "*Line:* `" . $e->getLine() . "`\n\n"
