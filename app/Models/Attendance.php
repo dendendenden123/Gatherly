@@ -56,33 +56,6 @@ class Attendance extends Model
             ->when($status, function ($query) use ($status) {
                 $query->where('status', $status);
             })
-            ->when($ageGroup, function($query) use ($ageGroup){
-               
-               switch($ageGroup){
-                        case 'binhi': 
-                            $query->whereHas('user', fn($user)=>{
-                                  $age = Carbon::parse($user->birthdate)->age;
-                                $user->where('')
-                            });
-                            break;
-
-                        case 'kadiwa':
-                            // For single members 18 and above
-                            echo "Age group: Kadiwa (18 and above, not married)";
-                            break;
-
-                        case 'buklod':
-                            // For married members 18 and above
-                            echo "Age group: Buklod (18 and above, married)";
-                            break;
-
-                        default:
-                            // If age group doesn't match any known category
-                            echo "Unknown age group";
-                            break;
-                    }
-
-            })
             ->whereHas('user', function ($query) use ($searchByName) {
                 $query->when($searchByName, function ($q) use ($searchByName) {
                     $q->whereRaw("CONCAT(first_name, ' ',last_name) LIKE ?", ["%{$searchByName}%"])
@@ -94,7 +67,7 @@ class Attendance extends Model
                 $query->when($eventId, function ($q) use ($eventId) {
                     $q->where('id', $eventId);
                 });
-            })
+            });
     }
 
     public static function getAggregatedChartData($filters)

@@ -21,6 +21,7 @@ class ReportController extends Controller
     public function index(Request $request)
     {
         try {
+
             $totalAttendance = Attendance::filter();
 
             return view('admin.reports.index');
