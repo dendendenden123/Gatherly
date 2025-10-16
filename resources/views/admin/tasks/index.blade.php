@@ -10,8 +10,8 @@
 <header>
     <div class="max-w-7xl mx-auto px-4 py-1 sm:px-6 lg:px-8 flex justify-between items-center">
         <div class="page-tite">
-            <h1 class="text-xl font-semibold text-gray-900">Attendance Tracking</h1>
-            <p class="text-gray-500">Monitor the attendance and engagement in real-time</p>
+            <h1 class="text-xl font-semibold text-gray-900">Task Management</h1>
+            <p class="text-gray-500">Asign and Manage Tasks</p>
         </div>
         <div class="flex items-center space-x-4">
             <a href="{{ route('admin.tasks.create') }}">
