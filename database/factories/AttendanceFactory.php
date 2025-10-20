@@ -21,7 +21,7 @@ class AttendanceFactory extends Factory
         return [
             // 'user_id' => $this->faker->randomElement(User::pluck('id')->toArray()),
 
-            'user_id' => 6,
+            'user_id' => 7,
             "event_occurrence_id" => $this->faker->randomElement(EventOccurrence::pluck('id')->toArray()),
             'service_date' => $this->faker->dateTimeBetween('2025-09-01', '2025-9-30')->format('Y-m-d'),
             'check_in_time' => $this->faker->time(),

@@ -21,8 +21,8 @@ class ReportController extends Controller
     public function index(Request $request)
     {
         try {
-
-            $totalAttendance = Attendance::filter();
+            logger($request->all());
+            $totalAttendance = Attendance::filter(['user_id' => '1']);
 
             return view('admin.reports.index');
         } catch (\Exception $e) {
