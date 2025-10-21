@@ -6,6 +6,7 @@ use App\Models\Attendance;
 use App\Models\Event;
 use App\Models\User;
 use App\Services\AttendanceService;
+use App\Services\ReportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use Carbon\Carbon;
@@ -14,16 +15,21 @@ class ReportController extends Controller
 {
 
     protected AttendanceService $attendanceService;
-    public function __construct(AttendanceService $attendanceService)
+    protected ReportService $reportService;
+    public function __construct(AttendanceService $attendanceService, ReportService $reportService)
     {
         $this->attendanceService = $attendanceService;
+        $this->reportService = $reportService;
     }
+
     public function index(Request $request)
     {
         try {
             logger($request->all());
-            $totalAttendance = Attendance::filter(['user_id' => '1']);
+            $totalAttendance = $this->reportService->getAttendanceFilteredReport($request->all())?->count();
+            $uniqueIndividualCount = $this->reportService->getAttendanceFilteredReport($request->all())?->distinct('user_id')->count();
 
+            logger($totalAttendance);
             return view('admin.reports.index');
         } catch (\Exception $e) {
             logger()->error('Error in ReportController@index: ' . $e->getMessage(), ['exception' => $e]);

@@ -96,6 +96,7 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
                         <select id="dateRangeSelect" name="date_range"
                             class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="*">All</option>
                             <option value="7days">Last 7 days</option>
                             <option value="30days">Last 30 days</option>
                             <option value="3months">Last 3 months</option>
@@ -109,7 +110,7 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1">Event Type</label>
                         <select id="eventTypeSelect" name="event_type"
                             class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                            <option value="*">All Events</option>
+                            <option value="">All Events</option>
                             <option value="Baptism">Baptism</option>
                             <option value="Charity Event">Charity Event</option>
                             <option value="Christian Family Organization (CFO) activity">Christian Family Organization
