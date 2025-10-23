@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Attendance;
 use App\Observers\TaskObserver;
 use App\Observers\UserObserver;
+use App\Observers\AttendanceObserver;
 use Auth;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
@@ -50,5 +52,6 @@ class AppServiceProvider extends ServiceProvider
 
         Task::observe(TaskObserver::class);
         User::observe(UserObserver::class);
+        Attendance::observe(AttendanceObserver::class);
     }
 }

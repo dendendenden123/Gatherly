@@ -25,7 +25,7 @@ class EventStoreRequest extends FormRequest
             'event_name' => 'required|string|max:255',
             'event_description' => 'required|string',
             'event_type' => 'required|string|max:100',
-            'status' => 'required|in:upcoming,completed,cancelled',
+            'status' => 'required|in:upcoming,ongoing,completed,cancelled',
             'start_date' => 'required|date',
             'start_time' => 'nullable|date_format:H:i',
             'end_date' => 'nullable|date|after_or_equal:start_date',
