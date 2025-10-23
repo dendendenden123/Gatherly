@@ -1,291 +1,881 @@
 @extends('layouts.admin')
 @section('content')
     <!-- Dashboard Widgets -->
-    <div class="dashboard-widgets grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <div class="widget bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-            <div class="widget-header flex items-center justify-between">
-                <div class="widget-title text-sm font-semibold text-gray-700">Total Members</div>
-                <div class="h-9 w-9 rounded-full bg-primary/10 text-primary grid place-items-center">
-                <i class="fas fa-users"></i>
-                </div>
-            </div>
-            <div class="widget-value text-3xl font-bold text-primary">{{ number_format($totalMembers ?? 0) }}</div>
-            <div class="widget-footer flex items-center text-xs text-gray-500">
-                <i class="fas fa-arrow-up text-primary mr-1"></i>
-                <span class="text-primary">12% from last month</span>
-            </div>
-        </div>
+    <!DOCTYPE html>
+    <html lang="en">
 
-        <div class="widget bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-            <div class="widget-header flex items-center justify-between">
-                <div class="widget-title text-sm font-semibold text-gray-700">Weekly Attendance</div>
-                <div class="h-9 w-9 rounded-full bg-secondary/10 text-secondary grid place-items-center">
-                <i class="fas fa-calendar-check"></i>
-                </div>
-            </div>
-            <div class="widget-value text-3xl font-bold text-secondary">{{ number_format($weeklyAttendance ?? 0) }}</div>
-            <div class="widget-footer flex items-center text-xs text-gray-500">
-                <i class="fas fa-arrow-up text-secondary mr-1"></i>
-                <span class="text-secondary">5% from last week</span>
-            </div>
-        </div>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Church Management Dashboard</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <style>
+            :root {
+                --primary: #4361ee;
+                --primary-light: #eef2ff;
+                --primary-dark: #3a56d4;
+                --secondary: #7209b7;
+                --secondary-light: #f3e8fd;
+                --accent: #f72585;
+                --accent-light: #fde8f1;
+                --success: #06d6a0;
+                --warning: #ffd166;
+                --danger: #ef476f;
+                --dark: #1e293b;
+                --light: #f8fafc;
+                --gray-100: #f1f5f9;
+                --gray-200: #e2e8f0;
+                --gray-300: #cbd5e1;
+                --gray-400: #94a3b8;
+                --gray-500: #64748b;
+                --gray-600: #475569;
+                --gray-700: #334155;
+                --gray-800: #1e293b;
+                --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+                --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+                --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+                --radius: 12px;
+                --radius-sm: 8px;
+                --transition: all 0.3s ease;
+            }
 
-        <div class="widget bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-            <div class="widget-header flex items-center justify-between">
-                <div class="widget-title text-sm font-semibold text-gray-700">Upcoming Events</div>
-                <div class="h-9 w-9 rounded-full bg-accent/10 text-accent grid place-items-center">
-                <i class="fas fa-calendar-alt"></i>
-                </div>
-            </div>
-            <div class="widget-value text-3xl font-bold text-accent">{{ number_format($upcomingEventsCount ?? 0) }}</div>
-            <div class="widget-footer text-xs text-gray-500">
-                <span>This week</span>
-            </div>
-        </div>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            }
 
-        <div class="widget bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-            <div class="widget-header flex items-center justify-between">
-                <div class="widget-title text-sm font-semibold text-gray-700">Volunteers</div>
-                <div class="h-9 w-9 rounded-full bg-primary/10 text-primary grid place-items-center">
-                    <i class="fas fa-hand-holding-heart"></i>
-                </div>
+            body {
+                background-color: var(--light);
+                color: var(--gray-700);
+                line-height: 1.6;
+            }
+
+            .dashboard-container {
+                max-width: 1400px;
+                margin: 0 auto;
+                padding: 24px;
+            }
+
+            .dashboard-header {
+                margin-bottom: 32px;
+            }
+
+            .dashboard-header h1 {
+                font-size: 28px;
+                font-weight: 700;
+                color: var(--dark);
+                margin-bottom: 8px;
+            }
+
+            .dashboard-header p {
+                color: var(--gray-500);
+                font-size: 16px;
+            }
+
+            /* Dashboard Widgets */
+            .dashboard-widgets {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+                gap: 24px;
+                margin-bottom: 32px;
+            }
+
+            .widget {
+                background: white;
+                border-radius: var(--radius);
+                padding: 24px;
+                box-shadow: var(--shadow);
+                transition: var(--transition);
+                border: 1px solid var(--gray-200);
+            }
+
+            .widget:hover {
+                box-shadow: var(--shadow-lg);
+                transform: translateY(-2px);
+            }
+
+            .widget-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 16px;
+            }
+
+            .widget-title {
+                font-size: 14px;
+                font-weight: 600;
+                color: var(--gray-600);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .widget-icon {
+                height: 48px;
+                width: 48px;
+                border-radius: var(--radius);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 20px;
+            }
+
+            .widget-primary .widget-icon {
+                background-color: var(--primary-light);
+                color: var(--primary);
+            }
+
+            .widget-secondary .widget-icon {
+                background-color: var(--secondary-light);
+                color: var(--secondary);
+            }
+
+            .widget-accent .widget-icon {
+                background-color: var(--accent-light);
+                color: var(--accent);
+            }
+
+            .widget-value {
+                font-size: 32px;
+                font-weight: 700;
+                margin-bottom: 8px;
+            }
+
+            .widget-primary .widget-value {
+                color: var(--primary);
+            }
+
+            .widget-secondary .widget-value {
+                color: var(--secondary);
+            }
+
+            .widget-accent .widget-value {
+                color: var(--accent);
+            }
+
+            .widget-footer {
+                display: flex;
+                align-items: center;
+                font-size: 13px;
+            }
+
+            .widget-footer i {
+                margin-right: 4px;
+            }
+
+            /* Main Layout */
+            .dashboard-main {
+                display: grid;
+                grid-template-columns: 2fr 1fr;
+                gap: 24px;
+            }
+
+            @media (max-width: 1024px) {
+                .dashboard-main {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            /* Sections */
+            .section {
+                background: white;
+                border-radius: var(--radius);
+                padding: 24px;
+                box-shadow: var(--shadow);
+                margin-bottom: 24px;
+                border: 1px solid var(--gray-200);
+            }
+
+            .section-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+
+            .section-title {
+                font-size: 18px;
+                font-weight: 600;
+                color: var(--dark);
+            }
+
+            .section-actions a {
+                color: var(--primary);
+                font-size: 14px;
+                font-weight: 500;
+                text-decoration: none;
+                transition: var(--transition);
+            }
+
+            .section-actions a:hover {
+                color: var(--primary-dark);
+            }
+
+            /* Status Cards */
+            .status-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                gap: 16px;
+            }
+
+            .status-card {
+                padding: 20px;
+                border-radius: var(--radius-sm);
+                border-left: 4px solid;
+            }
+
+            .status-primary {
+                border-left-color: var(--primary);
+                background-color: var(--primary-light);
+            }
+
+            .status-secondary {
+                border-left-color: var(--secondary);
+                background-color: var(--secondary-light);
+            }
+
+            .status-accent {
+                border-left-color: var(--accent);
+                background-color: var(--accent-light);
+            }
+
+            .status-gray {
+                border-left-color: var(--gray-400);
+                background-color: var(--gray-100);
+            }
+
+            .status-label {
+                font-size: 12px;
+                text-transform: uppercase;
+                font-weight: 600;
+                color: var(--gray-600);
+                margin-bottom: 8px;
+                letter-spacing: 0.5px;
+            }
+
+            .status-value {
+                font-size: 24px;
+                font-weight: 700;
+            }
+
+            /* Tables */
+            .members-table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            .members-table thead {
+                background-color: var(--gray-100);
+            }
+
+            .members-table th {
+                padding: 12px 16px;
+                text-align: left;
+                font-size: 12px;
+                font-weight: 600;
+                color: var(--gray-600);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .members-table td {
+                padding: 16px;
+                border-bottom: 1px solid var(--gray-200);
+            }
+
+            .member-info {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .member-avatar {
+                height: 40px;
+                width: 40px;
+                border-radius: 50%;
+                background-color: var(--gray-200);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--gray-500);
+                font-weight: 500;
+            }
+
+            .member-name {
+                font-weight: 500;
+                color: var(--dark);
+            }
+
+            .member-email {
+                font-size: 13px;
+                color: var(--gray-500);
+            }
+
+            .status-badge {
+                padding: 4px 12px;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: 500;
+            }
+
+            .status-active {
+                background-color: var(--primary-light);
+                color: var(--primary);
+            }
+
+            .status-inactive {
+                background-color: var(--gray-100);
+                color: var(--gray-600);
+            }
+
+            .status-partial {
+                background-color: var(--secondary-light);
+                color: var(--secondary);
+            }
+
+            .status-expelled {
+                background-color: var(--accent-light);
+                color: var(--accent);
+            }
+
+            .action-btn {
+                padding: 6px 12px;
+                border-radius: var(--radius-sm);
+                font-size: 12px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: var(--transition);
+                border: none;
+            }
+
+            .edit-btn {
+                background-color: var(--primary-light);
+                color: var(--primary);
+                margin-right: 8px;
+            }
+
+            .edit-btn:hover {
+                background-color: var(--primary);
+                color: white;
+            }
+
+            .delete-btn {
+                background-color: var(--accent-light);
+                color: var(--accent);
+            }
+
+            .delete-btn:hover {
+                background-color: var(--accent);
+                color: white;
+            }
+
+            /* Activity List */
+            .activity-list {
+                list-style: none;
+            }
+
+            .activity-item {
+                display: flex;
+                align-items: flex-start;
+                gap: 16px;
+                padding: 16px 0;
+            }
+
+            .activity-item:not(:last-child) {
+                border-bottom: 1px solid var(--gray-200);
+            }
+
+            .activity-icon {
+                height: 40px;
+                width: 40px;
+                border-radius: var(--radius);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 16px;
+                flex-shrink: 0;
+            }
+
+            .activity-details h4 {
+                font-size: 14px;
+                font-weight: 500;
+                color: var(--dark);
+                margin-bottom: 4px;
+            }
+
+            .activity-details p {
+                font-size: 13px;
+                color: var(--gray-600);
+                margin-bottom: 4px;
+            }
+
+            .activity-time {
+                font-size: 12px;
+                color: var(--gray-500);
+            }
+
+            /* Quick Actions */
+            .quick-actions {
+                margin-top: 24px;
+            }
+
+            .action-buttons {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+                gap: 12px;
+                margin-top: 16px;
+            }
+
+            .action-button {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                padding: 12px 16px;
+                border-radius: var(--radius-sm);
+                font-size: 14px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: var(--transition);
+                border: none;
+                color: white;
+            }
+
+            .action-button i {
+                font-size: 16px;
+            }
+
+            .action-primary {
+                background-color: var(--primary);
+            }
+
+            .action-primary:hover {
+                background-color: var(--primary-dark);
+            }
+
+            .action-secondary {
+                background-color: var(--secondary);
+            }
+
+            .action-secondary:hover {
+                background-color: #5e08a0;
+            }
+
+            .action-accent {
+                background-color: var(--accent);
+            }
+
+            .action-accent:hover {
+                background-color: #e11574;
+            }
+
+            /* Chart Container */
+            .chart-container {
+                height: 200px;
+                margin-top: 8px;
+            }
+
+            /* Events and Birthdays */
+            .event-item,
+            .birthday-item {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 16px 0;
+            }
+
+            .event-item:not(:last-child),
+            .birthday-item:not(:last-child) {
+                border-bottom: 1px solid var(--gray-200);
+            }
+
+            .event-icon,
+            .birthday-icon {
+                height: 40px;
+                width: 40px;
+                border-radius: var(--radius);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 16px;
+                flex-shrink: 0;
+            }
+
+            .event-icon {
+                background-color: var(--primary-light);
+                color: var(--primary);
+            }
+
+            .birthday-icon {
+                background-color: var(--secondary-light);
+                color: var(--secondary);
+            }
+
+            .event-details h4,
+            .birthday-details h4 {
+                font-size: 14px;
+                font-weight: 500;
+                color: var(--dark);
+                margin-bottom: 4px;
+            }
+
+            .event-details p,
+            .birthday-details p {
+                font-size: 13px;
+                color: var(--gray-600);
+            }
+
+            .empty-state {
+                text-align: center;
+                padding: 32px 16px;
+                color: var(--gray-500);
+            }
+
+            .empty-state i {
+                font-size: 32px;
+                margin-bottom: 12px;
+                opacity: 0.5;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="dashboard-container">
+            <div class="dashboard-header">
+                <h1>Church Dashboard</h1>
+                <p>Welcome to your church management dashboard</p>
             </div>
-            <div class="widget-value text-3xl font-bold text-primary">{{ number_format($volunteersCount ?? 0) }}</div>
-            <div class="widget-footer flex items-center text-xs text-gray-500">
-                <span class="">Active volunteers</span>
-            </div>
-        </div>
-    </div>
-    <!-- Main Sections -->
-    <div class="main-sections">
-        <div class="section bg-white rounded-xl border border-gray-100 shadow-sm">
-            <div class="section-header flex items-center justify-between">
-                <div class="section-title text-base font-semibold text-gray-800">Member Status Breakdown</div>
-            </div>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="status-card border-l-4 border-primary bg-primary/5 rounded-lg p-4">
-                    <div class="status-label text-xs uppercase tracking-wide text-gray-600">Active</div>
-                    <div class="status-value text-2xl font-bold text-primary">{{ number_format($activeCount ?? 0) }}</div>
-                </div>
-                <div class="status-card border-l-4 border-gray-300 bg-gray-50 rounded-lg p-4">
-                    <div class="status-label text-xs uppercase tracking-wide text-gray-600">Inactive</div>
-                    <div class="status-value text-2xl font-bold text-gray-700">{{ number_format($inactiveCount ?? 0) }}
+
+            <!-- Dashboard Widgets -->
+            <div class="dashboard-widgets">
+                <div class="widget widget-primary">
+                    <div class="widget-header">
+                        <div class="widget-title">Total Members</div>
+                        <div class="widget-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                    </div>
+                    <div class="widget-value">1,254</div>
+                    <div class="widget-footer">
+                        <i class="fas fa-arrow-up text-primary"></i>
+                        <span class="text-primary">12% from last month</span>
                     </div>
                 </div>
-                <div class="status-card border-l-4 border-secondary bg-secondary/5 rounded-lg p-4">
-                    <div class="status-label text-xs uppercase tracking-wide text-gray-600">Partially-Active</div>
-                    <div class="status-value text-2xl font-bold text-secondary">
-                        {{ number_format($partiallyActiveCount ?? 0) }}</div>
+
+                <div class="widget widget-secondary">
+                    <div class="widget-header">
+                        <div class="widget-title">Weekly Attendance</div>
+                        <div class="widget-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                    </div>
+                    <div class="widget-value">876</div>
+                    <div class="widget-footer">
+                        <i class="fas fa-arrow-up text-secondary"></i>
+                        <span class="text-secondary">5% from last week</span>
+                    </div>
                 </div>
-                <div class="status-card border-l-4 border-accent bg-accent/5 rounded-lg p-4">
-                    <div class="status-label text-xs uppercase tracking-wide text-gray-600">Expelled</div>
-                    <div class="status-value text-2xl font-bold text-accent">{{ number_format($expelledCount ?? 0) }}</div>
+
+                <div class="widget widget-accent">
+                    <div class="widget-header">
+                        <div class="widget-title">Upcoming Events</div>
+                        <div class="widget-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                    </div>
+                    <div class="widget-value">8</div>
+                    <div class="widget-footer">
+                        <span>This week</span>
+                    </div>
+                </div>
+
+                <div class="widget widget-primary">
+                    <div class="widget-header">
+                        <div class="widget-title">Volunteers</div>
+                        <div class="widget-icon">
+                            <i class="fas fa-hand-holding-heart"></i>
+                        </div>
+                    </div>
+                    <div class="widget-value">142</div>
+                    <div class="widget-footer">
+                        <span>Active volunteers</span>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="section bg-white rounded-xl border border-gray-100 shadow-sm">
-            <div class="section-header flex items-center justify-between">
-                <div class="section-title text-base font-semibold text-gray-800">Recent Members</div>
-                <div class="section-actions">
-                    <a href="#" class="text-primary hover:text-dark-green text-sm">View All</a>
-                </div>
-            </div>
+            <!-- Main Sections -->
+            <div class="dashboard-main">
+                <div class="left-column">
+                    <!-- Member Status Breakdown -->
+                    <div class="section">
+                        <div class="section-header">
+                            <div class="section-title">Member Status Breakdown</div>
+                        </div>
+                        <div class="status-grid">
+                            <div class="status-card status-primary">
+                                <div class="status-label">Active</div>
+                                <div class="status-value">892</div>
+                            </div>
+                            <div class="status-card status-gray">
+                                <div class="status-label">Inactive</div>
+                                <div class="status-value">214</div>
+                            </div>
+                            <div class="status-card status-secondary">
+                                <div class="status-label">Partially-Active</div>
+                                <div class="status-value">128</div>
+                            </div>
+                            <div class="status-card status-accent">
+                                <div class="status-label">Expelled</div>
+                                <div class="status-value">20</div>
+                            </div>
+                        </div>
+                    </div>
 
-            <table class="members-table w-full text-sm">
-                <thead class="text-gray-500 uppercase text-xs">
-                    <tr>
-                        <th class="py-3">Name</th>
-                        <th class="py-3">Join Date</th>
-                        <th class="py-3">Status</th>
-                        <th class="py-3">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100">
-                    @forelse($recentMembers as $member)
-                        <tr>
-                            <td class="py-3">
-                                <div class="member-info flex items-center gap-2">
-                                    <div class="member-avatar h-8 w-8 rounded-full bg-gray-200"></div>
-                                <div>
-                                        <div class="member-name font-medium text-gray-800">{{ $member->full_name ?? (ucfirst($member->first_name) . ' ' . ucfirst($member->last_name)) }}</div>
-                                        <div class="member-email text-xs text-gray-500">{{ $member->email }}</div>
+                    <!-- Recent Members -->
+                    <div class="section">
+                        <div class="section-header">
+                            <div class="section-title">Recent Members</div>
+                            <div class="section-actions">
+                                <a href="#">View All</a>
+                            </div>
+                        </div>
+
+                        <table class="members-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Join Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="member-info">
+                                            <div class="member-avatar">SJ</div>
+                                            <div>
+                                                <div class="member-name">Sarah Johnson</div>
+                                                <div class="member-email">sarah.j@example.com</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>Mar 15, 2023</td>
+                                    <td>
+                                        <span class="status-badge status-active">Active</span>
+                                    </td>
+                                    <td>
+                                        <button class="action-btn edit-btn">Edit</button>
+                                        <button class="action-btn delete-btn">Delete</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="member-info">
+                                            <div class="member-avatar">MB</div>
+                                            <div>
+                                                <div class="member-name">Michael Brown</div>
+                                                <div class="member-email">m.brown@example.com</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>Mar 10, 2023</td>
+                                    <td>
+                                        <span class="status-badge status-partial">Partially-Active</span>
+                                    </td>
+                                    <td>
+                                        <button class="action-btn edit-btn">Edit</button>
+                                        <button class="action-btn delete-btn">Delete</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="member-info">
+                                            <div class="member-avatar">RJ</div>
+                                            <div>
+                                                <div class="member-name">Robert Johnson</div>
+                                                <div class="member-email">robert.j@example.com</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>Mar 05, 2023</td>
+                                    <td>
+                                        <span class="status-badge status-active">Active</span>
+                                    </td>
+                                    <td>
+                                        <button class="action-btn edit-btn">Edit</button>
+                                        <button class="action-btn delete-btn">Delete</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Recent Activity & Quick Actions -->
+                    <div class="section">
+                        <div class="section-header">
+                            <div class="section-title">Recent Activity</div>
+                            <div class="section-actions">
+                                <a href="#">View All</a>
+                            </div>
+                        </div>
+
+                        <ul class="activity-list">
+                            <li class="activity-item">
+                                <div class="activity-icon"
+                                    style="background-color: var(--primary-light); color: var(--primary);">
+                                    <i class="fas fa-user-plus"></i>
                                 </div>
-                            </div>
-                        </td>
-                            <td class="py-3">{{ optional($member->created_at)->format('M d, Y') }}</td>
-                            <td class="py-3">
-                                @php $status = $member->status ?? 'active'; @endphp
-                                <span class="px-2 py-1 rounded-full text-xs {{ $status === 'inactive' ? 'bg-accent/10 text-accent' : ($status === 'partially-active' ? 'bg-secondary/10 text-secondary' : ($status === 'expelled' ? 'bg-red-100 text-red-700' : 'bg-primary/10 text-primary')) }}">{{ ucfirst($status) }}</span>
-                        </td>
-                            <td class="py-3">
-                                <button class="action-btn edit-btn text-primary border border-primary px-2 py-1 rounded">Edit</button>
-                                <button class="action-btn delete-btn text-accent border border-accent px-2 py-1 rounded">Delete</button>
-                        </td>
-                    </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4" class="py-6 text-center text-gray-500">No recent members found.</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                                <div class="activity-details">
+                                    <h4>New Member Added</h4>
+                                    <p>Sarah Johnson joined the church</p>
+                                    <div class="activity-time">2 hours ago</div>
+                                </div>
+                            </li>
+                            <li class="activity-item">
+                                <div class="activity-icon"
+                                    style="background-color: var(--secondary-light); color: var(--secondary);">
+                                    <i class="fas fa-calendar-check"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <h4>Sunday Service</h4>
+                                    <p>Attendance recorded: 876 members</p>
+                                    <div class="activity-time">1 day ago</div>
+                                </div>
+                            </li>
+                            <li class="activity-item">
+                                <div class="activity-icon"
+                                    style="background-color: var(--accent-light); color: var(--accent);">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <h4>Notification Sent</h4>
+                                    <p>Weekly bulletin sent to all members</p>
+                                    <div class="activity-time">2 days ago</div>
+                                </div>
+                            </li>
+                        </ul>
 
-        <div class="section bg-white rounded-xl border border-gray-100 shadow-sm">
-            <div class="section-header flex items-center justify-between">
-                <div class="section-title text-base font-semibold text-gray-800">Recent Activity</div>
-                <div class="section-actions">
-                    <a href="#" class="text-primary hover:text-dark-green text-sm">View All</a>
-                </div>
-            </div>
-
-            <ul class="activity-list divide-y divide-gray-100">
-                <li class="activity-item flex items-start gap-3 py-3">
-                    <div class="activity-icon h-9 w-9 rounded-full bg-primary/10 text-primary grid place-items-center">
-                        <i class="fas fa-user-plus"></i>
-                    </div>
-                    <div class="activity-details">
-                        <h4 class="text-sm font-medium text-gray-800">New Member Added</h4>
-                        <p class="text-xs text-gray-500">Sarah Johnson joined the church</p>
-                        <div class="activity-time text-[11px] text-gray-400">2 hours ago</div>
-                    </div>
-                </li>
-                <li class="activity-item flex items-start gap-3 py-3">
-                    <div class="activity-icon h-9 w-9 rounded-full bg-secondary/10 text-secondary grid place-items-center">
-                        <i class="fas fa-calendar-check"></i>
-                    </div>
-                    <div class="activity-details">
-                        <h4 class="text-sm font-medium text-gray-800">Sunday Service</h4>
-                        <p class="text-xs text-gray-500">Attendance recorded: 876 members</p>
-                        <div class="activity-time text-[11px] text-gray-400">1 day ago</div>
-                    </div>
-                </li>
-                <li class="activity-item flex items-start gap-3 py-3">
-                    <div class="activity-icon h-9 w-9 rounded-full bg-accent/10 text-accent grid place-items-center">
-                        <i class="fas fa-envelope"></i>
-                    </div>
-                    <div class="activity-details">
-                        <h4 class="text-sm font-medium text-gray-800">Notification Sent</h4>
-                        <p class="text-xs text-gray-500">Weekly bulletin sent to all members</p>
-                        <div class="activity-time text-[11px] text-gray-400">2 days ago</div>
-                    </div>
-                </li>
-                <li class="activity-item flex items-start gap-3 py-3">
-                    <div class="activity-icon h-9 w-9 rounded-full bg-gray-200 text-gray-700 grid place-items-center">
-                        <i class="fas fa-user-tie"></i>
-                    </div>
-                    <div class="activity-details">
-                        <h4 class="text-sm font-medium text-gray-800">Officer Assignment</h4>
-                        <p class="text-xs text-gray-500">Michael Brown assigned as Small Group Leader</p>
-                        <div class="activity-time text-[11px] text-gray-400">3 days ago</div>
-                    </div>
-                </li>
-                <li class="activity-item flex items-start gap-3 py-3">
-                    <div class="activity-icon h-9 w-9 rounded-full bg-gray-200 text-gray-700 grid place-items-center">
-                        <i class="fas fa-hands-helping"></i>
-                    </div>
-                    <div class="activity-details">
-                        <h4 class="text-sm font-medium text-gray-800">Volunteer Signup</h4>
-                        <p class="text-xs text-gray-500">5 new volunteers for Food Bank event</p>
-                        <div class="activity-time text-[11px] text-gray-400">4 days ago</div>
-                    </div>
-                </li>
-            </ul>
-
-            <div class="quick-actions mt-4">
-                <h3 class="section-title text-base font-semibold text-gray-800">Quick Actions</h3>
-                <div class="action-buttons grid grid-cols-2 md:grid-cols-4 gap-3 mt-2">
-                    <button
-                        class="action-button flex items-center justify-center gap-2 bg-primary hover:bg-dark-green text-white rounded-md px-3 py-2 transition">
-                        <i class="fas fa-user-plus"></i>
-                        <span class="text-sm">Add Member</span>
-                    </button>
-                    <button
-                        class="action-button flex items-center justify-center gap-2 bg-secondary hover:bg-dark-green text-white rounded-md px-3 py-2 transition">
-                        <i class="fas fa-calendar-plus"></i>
-                        <span class="text-sm">Create Event</span>
-                    </button>
-                    <button
-                        class="action-button flex items-center justify-center gap-2 bg-primary hover:bg-dark-green text-white rounded-md px-3 py-2 transition">
-                        <i class="fas fa-envelope"></i>
-                        <span class="text-sm">Send Message</span>
-                    </button>
-                    <button
-                        class="action-button flex items-center justify-center gap-2 bg-accent hover:bg-red-600 text-white rounded-md px-3 py-2 transition">
-                        <i class="fas fa-file-export"></i>
-                        <span class="text-sm">Generate Report</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Right column: Attendance trend, Upcoming Events, Birthdays -->
-        <div class="section bg-white rounded-xl border border-gray-100 shadow-sm">
-            <div class="section-header flex items-center justify-between">
-                <div class="section-title text-base font-semibold text-gray-800">Attendance Trend</div>
-            </div>
-            <div>
-                <canvas id="attendanceTrend" height="120"></canvas>
-            </div>
-        </div>
-
-        <div class="section bg-white rounded-xl border border-gray-100 shadow-sm">
-            <div class="section-header flex items-center justify-between">
-                <div class="section-title text-base font-semibold text-gray-800">Upcoming Events</div>
-                <div class="text-xs text-gray-500">Next 5</div>
-            </div>
-            <ul class="divide-y divide-gray-100">
-                @forelse($upcomingEvents as $occ)
-                    <li class="py-3 flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="h-8 w-8 rounded bg-primary/10 text-primary grid place-items-center">
-                                <i class="fas fa-calendar-day"></i>
-                            </div>
-                            <div>
-                                <div class="text-sm font-medium text-gray-800">{{ $occ->event->event_name ?? 'Event' }}</div>
-                                <div class="text-xs text-gray-500">{{ \Carbon\Carbon::parse($occ->occurrence_date)->format('M d, Y') }} @ {{ $occ->start_time_formatted ?? '' }}</div>
+                        <div class="quick-actions">
+                            <h3 class="section-title">Quick Actions</h3>
+                            <div class="action-buttons">
+                                <button class="action-button action-primary">
+                                    <i class="fas fa-user-plus"></i>
+                                    <span>Add Member</span>
+                                </button>
+                                <button class="action-button action-secondary">
+                                    <i class="fas fa-calendar-plus"></i>
+                                    <span>Create Event</span>
+                                </button>
+                                <button class="action-button action-primary">
+                                    <i class="fas fa-envelope"></i>
+                                    <span>Send Message</span>
+                                </button>
+                                <button class="action-button action-accent">
+                                    <i class="fas fa-file-export"></i>
+                                    <span>Generate Report</span>
+                                </button>
                             </div>
                         </div>
-                    </li>
-                @empty
-                    <li class="py-6 text-center text-gray-500">No upcoming events.</li>
-                @endforelse
-            </ul>
+                    </div>
+                </div>
+
+                <div class="right-column">
+                    <!-- Attendance Trend -->
+                    <div class="section">
+                        <div class="section-header">
+                            <div class="section-title">Attendance Trend</div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="attendanceTrend"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Upcoming Events -->
+                    <div class="section">
+                        <div class="section-header">
+                            <div class="section-title">Upcoming Events</div>
+                            <div class="text-xs text-gray-500">Next 5</div>
+                        </div>
+                        <ul>
+                            <li class="event-item">
+                                <div class="event-icon">
+                                    <i class="fas fa-calendar-day"></i>
+                                </div>
+                                <div class="event-details">
+                                    <h4>Sunday Worship Service</h4>
+                                    <p>Mar 26, 2023 @ 10:00 AM</p>
+                                </div>
+                            </li>
+                            <li class="event-item">
+                                <div class="event-icon">
+                                    <i class="fas fa-calendar-day"></i>
+                                </div>
+                                <div class="event-details">
+                                    <h4>Youth Group Meeting</h4>
+                                    <p>Mar 28, 2023 @ 6:30 PM</p>
+                                </div>
+                            </li>
+                            <li class="event-item">
+                                <div class="event-icon">
+                                    <i class="fas fa-calendar-day"></i>
+                                </div>
+                                <div class="event-details">
+                                    <h4>Bible Study</h4>
+                                    <p>Mar 29, 2023 @ 7:00 PM</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Birthdays This Week -->
+                    <div class="section">
+                        <div class="section-header">
+                            <div class="section-title">Birthdays This Week</div>
+                        </div>
+                        <ul>
+                            <li class="birthday-item">
+                                <div class="birthday-icon">
+                                    <i class="fas fa-birthday-cake"></i>
+                                </div>
+                                <div class="birthday-details">
+                                    <h4>Jennifer Wilson</h4>
+                                    <p>Mar 24</p>
+                                </div>
+                            </li>
+                            <li class="birthday-item">
+                                <div class="birthday-icon">
+                                    <i class="fas fa-birthday-cake"></i>
+                                </div>
+                                <div class="birthday-details">
+                                    <h4>David Miller</h4>
+                                    <p>Mar 25</p>
+                                </div>
+                            </li>
+                            <li class="birthday-item">
+                                <div class="birthday-icon">
+                                    <i class="fas fa-birthday-cake"></i>
+                                </div>
+                                <div class="birthday-details">
+                                    <h4>Amanda Clark</h4>
+                                    <p>Mar 27</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="section bg-white rounded-xl border border-gray-100 shadow-sm">
-            <div class="section-header flex items-center justify-between">
-                <div class="section-title text-base font-semibold text-gray-800">Birthdays This Week</div>
-            </div>
-            <ul class="divide-y divide-gray-100">
-                @forelse($birthdaysThisWeek as $b)
-                    <li class="py-3 flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="h-8 w-8 rounded-full bg-secondary/10 text-secondary grid place-items-center">
-                                <i class="fas fa-birthday-cake"></i>
-                            </div>
-                            <div>
-                                <div class="text-sm font-medium text-gray-800">{{ $b->full_name ?? (ucfirst($b->first_name) . ' ' . ucfirst($b->last_name)) }}</div>
-                                <div class="text-xs text-gray-500">{{ optional($b->birthdate)->format('M d') }}</div>
-                            </div>
-                        </div>
-                    </li>
-                @empty
-                    <li class="py-6 text-center text-gray-500">No birthdays this week.</li>
-                @endforelse
-            </ul>
-        </div>
-    </div>
-@endsection
-@section('styles')
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const ctx = document.getElementById('attendanceTrend');
-            if (ctx) {
-                const labels = @json($chartLabels ?? []);
-                const values = @json($chartValues ?? []);
-                if (labels.length && values.length) {
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const ctx = document.getElementById('attendanceTrend');
+                if (ctx) {
+                    const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+                    const values = [820, 832, 845, 860, 876, 890];
+
                     new Chart(ctx, {
                         type: 'line',
                         data: {
@@ -293,26 +883,43 @@
                             datasets: [{
                                 label: 'Present (weekly) ',
                                 data: values,
-                                borderColor: '#27ae60',
-                                backgroundColor: 'rgba(39, 174, 96, 0.15)',
+                                borderColor: '#4361ee',
+                                backgroundColor: 'rgba(67, 97, 238, 0.15)',
                                 tension: 0.35,
-                                borderWidth: 2,
-                                pointRadius: 3,
+                                borderWidth: 3,
+                                pointRadius: 4,
+                                pointBackgroundColor: '#4361ee',
                                 fill: true,
                             }]
                         },
                         options: {
                             responsive: true,
                             maintainAspectRatio: false,
-                            plugins: { legend: { display: false } },
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            },
                             scales: {
-                                x: { grid: { display: false } },
-                                y: { grid: { color: '#ecf0f1' }, beginAtZero: true }
+                                x: {
+                                    grid: {
+                                        display: false
+                                    }
+                                },
+                                y: {
+                                    grid: {
+                                        color: '#e2e8f0'
+                                    },
+                                    beginAtZero: false,
+                                    min: 800
+                                }
                             }
                         }
                     });
                 }
-            }
-        });
-    </script>
+            });
+        </script>
+    </body>
+
+    </html>
 @endsection
