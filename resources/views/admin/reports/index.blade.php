@@ -91,67 +91,75 @@
             <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
                 <form action="{{ route('admin.reports') }}" method="GET" id="filter-form"
                     class="grid grid-cols-1 md:grid-cols-4 gap-4">
+
                     <!-- Date Range -->
-                    <div>
+                    <div class="col-span-1">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
-                        <select id="dateRangeSelect" name="date_range"
-                            class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                            <option value="*">All</option>
-                            <option value="7days">Last 7 days</option>
-                            <option value="30days">Last 30 days</option>
-                            <option value="3months">Last 3 months</option>
-                            <option value="6months">Last 6 months</option>
-                            <option value="yeartodate">Year to date</option>
-                        </select>
+                        <div class="grid grid-cols-2 gap-2">
+                            <!-- From Date -->
+                            <div>
+                                <!-- <label for="from_date" class="block text-xs text-gray-500 mb-1">From</label> -->
+                                <input type="date" id="from_date" name="from_date"
+                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+
+                            </div>
+
+                            <!-- To Date -->
+                            <div>
+                                <!-- <label for="to_date" class="block text-xs text-gray-500 mb-1">To</label> -->
+                                <input type="date" id="to_date" name="to_date"
+                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Event Type -->
-                    <div>
+                    <div class="col-span-1">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Event Type</label>
                         <select id="eventTypeSelect" name="event_type"
                             class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                             <option value="">All Events</option>
                             <option value="Baptism">Baptism</option>
                             <option value="Charity Event">Charity Event</option>
-                            <option value="Christian Family Organization (CFO) activity">Christian Family Organization
-                                (CFO) activity</option>
+                            <option value="Christian Family Organization (CFO) activity">
+                                Christian Family Organization (CFO) activity
+                            </option>
                             <option value="Evangelical Mission">Evangelical Mission</option>
-                            <option value="Inauguration of New Chapels/ Structure">Inauguration of New Chapels/
-                                Structure</option>
+                            <option value="Inauguration of New Chapels/ Structure">Inauguration of New Chapels/Structure
+                            </option>
                             <option value="Meeting">Meeting</option>
                             <option value="Panata">Panata</option>
                             <option value="Weddings">Weddings</option>
                             <option value="Worship Service">Worship Service</option>
-
                         </select>
                     </div>
 
                     <!-- Age Group -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Age Group`</label>
+                    <div class="col-span-1">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Age Group</label>
                         <select id="ministrySelect" name="age_group"
                             class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                             <option value="*">All Members</option>
                             <option value="binhi">Binhi (Below 18)</option>
                             <option value="kadiwa">Kadiwa (18 and above, not married)</option>
                             <option value="buklod">Buklod (18 and above, married)</option>
-
                         </select>
                     </div>
 
                     <!-- Action Buttons -->
-                    <div class="flex items-end space-x-2">
+                    <div class="col-span-1 flex items-end space-x-2">
                         <button id="generateBtn"
                             class="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
                             Generate Report
                         </button>
-                        <button id="resetBtn"
+                        <button type="reset" id="resetBtn"
                             class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
                             <i class="fas fa-redo"></i>
                         </button>
                     </div>
                 </form>
             </div>
+
 
             <!-- Key Metrics -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -243,7 +251,7 @@
                                 class="text-sm px-3 py-1 bg-gray-100 text-gray-700 rounded-lg">Yearly</button>
                         </div>
                     </div>
-                    <div id="attendanceTrendChart" class="h-80"></div>
+                    <div id="attendanceTrendChart" class="h-80" data-attendance="{{ $month }}"></div>
                 </div>
 
                 <!-- Event Type Comparison -->

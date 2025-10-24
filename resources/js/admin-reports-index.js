@@ -1,4 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
+    let month = document.querySelector("#attendanceTrendChart").dataset
+        .attendance;
+
+    console.log(month);
+
     const state = {
         currentTab: "attendance",
         trendRange: "weekly",
@@ -58,23 +63,25 @@ document.addEventListener("DOMContentLoaded", function () {
                         },
                     ],
                 },
-                monthly: {
-                    x: ["Jun", "Jul", "Aug", "Sep", "Oct", "Nov"],
-                    series: [
-                        {
-                            name: "Sunday Services",
-                            data: [1250, 1320, 1390, 1410, 1470, 1500],
-                        },
-                        {
-                            name: "Youth Events",
-                            data: [300, 320, 350, 360, 380, 400],
-                        },
-                        {
-                            name: "Bible Studies",
-                            data: [180, 190, 200, 210, 220, 230],
-                        },
-                    ],
-                },
+                // monthly: {
+                //     x: ["Jun", "Jul", "Aug", "Sep", "Oct", "Nov"],
+                //     series: [
+                //         {
+                //             name: "Sunday Services",
+                //             data: [1250, 1320, 1390, 1410, 1470, 1500],
+                //         },
+                //         {
+                //             name: "Youth Events",
+                //             data: [300, 320, 350, 360, 380, 400],
+                //         },
+                //         {
+                //             name: "Bible Studies",
+                //             data: [180, 190, 200, 210, 220, 230],
+                //         },
+                //     ],
+                // },
+                monthly: month,
+
                 yearly: {
                     x: ["2019", "2020", "2021", "2022", "2023", "2024"],
                     series: [

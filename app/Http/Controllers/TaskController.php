@@ -69,7 +69,10 @@ class TaskController extends Controller
         $task = Task::find($taskId);
         $assignedTask = $task->assignedUsers()->get();
         $roleNames = $this->roleNames;
-        return view('admin.tasks.show', compact('assignedTask', 'roleNames'));
+        $taskUserTable = DB::table('task_user');
+        $distributedTaskCount = (clone $taskUserTable)->count();
+
+        return view('admin.tasks.show', compact('assignedTask', 'roleNames', 'distributedTaskCount'));
     }
 
     public function create()
