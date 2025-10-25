@@ -303,18 +303,19 @@
                                 <th scope="col"
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Attendance</th>
-                                <th scope="col"
+                                <!-- <th scope="col"
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Capacity</th>
                                 <th scope="col"
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    First-Timers</th>
+                                    First-Timers</th> -->
                                 <th scope="col"
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Engagement</th>
                             </tr>
                         </thead>
-                        <tbody id="dataTableBody" class="bg-white divide-y divide-gray-200">
+                        <tbody id="dataTableBody" class="bg-white divide-y divide-gray-200"
+                            data-attendancedetail="{{ $attendanceDetails  }}">
                         </tbody>
                     </table>
                 </div>

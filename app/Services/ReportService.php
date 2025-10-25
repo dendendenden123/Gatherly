@@ -126,7 +126,6 @@ class ReportService
         ];
     }
 
-
     function getMonthlyAttendance($request = null)
     {
         // Get date range
@@ -504,7 +503,64 @@ class ReportService
 
     function getAttendanceDetails($request)
     {
-
+        $attendanceDetail = $this->getAttendanceFilteredReport($request)
+            ->join('event_occurrences', 'attendances.event_occurrence_id', '=', 'event_occurrences.id')
+            ->join('events', 'event_occurrences.event_id', '=', 'events.id')
+            ->select(
+                DB::raw('DATE_FORMAT(events.created_at, "%M %e, %Y") as date'),
+                'events.event_name as name',
+                'events.event_type as type',
+                DB::raw('COUNT(*) as total_attendance'),
+                DB::raw('SUM(CASE WHEN attendances.status = "present" THEN 1 ELSE 0 END) as total_present'),
+                DB::raw('SUM(CASE WHEN attendances.status = "absent" THEN 1 ELSE 0 END) as total_absent')
+            )
+            ->groupBy('events.event_name', 'events.event_type', 'events.created_at')
+            ->get()
+            ->map(function ($attendance) {
+                return [
+                    'name' => $attendance->name,
+                    'date' => $attendance->date,
+                    'type' => $attendance->type,
+                    'attendance' => $attendance->total_present,
+                    'engagement' => number_format(($attendance->total_present / $attendance->total_attendance) * 100, 2) . '%'
+                ];
+            });
+        return $attendanceDetail;
     }
 
+    function getEngagementDetails($request)
+    {
+        $engagementDetail = $this->getAttendanceFilteredReport($request)
+            ->join('users', 'attendances.user_id', '=', 'users.id')
+            ->join('event_occurrences', 'attendances.event_occurrence_id', '=', 'event_occurrences.id')
+            ->join('events', 'event_occurrences.event_id', '=', 'events.id')
+            ->select(
+                DB::raw('DATE_FORMAT(events.created_at, "%M %e, %Y") as date'),
+                'users.first_name as first',
+                'events.event_type as type',
+                DB::raw('COUNT(*) as total_attendance'),
+                DB::raw('SUM(CASE WHEN attendances.status = "present" THEN 1 ELSE 0 END) as total_present'),
+                DB::raw('SUM(CASE WHEN attendances.status = "absent" THEN 1 ELSE 0 END) as total_absent')
+            )
+            ->groupBy('events.event_name', 'events.event_type', 'events.created_at')
+            ->get()
+            ->map(function ($attendance) {
+                return [
+                    'name' => $attendance->name,
+                    'date' => $attendance->date,
+                    'type' => $attendance->type,
+                    'attendance' => $attendance->total_present,
+                    'engagement' => number_format(($attendance->total_present / $attendance->total_attendance) * 100, 2) . '%'
+                ];
+            });
+        return $engagementDetail;
+
+        //  name: `Member ${i + 1}`,
+        //         date: "Nov 2024",
+        //         type: "Engagement",
+        //         attendance: `${Math.floor(Math.random() * 12)}/14`,
+        //         capacity: "-",
+        //         firstTimers: "-",
+        //         engagement: `${60 + (i % 20)}%`,
+    }
 }

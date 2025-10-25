@@ -1,10 +1,16 @@
 document.addEventListener("DOMContentLoaded", function () {
     let rawAttendnceChartData = document.querySelector("#attendanceTrendChart");
+    let rawAttendanceDetail = document.querySelector("#dataTableBody");
+
     let attendanceChartData = rawAttendnceChartData
         ? JSON.parse(rawAttendnceChartData.dataset.attendance)
         : null;
     let engagementChartData = rawAttendnceChartData
         ? JSON.parse(rawAttendnceChartData.dataset.engagement)
+        : null;
+
+    let attendanceDetail = rawAttendanceDetail
+        ? JSON.parse(rawAttendanceDetail.dataset.attendancedetail)
         : null;
 
     const state = {
@@ -79,20 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
             },
         },
         tables: {
-            attendance: Array.from({ length: 47 }).map((_, i) => ({
-                name: `Event ${i + 1}`,
-                date: "Oct 15, 2023",
-                type: [
-                    "Sunday Service",
-                    "Youth Meeting",
-                    "Bible Study",
-                    "Prayer Meeting",
-                ][i % 4],
-                attendance: Math.floor(Math.random() * 400) + 20,
-                capacity: [60, 100, 300, 400][i % 4],
-                firstTimers: Math.floor(Math.random() * 20),
-                engagement: [64, 71.7, 75, 78, 85.5][i % 5],
-            })),
+            attendance: attendanceDetail,
             engagement: Array.from({ length: 24 }).map((_, i) => ({
                 name: `Member ${i + 1}`,
                 date: "Nov 2024",
@@ -229,12 +222,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         }</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${
                             row.attendance
-                        }</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${
-                            row.capacity
-                        }</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${
-                            row.firstTimers
                         }</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
