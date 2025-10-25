@@ -25,9 +25,21 @@ class ReportController extends Controller
     public function index(Request $request)
     {
         try {
-            $month = json_encode($this->reportService->getReportData($request));
+            $weeklyAttendance = $this->reportService->getWeeklyAttendance($request);
+            $monthlyAttendance = $this->reportService->getMonthlyAttendance($request);
+            $yearlyAttendance = $this->reportService->getYearlyAttendance($request);
+            $attendanceBars = $this->reportService->getAttendanceBars();
 
-            return view('admin.reports.index', compact('month'));
+
+            $attendanceChart = json_encode([
+                'weekly' => $weeklyAttendance,
+                'monthly' => $monthlyAttendance,
+                'yearly' => $yearlyAttendance,
+                'bars' => $attendanceBars,
+            ]);
+
+
+            return view('admin.reports.index', compact('attendanceChart'));
         } catch (\Exception $e) {
             logger()->error('Error in ReportController@index: ' . $e->getMessage(), ['exception' => $e]);
             if ($request->ajax()) {

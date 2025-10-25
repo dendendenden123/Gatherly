@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
-    let month = document.querySelector("#attendanceTrendChart").dataset
-        .attendance;
+    let monthEl = document.querySelector("#attendanceTrendChart");
+    let monthRaw = monthEl ? JSON.parse(monthEl.dataset.attendance) : null;
 
-    console.log(month);
+    console.log(monthRaw);
 
     const state = {
         currentTab: "attendance",
@@ -37,81 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const mock = {
         charts: {
-            attendance: {
-                weekly: {
-                    x: [
-                        "Oct 2",
-                        "Oct 9",
-                        "Oct 16",
-                        "Oct 23",
-                        "Oct 30",
-                        "Nov 6",
-                        "Nov 13",
-                    ],
-                    series: [
-                        {
-                            name: "Sunday Services",
-                            data: [320, 335, 342, 310, 298, 325, 340],
-                        },
-                        {
-                            name: "Youth Events",
-                            data: [65, 72, 78, 70, 68, 75, 80],
-                        },
-                        {
-                            name: "Bible Studies",
-                            data: [40, 42, 45, 38, 35, 40, 44],
-                        },
-                    ],
-                },
-                // monthly: {
-                //     x: ["Jun", "Jul", "Aug", "Sep", "Oct", "Nov"],
-                //     series: [
-                //         {
-                //             name: "Sunday Services",
-                //             data: [1250, 1320, 1390, 1410, 1470, 1500],
-                //         },
-                //         {
-                //             name: "Youth Events",
-                //             data: [300, 320, 350, 360, 380, 400],
-                //         },
-                //         {
-                //             name: "Bible Studies",
-                //             data: [180, 190, 200, 210, 220, 230],
-                //         },
-                //     ],
-                // },
-                monthly: month,
-
-                yearly: {
-                    x: ["2019", "2020", "2021", "2022", "2023", "2024"],
-                    series: [
-                        {
-                            name: "Sunday Services",
-                            data: [12000, 9000, 11000, 13000, 14500, 15200],
-                        },
-                        {
-                            name: "Youth Events",
-                            data: [2600, 2400, 2800, 3200, 3800, 4200],
-                        },
-                        {
-                            name: "Bible Studies",
-                            data: [1500, 1300, 1600, 1800, 2100, 2300],
-                        },
-                    ],
-                },
-                bars: {
-                    attendance: [
-                        "Sunday AM",
-                        "Sunday PM",
-                        "Youth",
-                        "Bible Study",
-                        "Men's",
-                        "Women's",
-                        "Prayer",
-                    ],
-                    data: [342, 215, 78, 45, 32, 28, 15],
-                },
-            },
+            attendance: monthRaw,
             engagement: {
                 weekly: {
                     x: ["W1", "W2", "W3", "W4"],

@@ -251,7 +251,7 @@
                                 class="text-sm px-3 py-1 bg-gray-100 text-gray-700 rounded-lg">Yearly</button>
                         </div>
                     </div>
-                    <div id="attendanceTrendChart" class="h-80" data-attendance="{{ $month }}"></div>
+                    <div id="attendanceTrendChart" class="h-80" data-attendance="{{ $attendanceChart }}"></div>
                 </div>
 
                 <!-- Event Type Comparison -->
