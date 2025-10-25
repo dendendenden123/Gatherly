@@ -19,21 +19,18 @@ class AttendanceFactory extends Factory
     public function definition(): array
     {
         return [
-            // 'user_id' => $this->faker->randomElement(User::pluck('id')->toArray()),
-            'user_id' => 4,
-            // "event_occurrence_id" => $this->faker->randomElement(EventOccurrence::pluck('id')->toArray()),
-            "event_occurrence_id" => '116',
-            'service_date' => $this->faker->dateTimeBetween('2025-09-01', '2025-9-30')->format('Y-m-d'),
+            'user_id' => $this->faker->randomElement(User::pluck('id')->toArray()),
+            "event_occurrence_id" => $this->faker->randomElement(EventOccurrence::pluck('id')->toArray()),
+            'service_date' => $this->faker->dateTimeBetween('2025-08-01', '2025-10-1')->format('Y-m-d'),
             'check_in_time' => $this->faker->time(),
             'check_out_time' => $this->faker->optional()->time(),
             'attendance_method' => $this->faker->randomElement(['in-person', 'online', 'fingerprint', 'mobile']),
             'biometric_data_id' => $this->faker->optional()->uuid(),
             'recorded_by' => $this->faker->optional()->randomElement(User::pluck('id')->toArray()),
-            // 'status' => $this->faker->randomElement(['present', 'absent']),
-            'status' => 'present',
+            'status' => $this->faker->randomElement(['present', 'absent']),
             'notes' => $this->faker->optional()->sentence(),
-            'created_at' => $this->faker->dateTimeBetween('2025-09-01', '2025-9-30')->format('Y-m-d'),
-            'updated_at' => $this->faker->dateTimeBetween('2025-09-01', '2025-9-30')->format('Y-m-d'),
+            'created_at' => $this->faker->dateTimeBetween('2025-08-01', '2025-10-1')->format('Y-m-d'),
+            'updated_at' => $this->faker->dateTimeBetween('2025-08-01', '2025-10-1')->format('Y-m-d')
         ];
     }
 }

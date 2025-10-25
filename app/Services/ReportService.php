@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class ReportService
 {
-    function getAttendanceFilteredReport($request = null)
+    function getAttendanceFilteredReport($request = null, $status = null)
     {
         $fromDate = $request['from_date'] ?? null;
         $toDate = $request['to_date'] ?? null;
@@ -17,7 +17,12 @@ class ReportService
         $ageGroup = $request['age_group'] ?? null;
 
         $attendancefilteredReport = Attendance::with('event_occurrence.event', 'user')
-            ->where('attendances.status', 'present')
+            ->when($status == 'absent', function ($attedances) {
+                $attedances->where('attendances.status', 'absent');
+            })
+            ->when($status == 'present', function ($attedances) {
+                $attedances->where('attendances.status', 'present');
+            })
             ->when($fromDate && $toDate, function ($query) use ($fromDate, $toDate) {
                 $query->whereBetween('attendances.created_at', [$fromDate, $toDate]);
             })
@@ -82,7 +87,7 @@ class ReportService
             $weeklyStart->addWeek();
         }
 
-        $weeklyRawData = $this->getAttendanceFilteredReport($request)
+        $weeklyRawData = $this->getAttendanceFilteredReport($request, 'present')
             ->join('event_occurrences', 'attendances.event_occurrence_id', '=', 'event_occurrences.id')
             ->join('events', 'event_occurrences.event_id', '=', 'events.id')
             ->select(
@@ -144,7 +149,7 @@ class ReportService
 
 
         // Get attendance counts grouped by event and month
-        $monthlyRawData = $this->getAttendanceFilteredReport($request)
+        $monthlyRawData = $this->getAttendanceFilteredReport($request, 'present')
             ->join('event_occurrences', 'attendances.event_occurrence_id', '=', 'event_occurrences.id')
             ->join('events', 'event_occurrences.event_id', '=', 'events.id')
             ->select(
@@ -204,7 +209,7 @@ class ReportService
 
 
         // Get attendance counts grouped by event and month
-        $yearlyRawData = $this->getAttendanceFilteredReport($request)
+        $yearlyRawData = $this->getAttendanceFilteredReport($request, 'present')
             ->join('event_occurrences', 'attendances.event_occurrence_id', '=', 'event_occurrences.id')
             ->join('events', 'event_occurrences.event_id', '=', 'events.id')
             ->select(
@@ -243,31 +248,263 @@ class ReportService
 
     }
 
-    function getAttendanceBars()
+    function getAttendanceBars($request)
     {
         $bars = [
             'attendance' => [],
             'data' => [],
         ];
+        $events = Event::query()->select('id', 'event_name')->get();
 
-        Event::with([
-            'event_occurrences.attendances' => function ($attendance) {
-                $attendance->where('status', 'present');
-            }
-        ])
-            ->get()
-            ->map(function ($query) use (&$bars) {
-                $bars['attendance'][] = $query->event_name;
+        $events->each(function ($event) use (&$bars, $request) {
+            $bars['attendance'][] = $event->event_name;
+            $eventId = $event->id;
+            $bars['data'][] = $this->getAttendanceFilteredReport($request, 'present')
+                ->whereHas('event_occurrence', function ($eventOccurrence) use ($eventId) {
+                    $eventOccurrence->where('event_id', $eventId);
+                })->count();
 
-                // Count total present attendances for this event
-                $total = $query->event_occurrences->sum(function ($occurrence) {
-                    return $occurrence->attendances->count();
-                });
-
-                $bars['data'][] = $total;
-            });
+        });
 
         return $bars;
+    }
+
+    function getWeeklyEngagement($request)
+    {
+        $minDate = $request['from_date'] ?? now()->subYear();
+        $maxDate = $request['to_date'] ?? now();
+
+        $start = Carbon::parse($minDate)->startOfMonth();
+        $end = Carbon::parse($maxDate)->endOfMonth();
+
+        $weeklyStart = (clone $start);
+        $weeklyEnd = (clone $end);
+        $weeks = collect();
+
+        // Get all events
+        $events = DB::table('events')->pluck('event_name');
+
+        // Build week labels
+        while ($weeklyStart <= $weeklyEnd) {
+            $weeks->push("Week " . $weeklyStart->isoWeek . " " . $weeklyStart->format('M Y'));
+            $weeklyStart->addWeek();
+        }
+
+        // --- 1️⃣ Get total attendances (all statuses)
+        $totalWeekly = $this->getAttendanceFilteredReport($request)
+            ->join('event_occurrences', 'attendances.event_occurrence_id', '=', 'event_occurrences.id')
+            ->join('events', 'event_occurrences.event_id', '=', 'events.id')
+            ->select(
+                'events.event_name',
+                DB::raw('YEAR(attendances.created_at) as year'),
+                DB::raw('WEEK(attendances.created_at, 1) as week_number'),
+                DB::raw('COUNT(attendances.id) as total_count'),
+                DB::raw('CONCAT("Week ", WEEK(attendances.created_at, 1), " ", DATE_FORMAT(attendances.created_at, "%b %Y")) as week_label')
+            )
+            ->groupBy('events.event_name', 'year', 'week_number', 'week_label')
+            ->get();
+
+        // --- 2️⃣ Get present attendances only
+        $presentWeekly = $this->getAttendanceFilteredReport($request, 'present')
+            ->join('event_occurrences', 'attendances.event_occurrence_id', '=', 'event_occurrences.id')
+            ->join('events', 'event_occurrences.event_id', '=', 'events.id')
+            ->select(
+                'events.event_name',
+                DB::raw('YEAR(attendances.created_at) as year'),
+                DB::raw('WEEK(attendances.created_at, 1) as week_number'),
+                DB::raw('COUNT(attendances.id) as present_count'),
+                DB::raw('CONCAT("Week ", WEEK(attendances.created_at, 1), " ", DATE_FORMAT(attendances.created_at, "%b %Y")) as week_label')
+            )
+            ->groupBy('events.event_name', 'year', 'week_number', 'week_label')
+            ->get();
+
+        // --- 3️⃣ Compute engagement per week (present / total * 100)
+        $weeklySeries = [];
+
+        foreach ($events as $event) {
+            $weeklyData = [];
+
+            foreach ($weeks as $week) {
+                $total = $totalWeekly->first(fn($row) => $row->event_name === $event && $row->week_label === $week);
+                $present = $presentWeekly->first(fn($row) => $row->event_name === $event && $row->week_label === $week);
+
+                $totalCount = $total ? (int) $total->total_count : 0;
+                $presentCount = $present ? (int) $present->present_count : 0;
+
+                // Compute engagement percentage
+                $engagement = $totalCount > 0 ? round(($presentCount / $totalCount) * 100, 2) : 0;
+
+                $weeklyData[] = $engagement;
+            }
+
+            $weeklySeries[] = [
+                'name' => $event,
+                'data' => $weeklyData,
+            ];
+        }
+
+        return [
+            'x' => $weeks,
+            'series' => $weeklySeries,
+        ];
+    }
+
+    function getMonthlyEngagement($request)
+    {
+        $minDate = $request['from_date'] ?? now()->subYear();
+        $maxDate = $request['to_date'] ?? now();
+
+        $start = Carbon::parse($minDate)->startOfMonth();
+        $end = Carbon::parse($maxDate)->endOfMonth();
+
+        $monthStart = (clone $start);
+        $months = collect();
+
+        // Get all events
+        $events = DB::table('events')->pluck('event_name');
+
+        // Build month labels
+        while ($monthStart <= $end) {
+            $months->push($monthStart->format('M Y'));
+            $monthStart->addMonth();
+        }
+
+        // --- 1️⃣ Get total attendances (all statuses)
+        $totalMonthly = $this->getAttendanceFilteredReport($request)
+            ->join('event_occurrences', 'attendances.event_occurrence_id', '=', 'event_occurrences.id')
+            ->join('events', 'event_occurrences.event_id', '=', 'events.id')
+            ->select(
+                'events.event_name',
+                DB::raw('YEAR(attendances.created_at) as year'),
+                DB::raw('MONTH(attendances.created_at) as month_number'),
+                DB::raw('COUNT(attendances.id) as total_count'),
+                DB::raw('DATE_FORMAT(attendances.created_at, "%b %Y") as month_label')
+            )
+            ->groupBy('events.event_name', 'year', 'month_number', 'month_label')
+            ->get();
+
+        // --- 2️⃣ Get present attendances only
+        $presentMonthly = $this->getAttendanceFilteredReport($request, 'present')
+            ->join('event_occurrences', 'attendances.event_occurrence_id', '=', 'event_occurrences.id')
+            ->join('events', 'event_occurrences.event_id', '=', 'events.id')
+            ->select(
+                'events.event_name',
+                DB::raw('YEAR(attendances.created_at) as year'),
+                DB::raw('MONTH(attendances.created_at) as month_number'),
+                DB::raw('COUNT(attendances.id) as present_count'),
+                DB::raw('DATE_FORMAT(attendances.created_at, "%b %Y") as month_label')
+            )
+            ->groupBy('events.event_name', 'year', 'month_number', 'month_label')
+            ->get();
+
+        // --- 3️⃣ Compute engagement per month (present / total * 100)
+        $monthlySeries = [];
+
+        foreach ($events as $event) {
+            $monthlyData = [];
+
+            foreach ($months as $month) {
+                $total = $totalMonthly->first(fn($row) => $row->event_name === $event && $row->month_label === $month);
+                $present = $presentMonthly->first(fn($row) => $row->event_name === $event && $row->month_label === $month);
+
+                $totalCount = $total ? (int) $total->total_count : 0;
+                $presentCount = $present ? (int) $present->present_count : 0;
+
+                // Compute engagement percentage
+                $engagement = $totalCount > 0 ? round(($presentCount / $totalCount) * 100, 2) : 0;
+
+                $monthlyData[] = $engagement;
+            }
+
+            $monthlySeries[] = [
+                'name' => $event,
+                'data' => $monthlyData,
+            ];
+        }
+
+        return [
+            'x' => $months,
+            'series' => $monthlySeries,
+        ];
+    }
+    function getYearlyEngagement($request)
+    {
+        $minDate = $request['from_date'] ?? now()->subYears(5);
+        $maxDate = $request['to_date'] ?? now();
+
+        $start = Carbon::parse($minDate)->startOfYear();
+        $end = Carbon::parse($maxDate)->endOfYear();
+
+        $yearStart = (clone $start);
+        $years = collect();
+
+        // Get all events
+        $events = DB::table('events')->pluck('event_name');
+
+        // Build year labels
+        while ($yearStart <= $end) {
+            $years->push($yearStart->format('Y'));
+            $yearStart->addYear();
+        }
+
+        // --- 1️⃣ Get total attendances (all statuses)
+        $totalYearly = $this->getAttendanceFilteredReport($request)
+            ->join('event_occurrences', 'attendances.event_occurrence_id', '=', 'event_occurrences.id')
+            ->join('events', 'event_occurrences.event_id', '=', 'events.id')
+            ->select(
+                'events.event_name',
+                DB::raw('YEAR(attendances.created_at) as year_number'),
+                DB::raw('COUNT(attendances.id) as total_count')
+            )
+            ->groupBy('events.event_name', 'year_number')
+            ->get();
+
+        // --- 2️⃣ Get present attendances only
+        $presentYearly = $this->getAttendanceFilteredReport($request, 'present')
+            ->join('event_occurrences', 'attendances.event_occurrence_id', '=', 'event_occurrences.id')
+            ->join('events', 'event_occurrences.event_id', '=', 'events.id')
+            ->select(
+                'events.event_name',
+                DB::raw('YEAR(attendances.created_at) as year_number'),
+                DB::raw('COUNT(attendances.id) as present_count')
+            )
+            ->groupBy('events.event_name', 'year_number')
+            ->get();
+
+        // --- 3️⃣ Compute engagement per year (present / total * 100)
+        $yearlySeries = [];
+
+        foreach ($events as $event) {
+            $yearlyData = [];
+
+            foreach ($years as $year) {
+                $total = $totalYearly->first(fn($row) => $row->event_name === $event && $row->year_number == $year);
+                $present = $presentYearly->first(fn($row) => $row->event_name === $event && $row->year_number == $year);
+
+                $totalCount = $total ? (int) $total->total_count : 0;
+                $presentCount = $present ? (int) $present->present_count : 0;
+
+                // Compute engagement percentage
+                $engagement = $totalCount > 0 ? round(($presentCount / $totalCount) * 100, 2) : 0;
+
+                $yearlyData[] = $engagement;
+            }
+
+            $yearlySeries[] = [
+                'name' => $event,
+                'data' => $yearlyData,
+            ];
+        }
+
+        return [
+            'x' => $years,
+            'series' => $yearlySeries,
+        ];
+    }
+
+    function getAttendanceDetails($request)
+    {
 
     }
+
 }

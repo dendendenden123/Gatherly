@@ -72,15 +72,15 @@
                             Attendance Reports
                         </button>
                         <button id="engagementTabBtn" data-tab="engagement"
-                            class="border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 text-sm font-medium">
+                            class="border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 text-sm font-medium ">
                             Member Engagement
                         </button>
                         <button id="demographicTabBtn" data-tab="demographics"
-                            class="border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 text-sm font-medium">
+                            class="border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 text-sm font-medium hidden">
                             Demographic Insights
                         </button>
                         <button id="customTabBtn" data-tab="custom"
-                            class="border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 text-sm font-medium">
+                            class="border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 text-sm font-medium hidden">
                             Custom Reports
                         </button>
                     </nav>
@@ -88,7 +88,7 @@
             </div>
 
             <!-- Filters Section -->
-            <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
+            <div class=" bg-white rounded-lg shadow-sm p-6 mb-8">
                 <form action="{{ route('admin.reports') }}" method="GET" id="filter-form"
                     class="grid grid-cols-1 md:grid-cols-4 gap-4">
 
@@ -125,7 +125,8 @@
                                 Christian Family Organization (CFO) activity
                             </option>
                             <option value="Evangelical Mission">Evangelical Mission</option>
-                            <option value="Inauguration of New Chapels/ Structure">Inauguration of New Chapels/Structure
+                            <option value="Inauguration of New Chapels/ Structure">Inauguration of New
+                                Chapels/Structure
                             </option>
                             <option value="Meeting">Meeting</option>
                             <option value="Panata">Panata</option>
@@ -251,7 +252,8 @@
                                 class="text-sm px-3 py-1 bg-gray-100 text-gray-700 rounded-lg">Yearly</button>
                         </div>
                     </div>
-                    <div id="attendanceTrendChart" class="h-80" data-attendance="{{ $attendanceChart }}"></div>
+                    <div id="attendanceTrendChart" class="h-80" data-attendance="{{ $attendanceChart }}"
+                        data-engagement="{{ $engagementChart }}"></div>
                 </div>
 
                 <!-- Event Type Comparison -->
@@ -352,9 +354,11 @@
                                 <i class="fas fa-calendar-check text-blue-600 text-xl"></i>
                             </div>
                             <div class="ml-3">
-                                <h3 id="insight1Title" class="text-sm font-medium text-blue-800">Top Event by Attendance
+                                <h3 id="insight1Title" class="text-sm font-medium text-blue-800">Top Event by
+                                    Attendance
                                 </h3>
-                                <p id="insight1Text" class="mt-1 text-sm text-blue-700">Sunday Morning Service (Oct 15)
+                                <p id="insight1Text" class="mt-1 text-sm text-blue-700">Sunday Morning Service (Oct
+                                    15)
                                     with 342 attendees
                                 </p>
                             </div>
@@ -368,7 +372,8 @@
                             <div class="ml-3">
                                 <h3 id="insight2Title" class="text-sm font-medium text-green-800">Highest Engagement
                                 </h3>
-                                <p id="insight2Text" class="mt-1 text-sm text-green-700">Johnson Family - attended 12 of
+                                <p id="insight2Text" class="mt-1 text-sm text-green-700">Johnson Family - attended
+                                    12 of
                                     14 events this
                                     month</p>
                             </div>
@@ -380,9 +385,11 @@
                                 <i class="fas fa-chart-pie text-purple-600 text-xl"></i>
                             </div>
                             <div class="ml-3">
-                                <h3 id="insight3Title" class="text-sm font-medium text-purple-800">Growth Opportunity
+                                <h3 id="insight3Title" class="text-sm font-medium text-purple-800">Growth
+                                    Opportunity
                                 </h3>
-                                <p id="insight3Text" class="mt-1 text-sm text-purple-700">Youth events show 15% growth
+                                <p id="insight3Text" class="mt-1 text-sm text-purple-700">Youth events show 15%
+                                    growth
                                     in first-time
                                     visitors</p>
                             </div>

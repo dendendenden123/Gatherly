@@ -28,8 +28,11 @@ class ReportController extends Controller
             $weeklyAttendance = $this->reportService->getWeeklyAttendance($request);
             $monthlyAttendance = $this->reportService->getMonthlyAttendance($request);
             $yearlyAttendance = $this->reportService->getYearlyAttendance($request);
-            $attendanceBars = $this->reportService->getAttendanceBars();
+            $attendanceBars = $this->reportService->getAttendanceBars($request);
 
+            $weeklyEngagement = $this->reportService->getWeeklyEngagement($request);
+            $monthlyEngagement = $this->reportService->getMonthlyEngagement($request);
+            $yearlyEngagement = $this->reportService->getYearlyEngagement($request);
 
             $attendanceChart = json_encode([
                 'weekly' => $weeklyAttendance,
@@ -38,8 +41,14 @@ class ReportController extends Controller
                 'bars' => $attendanceBars,
             ]);
 
+            $engagementChart = json_encode([
+                'weekly' => $weeklyEngagement,
+                'monthly' => $monthlyEngagement,
+                'yearly' => $yearlyEngagement,
+                'bars' => $attendanceBars,
+            ]);
 
-            return view('admin.reports.index', compact('attendanceChart'));
+            return view('admin.reports.index', compact('attendanceChart', 'engagementChart'));
         } catch (\Exception $e) {
             logger()->error('Error in ReportController@index: ' . $e->getMessage(), ['exception' => $e]);
             if ($request->ajax()) {

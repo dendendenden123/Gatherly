@@ -1,8 +1,11 @@
 document.addEventListener("DOMContentLoaded", function () {
-    let monthEl = document.querySelector("#attendanceTrendChart");
-    let monthRaw = monthEl ? JSON.parse(monthEl.dataset.attendance) : null;
-
-    console.log(monthRaw);
+    let rawAttendnceChartData = document.querySelector("#attendanceTrendChart");
+    let attendanceChartData = rawAttendnceChartData
+        ? JSON.parse(rawAttendnceChartData.dataset.attendance)
+        : null;
+    let engagementChartData = rawAttendnceChartData
+        ? JSON.parse(rawAttendnceChartData.dataset.engagement)
+        : null;
 
     const state = {
         currentTab: "attendance",
@@ -37,32 +40,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const mock = {
         charts: {
-            attendance: monthRaw,
-            engagement: {
-                weekly: {
-                    x: ["W1", "W2", "W3", "W4"],
-                    series: [{ name: "Engagement", data: [70, 75, 78, 80] }],
-                },
-                monthly: {
-                    x: ["Jun", "Jul", "Aug", "Sep", "Oct", "Nov"],
-                    series: [
-                        {
-                            name: "Engagement",
-                            data: [68, 70, 72, 74, 78, 80],
-                        },
-                    ],
-                },
-                yearly: {
-                    x: ["2020", "2021", "2022", "2023", "2024"],
-                    series: [
-                        { name: "Engagement", data: [60, 65, 70, 75, 78] },
-                    ],
-                },
-                bars: {
-                    attendance: ["Groups", "Volunteers", "Donations"],
-                    data: [120, 85, 60],
-                },
-            },
+            attendance: attendanceChartData, //done
+            engagement: engagementChartData,
             demographics: {
                 weekly: {
                     x: ["Binhi", "Kadiwa", "Buklod"],
