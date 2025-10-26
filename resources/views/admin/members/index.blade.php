@@ -62,7 +62,7 @@
     </form>
     <div class="index-list ">
         @include('admin.members.index-list')
-    </div>]
+    </div>
 
-    @vite('resources/js/admin-members-index.js');
+    @vite('resources/js/admin-members-index.js')
 @endsection

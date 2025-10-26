@@ -1,21 +1,3 @@
-<!-- Members Stats -->
-<div class="members-stats">
-    <div class="stat-card">
-        <div class="stat-header">
-            <div class="stat-title">Total Members</div>
-            <i class="fas fa-users"></i>
-        </div>
-        <div class="stat-value">{{ $totalMembersCount }}</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-header">
-            <div class="stat-title">Volunteers</div>
-            <i class="fas fa-hands-helping"></i>
-        </div>
-        <div class="stat-value">{{ $volunteersMemberCount }}</div>
-    </div>
-</div>
-
 <!-- Members Table -->
 <div class="members-table-container">
     <table class="members-table">

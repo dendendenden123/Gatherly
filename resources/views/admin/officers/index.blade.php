@@ -50,10 +50,6 @@
         <div class="officer-table-container">
             <div class="table-header">
                 <div class="table-title">Church Officers</div>
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search officers...">
-                </div>
                 <button class="btn btn-primary" id="addOfficerBtn">
                     <i class="fas fa-plus"></i> Add Officer
                 </button>

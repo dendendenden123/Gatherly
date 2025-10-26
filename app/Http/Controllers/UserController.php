@@ -20,16 +20,11 @@ class UserController extends Controller
             'sort' => $request->sort
         ])->simplePaginate(5);
 
-        $totalMembersCount = User::query()->count();
-        $volunteersMemberCount = User::whereHas('officers', function ($query) {
-            $query->whereNot('role_id', '0');
-        })->count();
-
         if ($request->ajax()) {
-            $indexList = view('admin.members.index-list', compact('users', 'totalMembersCount', 'volunteersMemberCount'))->render();
+            $indexList = view('admin.members.index-list', compact('users'))->render();
             return response()->json(['list' => $indexList]);
         }
-        return view('admin.members.index', compact('users', 'totalMembersCount', 'volunteersMemberCount'));
+        return view('admin.members.index', compact('users'));
     }
 
     //===========================================

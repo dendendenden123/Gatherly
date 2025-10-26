@@ -15,8 +15,7 @@
 <!-- Task Items -->
 <div class="divide-y divide-gray-200">
     @forelse ($tasks as $task)
-    <div class="p-4 hover:bg-gray-50 task-card transition priority-{{ $task?->priority }}"
-        onclick="window.location.href='{{ route('admin.tasks.show', $task->id) }}'">
+    <div class="p-4 hover:bg-gray-50 task-card transition priority-{{ $task?->priority }}">
 
         <div class="grid grid-cols-12 gap-4 items-center">
 

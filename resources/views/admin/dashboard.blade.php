@@ -615,7 +615,7 @@
                         <div class="section-header">
                             <div class="section-title">Recent Members</div>
                             <div class="section-actions">
-                                <a href="#">View All</a>
+                                <a href="{{ route('admin.members') }}">View All</a>
                             </div>
                         </div>
 

@@ -150,7 +150,7 @@
         </div>
 
         <div class="task-list">
-            @include('admin.tasks.task-list');
+            @include('admin.tasks.task-list')
         </div>
 
     </div>
