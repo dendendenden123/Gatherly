@@ -7,7 +7,6 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Church Management Dashboard</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <style>
@@ -543,10 +542,6 @@
 
     <body>
         <div class="dashboard-container">
-            <div class="dashboard-header">
-                <h1>Church Dashboard</h1>
-                <p>Welcome to your church management dashboard</p>
-            </div>
 
             <!-- Dashboard Widgets -->
             <div class="dashboard-widgets">
@@ -557,25 +552,7 @@
                             <i class="fas fa-users"></i>
                         </div>
                     </div>
-                    <div class="widget-value">1,254</div>
-                    <div class="widget-footer">
-                        <i class="fas fa-arrow-up text-primary"></i>
-                        <span class="text-primary">12% from last month</span>
-                    </div>
-                </div>
-
-                <div class="widget widget-secondary">
-                    <div class="widget-header">
-                        <div class="widget-title">Weekly Attendance</div>
-                        <div class="widget-icon">
-                            <i class="fas fa-calendar-check"></i>
-                        </div>
-                    </div>
-                    <div class="widget-value">876</div>
-                    <div class="widget-footer">
-                        <i class="fas fa-arrow-up text-secondary"></i>
-                        <span class="text-secondary">5% from last week</span>
-                    </div>
+                    <div class="widget-value">{{ $totalMembers }}</div>
                 </div>
 
                 <div class="widget widget-accent">
@@ -585,7 +562,7 @@
                             <i class="fas fa-calendar-alt"></i>
                         </div>
                     </div>
-                    <div class="widget-value">8</div>
+                    <div class="widget-value">{{ $upcomingEventsCount }}</div>
                     <div class="widget-footer">
                         <span>This week</span>
                     </div>
@@ -598,7 +575,7 @@
                             <i class="fas fa-hand-holding-heart"></i>
                         </div>
                     </div>
-                    <div class="widget-value">142</div>
+                    <div class="widget-value">{{ $volunteersCount }}</div>
                     <div class="widget-footer">
                         <span>Active volunteers</span>
                     </div>
@@ -616,19 +593,19 @@
                         <div class="status-grid">
                             <div class="status-card status-primary">
                                 <div class="status-label">Active</div>
-                                <div class="status-value">892</div>
+                                <div class="status-value">{{ $activeCount }}</div>
                             </div>
                             <div class="status-card status-gray">
                                 <div class="status-label">Inactive</div>
-                                <div class="status-value">214</div>
+                                <div class="status-value">{{ $inactiveCount }}</div>
                             </div>
                             <div class="status-card status-secondary">
                                 <div class="status-label">Partially-Active</div>
-                                <div class="status-value">128</div>
+                                <div class="status-value">{{ $partiallyActiveCount }}</div>
                             </div>
                             <div class="status-card status-accent">
                                 <div class="status-label">Expelled</div>
-                                <div class="status-value">20</div>
+                                <div class="status-value">{{ $expelledCount }}</div>
                             </div>
                         </div>
                     </div>
@@ -647,68 +624,37 @@
                                 <tr>
                                     <th>Name</th>
                                     <th>Join Date</th>
+                                    <th>Birthdate</th>
                                     <th>Status</th>
-                                    <th>Actions</th>
+                                    <th>Marital Status</th>
+
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="member-info">
-                                            <div class="member-avatar">SJ</div>
-                                            <div>
-                                                <div class="member-name">Sarah Johnson</div>
-                                                <div class="member-email">sarah.j@example.com</div>
+                                @foreach ($recentMembers as $member)
+
+                                    <tr>
+                                        <td>
+                                            <div class="member-info">
+                                                <div class="member-avatar">SJ</div>
+                                                <div>
+                                                    <div class="member-name">{{  $member->first_name }}
+                                                        {{  $member->last_name }}
+                                                    </div>
+                                                    <div class="member-email">{{  $member->email }} </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                    <td>Mar 15, 2023</td>
-                                    <td>
-                                        <span class="status-badge status-active">Active</span>
-                                    </td>
-                                    <td>
-                                        <button class="action-btn edit-btn">Edit</button>
-                                        <button class="action-btn delete-btn">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="member-info">
-                                            <div class="member-avatar">MB</div>
-                                            <div>
-                                                <div class="member-name">Michael Brown</div>
-                                                <div class="member-email">m.brown@example.com</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>Mar 10, 2023</td>
-                                    <td>
-                                        <span class="status-badge status-partial">Partially-Active</span>
-                                    </td>
-                                    <td>
-                                        <button class="action-btn edit-btn">Edit</button>
-                                        <button class="action-btn delete-btn">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="member-info">
-                                            <div class="member-avatar">RJ</div>
-                                            <div>
-                                                <div class="member-name">Robert Johnson</div>
-                                                <div class="member-email">robert.j@example.com</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>Mar 05, 2023</td>
-                                    <td>
-                                        <span class="status-badge status-active">Active</span>
-                                    </td>
-                                    <td>
-                                        <button class="action-btn edit-btn">Edit</button>
-                                        <button class="action-btn delete-btn">Delete</button>
-                                    </td>
-                                </tr>
+                                        </td>
+                                        <td>{{  $member->created_at->format('M d, Y') }}</td>
+                                        <td>{{  $member->birthdate->format('M d, Y') }}</td>
+                                        <td>
+                                            <span
+                                                class="status-badge status-{{   $member->status }}">{{  $member->status }}</span>
+                                        </td>
+
+                                        <td>{{  $member->marital_status}}</td>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -761,23 +707,27 @@
                         <div class="quick-actions">
                             <h3 class="section-title">Quick Actions</h3>
                             <div class="action-buttons">
-                                <button class="action-button action-primary">
+                                <a href="{{ route('admin.officers') }}" class="action-button action-primary">
                                     <i class="fas fa-user-plus"></i>
-                                    <span>Add Member</span>
-                                </button>
-                                <button class="action-button action-secondary">
+                                    <span>Assign Roles</span>
+                                </a>
+
+                                <a href="{{ route('admin.events.create') }}" class="action-button action-secondary">
                                     <i class="fas fa-calendar-plus"></i>
                                     <span>Create Event</span>
-                                </button>
-                                <button class="action-button action-primary">
+                                </a>
+
+                                <a href="{{ route('admin.notifications.create') }}" class="action-button action-primary">
                                     <i class="fas fa-envelope"></i>
-                                    <span>Send Message</span>
-                                </button>
-                                <button class="action-button action-accent">
+                                    <span>Send Notification</span>
+                                </a>
+
+                                <a href="{{ route('admin.reports') }}" class="action-button action-accent">
                                     <i class="fas fa-file-export"></i>
                                     <span>Generate Report</span>
-                                </button>
+                                </a>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -789,7 +739,8 @@
                             <div class="section-title">Attendance Trend</div>
                         </div>
                         <div class="chart-container">
-                            <canvas id="attendanceTrend"></canvas>
+                            <canvas id="attendanceTrend" data-labels="{{ $chartLabels }}"
+                                data-data="{{ $chartValues }}"></canvas>
                         </div>
                     </div>
 
@@ -797,36 +748,20 @@
                     <div class="section">
                         <div class="section-header">
                             <div class="section-title">Upcoming Events</div>
-                            <div class="text-xs text-gray-500">Next 5</div>
                         </div>
                         <ul>
-                            <li class="event-item">
-                                <div class="event-icon">
-                                    <i class="fas fa-calendar-day"></i>
-                                </div>
-                                <div class="event-details">
-                                    <h4>Sunday Worship Service</h4>
-                                    <p>Mar 26, 2023 @ 10:00 AM</p>
-                                </div>
-                            </li>
-                            <li class="event-item">
-                                <div class="event-icon">
-                                    <i class="fas fa-calendar-day"></i>
-                                </div>
-                                <div class="event-details">
-                                    <h4>Youth Group Meeting</h4>
-                                    <p>Mar 28, 2023 @ 6:30 PM</p>
-                                </div>
-                            </li>
-                            <li class="event-item">
-                                <div class="event-icon">
-                                    <i class="fas fa-calendar-day"></i>
-                                </div>
-                                <div class="event-details">
-                                    <h4>Bible Study</h4>
-                                    <p>Mar 29, 2023 @ 7:00 PM</p>
-                                </div>
-                            </li>
+                            @forelse ($upcomingEvents as $events)
+                                <li class="event-item">
+                                    <div class="event-icon">
+                                        <i class="fas fa-calendar-day"></i>
+                                    </div>
+                                    <div class="event-details">
+                                        <h4> {{  $events->event->event_name }}</h4>
+                                        <p>{{  $events->occurrence_date->format('M d, Y') }}</p>
+                                    </div>
+                                </li>
+                            @empty
+                            @endforelse
                         </ul>
                     </div>
 
@@ -836,33 +771,27 @@
                             <div class="section-title">Birthdays This Week</div>
                         </div>
                         <ul>
-                            <li class="birthday-item">
-                                <div class="birthday-icon">
-                                    <i class="fas fa-birthday-cake"></i>
-                                </div>
-                                <div class="birthday-details">
-                                    <h4>Jennifer Wilson</h4>
-                                    <p>Mar 24</p>
-                                </div>
-                            </li>
-                            <li class="birthday-item">
-                                <div class="birthday-icon">
-                                    <i class="fas fa-birthday-cake"></i>
-                                </div>
-                                <div class="birthday-details">
-                                    <h4>David Miller</h4>
-                                    <p>Mar 25</p>
-                                </div>
-                            </li>
-                            <li class="birthday-item">
-                                <div class="birthday-icon">
-                                    <i class="fas fa-birthday-cake"></i>
-                                </div>
-                                <div class="birthday-details">
-                                    <h4>Amanda Clark</h4>
-                                    <p>Mar 27</p>
-                                </div>
-                            </li>
+                            @forelse ($birthdaysThisWeek as $birthday)
+                                <li class="birthday-item">
+                                    <div class="birthday-icon">
+                                        <i class="fas fa-birthday-cake"></i>
+                                    </div>
+                                    <div class="birthday-details">
+                                        <h4>{{ $birthday->first_name }} {{ $birthday->last_name }}</h4>
+                                        <p>{{  $member->birthdate->format('M d, Y') }}</p>
+                                    </div>
+                                </li>
+                            @empty
+                                <li class="birthday-item">
+                                    <div class="birthday-icon">
+                                        <i class="fas fa-birthday-cake"></i>
+                                    </div>
+                                    <div class="birthday-details">
+                                        <h4>There are no birthdays this week.</h4>
+                                        <p>{{  now()->format('M d, Y') }}</p>
+                                    </div>
+                                </li>
+                            @endforelse
                         </ul>
                     </div>
                 </div>
@@ -872,16 +801,17 @@
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 const ctx = document.getElementById('attendanceTrend');
+
                 if (ctx) {
-                    const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
-                    const values = [820, 832, 845, 860, 876, 890];
+                    const labels = JSON.parse(ctx.dataset.labels);
+                    const values = JSON.parse(ctx.dataset.data);
 
                     new Chart(ctx, {
                         type: 'line',
                         data: {
                             labels,
                             datasets: [{
-                                label: 'Present (weekly) ',
+                                label: 'Present (monthly) ',
                                 data: values,
                                 borderColor: '#4361ee',
                                 backgroundColor: 'rgba(67, 97, 238, 0.15)',
@@ -911,7 +841,6 @@
                                         color: '#e2e8f0'
                                     },
                                     beginAtZero: false,
-                                    min: 800
                                 }
                             }
                         }

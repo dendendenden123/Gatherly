@@ -19,7 +19,7 @@ class DashboardController extends Controller
         $partiallyActiveCount = User::where('status', 'partially-active')->count();
         $expelledCount = User::where('status', 'expelled')->count();
         $volunteersCount = User::whereHas('officers', function ($query) {
-            $query->whereNot('role_id', '0');
+            $query->whereNotIn('role_id', [0, 100]);
         })->count();
 
         $startOfWeek = Carbon::now()->startOfWeek(Carbon::SUNDAY);
@@ -30,12 +30,16 @@ class DashboardController extends Controller
 
         $upcomingEvents = EventOccurrence::with('event')
             ->whereDate('occurrence_date', '>=', Carbon::today())
-            ->orderBy('occurrence_date')
+            ->orderBy('occurrence_date', )
             ->limit(5)
             ->get();
-        $upcomingEventsCount = EventOccurrence::whereDate('occurrence_date', '>=', Carbon::today())->count();
 
-        $recentMembers = User::orderBy('created_at', 'desc')->limit(5)->get(['id', 'first_name', 'middle_name', 'last_name', 'email', 'created_at', 'status']);
+        $upcomingEventsCount = EventOccurrence::whereBetween('occurrence_date', [
+            Carbon::today(),
+            Carbon::today()->addWeek()
+        ])->count();
+
+        $recentMembers = User::orderBy('created_at', 'desc')->limit(5)->get();
 
         $startOfThisWeek = Carbon::now()->startOfWeek();
         $endOfThisWeek = Carbon::now()->endOfWeek();
@@ -46,23 +50,38 @@ class DashboardController extends Controller
             ->limit(7)
             ->get(['id', 'first_name', 'middle_name', 'last_name', 'birthdate']);
 
-        // Attendance trend (last 8 weeks, present counts)
-        $trendStart = Carbon::now()->subWeeks(7)->startOfWeek();
-        $trendEnd = Carbon::now()->endOfWeek();
-        $weeklyTrend = Attendance::select(
+        // Get the range: 6 months from today
+        $trendEnd = Carbon::now();
+        $trendStart = Carbon::now()->subMonths(5)->startOfMonth(); // include current month
+
+        // Query actual attendance data
+        $monthlyTrend = Attendance::select(
             DB::raw("YEAR(updated_at) as y"),
-            DB::raw("WEEK(updated_at, 1) as w"),
+            DB::raw("MONTH(updated_at) as m"),
             DB::raw("COUNT(CASE WHEN status='present' THEN 1 END) as present")
         )
             ->whereBetween('updated_at', [$trendStart, $trendEnd])
-            ->groupBy('y', 'w')
+            ->groupBy('y', 'm')
             ->orderBy('y')
-            ->orderBy('w')
-            ->get();
-        $chartLabels = $weeklyTrend->map(function ($row) {
-            return $row->y . '-W' . str_pad($row->w, 2, '0', STR_PAD_LEFT);
-        });
-        $chartValues = $weeklyTrend->pluck('present');
+            ->orderBy('m')
+            ->get()
+            ->mapWithKeys(function ($row) {
+                $key = Carbon::create($row->y, $row->m)->format('M Y');
+                return [$key => $row->present];
+            });
+
+        // Generate 6-month list
+        $months = collect();
+        for ($i = 0; $i < 6; $i++) {
+            $monthLabel = Carbon::now()->subMonths(5 - $i)->format('M Y');
+            $months->put($monthLabel, $monthlyTrend[$monthLabel] ?? 0);
+        }
+
+        // Final data
+        $chartLabels = $months->keys();
+        $chartValues = $months->values();
+
+
 
         return view('admin.dashboard', [
             'totalMembers' => $totalMembers,
@@ -76,8 +95,8 @@ class DashboardController extends Controller
             'volunteersCount' => $volunteersCount,
             'recentMembers' => $recentMembers,
             'birthdaysThisWeek' => $birthdaysThisWeek,
-            'chartLabels' => $chartLabels,
-            'chartValues' => $chartValues,
+            'chartLabels' => json_encode($chartLabels),
+            'chartValues' => json_encode($chartValues),
         ]);
     }
 }

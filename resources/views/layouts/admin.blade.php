@@ -173,17 +173,6 @@
                 <h1>@yield('header-text', 'Dashboard Overview')</h1>
                 <p>@yield('header-subtext', "Welcome back! Here's what's happening with your church today.")</p>
             </div>
-
-            <div class="header-actions">
-                <div class="search-bar">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search...">
-                </div>
-                <div class="notification-bell">
-                    <i class="fas fa-bell"></i>
-                    <div class="notification-badge">3</div>
-                </div>
-            </div>
         </div>
         @show
 

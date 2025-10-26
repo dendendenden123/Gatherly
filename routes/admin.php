@@ -16,7 +16,7 @@ Route::get('/admin/members', function () {
     return view('admin.members');
 })->name('admin.members');
 
-//Users Routes
+//Report Routes
 Route::controller(ReportController::class)->group(function () {
     Route::get('/admin/reports/', 'index')->name('admin.reports');
     Route::get('/admin/reports/attendance-list', 'attendanceList')->name('admin.reports.attendance.list');
