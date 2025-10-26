@@ -25,6 +25,10 @@ class ReportController extends Controller
     public function index(Request $request)
     {
         try {
+            $totalAttendance = $this->reportService->getAttendanceFilteredReport($request, 'present')->count();
+            $totalMembers = User::query()->count();
+            $engagementRate = $this->reportService->getEngagementRate($request);
+
             $weeklyAttendance = $this->reportService->getWeeklyAttendance($request);
             $monthlyAttendance = $this->reportService->getMonthlyAttendance($request);
             $yearlyAttendance = $this->reportService->getYearlyAttendance($request);
@@ -35,9 +39,7 @@ class ReportController extends Controller
             $yearlyEngagement = $this->reportService->getYearlyEngagement($request);
 
             $attendanceDetails = json_encode($this->reportService->getAttendanceDetails($request));
-            $engagementDetails = $this->reportService->getEngagementDetails($request);
-
-            dd($engagementDetails);
+            $engagementDetails = json_encode($this->reportService->getEngagementDetails($request));
 
             $attendanceChart = json_encode([
                 'weekly' => $weeklyAttendance,
@@ -53,7 +55,7 @@ class ReportController extends Controller
                 'bars' => $attendanceBars,
             ]);
 
-            return view('admin.reports.index', compact('attendanceChart', 'engagementChart', 'attendanceDetails'));
+            return view('admin.reports.index', compact('totalAttendance', 'totalMembers', 'engagementRate', 'attendanceChart', 'engagementChart', 'attendanceDetails', 'engagementDetails'));
         } catch (\Exception $e) {
             logger()->error('Error in ReportController@index: ' . $e->getMessage(), ['exception' => $e]);
             if ($request->ajax()) {

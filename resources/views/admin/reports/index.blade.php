@@ -22,7 +22,7 @@
         <header class="bg-white shadow-sm">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
                 <div class="flex items-center">
-                    <div class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
+                    <div class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
                         <i class="fas fa-church text-white"></i>
                     </div>
                     <h1 class="ml-3 text-xl font-bold text-gray-900">Grace Community Church</h1>
@@ -32,8 +32,8 @@
                         <i class="fas fa-bell"></i>
                     </button>
                     <div class="flex items-center">
-                        <div class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
-                            <i class="fas fa-user text-indigo-600"></i>
+                        <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-user text-green-600"></i>
                         </div>
                         <span class="ml-2 text-sm font-medium">Admin User</span>
                     </div>
@@ -47,18 +47,21 @@
             <div class="mb-8">
                 <div class="flex justify-between items-center">
                     <div>
-                        <h1 class="text-2xl font-bold text-gray-900">Reports & Analytics</h1>
+                        <h1 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                            <a href="{{ route('admin.dashboard')}}" class="text-gray-600 hover:text-green-600">
+                                <i class="fas fa-arrow-left"></i>
+                            </a>
+                            Reports & Analytics
+                        </h1>
                         <p class="text-gray-600 mt-1">Generate insights from event attendance and member engagement</p>
                     </div>
                     <div class="flex space-x-3">
-                        <button
-                            class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 flex items-center">
-                            <i class="fas fa-print mr-2"></i> Print
-                        </button>
-                        <button
-                            class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 flex items-center">
-                            <i class="fas fa-plus mr-2"></i> New Report
-                        </button>
+
+                        <a href="{{ route('admin.attendance') }}"><button
+                                class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center">
+                                Attendance Records
+                            </button>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -68,7 +71,7 @@
                 <div class="border-b border-gray-200">
                     <nav class="-mb-px flex space-x-8">
                         <button id="attendanceTabBtn" data-tab="attendance"
-                            class="border-b-2 border-indigo-500 text-indigo-600 py-4 px-1 text-sm font-medium">
+                            class="border-b-2 border-green-500 text-green-600 py-4 px-1 text-sm font-medium">
                             Attendance Reports
                         </button>
                         <button id="engagementTabBtn" data-tab="engagement"
@@ -98,17 +101,14 @@
                         <div class="grid grid-cols-2 gap-2">
                             <!-- From Date -->
                             <div>
-                                <!-- <label for="from_date" class="block text-xs text-gray-500 mb-1">From</label> -->
-                                <input type="date" id="from_date" name="from_date"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-
+                                <input type="date" id="from_date" name="from_date" value="{{ request('from_date') }}"
+                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
                             </div>
 
                             <!-- To Date -->
                             <div>
-                                <!-- <label for="to_date" class="block text-xs text-gray-500 mb-1">To</label> -->
-                                <input type="date" id="to_date" name="to_date"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                <input type="date" id="to_date" name="to_date" value="{{ request('to_date') }}"
+                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
                             </div>
                         </div>
                     </div>
@@ -117,21 +117,24 @@
                     <div class="col-span-1">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Event Type</label>
                         <select id="eventTypeSelect" name="event_type"
-                            class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
                             <option value="">All Events</option>
-                            <option value="Baptism">Baptism</option>
-                            <option value="Charity Event">Charity Event</option>
-                            <option value="Christian Family Organization (CFO) activity">
+                            <option value="Baptism" {{ request('event_type') == 'Baptism' ? 'selected' : '' }}>Baptism
+                            </option>
+                            <option value="Charity Event" {{ request('event_type') == 'Charity Event' ? 'selected' : '' }}>Charity Event</option>
+                            <option value="Christian Family Organization (CFO) activity" {{ request('event_type') == 'Christian Family Organization (CFO) activity' ? 'selected' : '' }}>
                                 Christian Family Organization (CFO) activity
                             </option>
-                            <option value="Evangelical Mission">Evangelical Mission</option>
-                            <option value="Inauguration of New Chapels/ Structure">Inauguration of New
-                                Chapels/Structure
+                            <option value="Evangelical Mission" {{ request('event_type') == 'Evangelical Mission' ? 'selected' : '' }}>Evangelical Mission</option>
+                            <option value="Inauguration of New Chapels/ Structure" {{ request('event_type') == 'Inauguration of New Chapels/ Structure' ? 'selected' : '' }}>
+                                Inauguration of New Chapels/ Structure</option>
+                            <option value="Meeting" {{ request('event_type') == 'Meeting' ? 'selected' : '' }}>Meeting
                             </option>
-                            <option value="Meeting">Meeting</option>
-                            <option value="Panata">Panata</option>
-                            <option value="Weddings">Weddings</option>
-                            <option value="Worship Service">Worship Service</option>
+                            <option value="Panata" {{ request('event_type') == 'Panata' ? 'selected' : '' }}>Panata
+                            </option>
+                            <option value="Weddings" {{ request('event_type') == 'Weddings' ? 'selected' : '' }}>Weddings
+                            </option>
+                            <option value="Worship Service" {{ request('event_type') == 'Worship Service' ? 'selected' : '' }}>Worship Service</option>
                         </select>
                     </div>
 
@@ -139,18 +142,21 @@
                     <div class="col-span-1">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Age Group</label>
                         <select id="ministrySelect" name="age_group"
-                            class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                            <option value="*">All Members</option>
-                            <option value="binhi">Binhi (Below 18)</option>
-                            <option value="kadiwa">Kadiwa (18 and above, not married)</option>
-                            <option value="buklod">Buklod (18 and above, married)</option>
+                            class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                            <option value="*" {{ request('age_group') == '*' ? 'selected' : '' }}>All Members</option>
+                            <option value="binhi" {{ request('age_group') == 'binhi' ? 'selected' : '' }}>Binhi (Below 18)
+                            </option>
+                            <option value="kadiwa" {{ request('age_group') == 'kadiwa' ? 'selected' : '' }}>Kadiwa (18 and
+                                above, not married)</option>
+                            <option value="buklod" {{ request('age_group') == 'buklod' ? 'selected' : '' }}>Buklod (18 and
+                                above, married)</option>
                         </select>
                     </div>
 
                     <!-- Action Buttons -->
                     <div class="col-span-1 flex items-end space-x-2">
                         <button id="generateBtn"
-                            class="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                            class="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
                             Generate Report
                         </button>
                         <button type="reset" id="resetBtn"
@@ -159,81 +165,49 @@
                         </button>
                     </div>
                 </form>
+
             </div>
 
 
             <!-- Key Metrics -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                 <div class="bg-white rounded-lg shadow-sm p-6">
                     <div class="flex justify-between items-start">
                         <div>
                             <p class="text-sm font-medium text-gray-600">Total Attendance</p>
-                            <p class="text-2xl font-bold text-gray-900 mt-1">1,247</p>
+                            <p class="text-2xl font-bold text-gray-900 mt-1">{{ $totalAttendance }}</p>
                         </div>
                         <div class="p-3 bg-blue-100 rounded-lg">
                             <i class="fas fa-users text-blue-600"></i>
                         </div>
                     </div>
-                    <div class="mt-4 flex items-center text-sm">
-                        <span class="text-green-600 flex items-center">
-                            <i class="fas fa-arrow-up mr-1"></i> 12.5%
-                        </span>
-                        <span class="text-gray-500 ml-2">vs last period</span>
-                    </div>
+
                 </div>
 
                 <div class="bg-white rounded-lg shadow-sm p-6">
                     <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-sm font-medium text-gray-600">Unique Individuals</p>
-                            <p class="text-2xl font-bold text-gray-900 mt-1">892</p>
+                            <p class="text-sm font-medium text-gray-600">Members</p>
+                            <p class="text-2xl font-bold text-gray-900 mt-1">{{ $totalMembers }}</p>
                         </div>
                         <div class="p-3 bg-green-100 rounded-lg">
                             <i class="fas fa-user-check text-green-600"></i>
                         </div>
                     </div>
-                    <div class="mt-4 flex items-center text-sm">
-                        <span class="text-green-600 flex items-center">
-                            <i class="fas fa-arrow-up mr-1"></i> 8.3%
-                        </span>
-                        <span class="text-gray-500 ml-2">vs last period</span>
-                    </div>
-                </div>
 
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-sm font-medium text-gray-600">First-Time Visitors</p>
-                            <p class="text-2xl font-bold text-gray-900 mt-1">42</p>
-                        </div>
-                        <div class="p-3 bg-purple-100 rounded-lg">
-                            <i class="fas fa-user-plus text-purple-600"></i>
-                        </div>
-                    </div>
-                    <div class="mt-4 flex items-center text-sm">
-                        <span class="text-red-600 flex items-center">
-                            <i class="fas fa-arrow-down mr-1"></i> 5.2%
-                        </span>
-                        <span class="text-gray-500 ml-2">vs last period</span>
-                    </div>
                 </div>
 
                 <div class="bg-white rounded-lg shadow-sm p-6">
                     <div class="flex justify-between items-start">
                         <div>
                             <p class="text-sm font-medium text-gray-600">Engagement Rate</p>
-                            <p class="text-2xl font-bold text-gray-900 mt-1">78%</p>
+                            <p class="text-2xl font-bold text-gray-900 mt-1">{{ $engagementRate }}</p>
                         </div>
                         <div class="p-3 bg-yellow-100 rounded-lg">
                             <i class="fas fa-chart-line text-yellow-600"></i>
                         </div>
                     </div>
-                    <div class="mt-4 flex items-center text-sm">
-                        <span class="text-green-600 flex items-center">
-                            <i class="fas fa-arrow-up mr-1"></i> 3.7%
-                        </span>
-                        <span class="text-gray-500 ml-2">vs last period</span>
-                    </div>
+
                 </div>
             </div>
 
@@ -245,7 +219,7 @@
                         <h2 class="text-lg font-semibold text-gray-900">Attendance Trends</h2>
                         <div class="flex space-x-2">
                             <button id="weeklyBtn"
-                                class="text-sm px-3 py-1 bg-indigo-100 text-indigo-700 rounded-lg">Weekly</button>
+                                class="text-sm px-3 py-1 bg-green-100 text-green-700 rounded-lg">Weekly</button>
                             <button id="monthlyBtn"
                                 class="text-sm px-3 py-1 bg-gray-100 text-gray-700 rounded-lg">Monthly</button>
                             <button id="yearlyBtn"
@@ -260,7 +234,7 @@
                 <div class="bg-white rounded-lg shadow-sm p-6">
                     <div class="flex justify-between items-center mb-6">
                         <h2 class="text-lg font-semibold text-gray-900">Event Type Comparison</h2>
-                        <button id="exportChartBtn" class="text-sm text-indigo-600 font-medium flex items-center">
+                        <button id="exportChartBtn" class="text-sm text-green-600 font-medium items-center hidden">
                             <i class="fas fa-download mr-1"></i> Export
                         </button>
                     </div>
@@ -278,11 +252,11 @@
                             <i class="fas fa-file-csv mr-2"></i> CSV
                         </button>
                         <button id="pdfBtn"
-                            class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 flex items-center">
+                            class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 items-center hidden">
                             <i class="fas fa-file-pdf mr-2"></i> PDF
                         </button>
                         <button id="excelBtn"
-                            class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 flex items-center">
+                            class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 items-center hidden">
                             <i class="fas fa-file-excel mr-2"></i> Excel
                         </button>
                     </div>
@@ -315,7 +289,8 @@
                             </tr>
                         </thead>
                         <tbody id="dataTableBody" class="bg-white divide-y divide-gray-200"
-                            data-attendancedetail="{{ $attendanceDetails  }}">
+                            data-attendancedetail="{{ $attendanceDetails  }}"
+                            data-engagementdetail="{{ $engagementDetails }}">
                         </tbody>
                     </table>
                 </div>
@@ -346,7 +321,7 @@
             </div>
 
             <!-- Insights Section -->
-            <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-8 hidden">
                 <h2 id="insightsTitle" class="text-lg font-semibold text-gray-900 mb-6">Key Insights</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="bg-blue-50 rounded-lg p-4">
@@ -380,16 +355,16 @@
                             </div>
                         </div>
                     </div>
-                    <div class="bg-purple-50 rounded-lg p-4">
+                    <div class="bg-green-50 rounded-lg p-4">
                         <div class="flex items-start">
                             <div class="flex-shrink-0">
-                                <i class="fas fa-chart-pie text-purple-600 text-xl"></i>
+                                <i class="fas fa-chart-pie text-green-600 text-xl"></i>
                             </div>
                             <div class="ml-3">
-                                <h3 id="insight3Title" class="text-sm font-medium text-purple-800">Growth
+                                <h3 id="insight3Title" class="text-sm font-medium text-green-800">Growth
                                     Opportunity
                                 </h3>
-                                <p id="insight3Text" class="mt-1 text-sm text-purple-700">Youth events show 15%
+                                <p id="insight3Text" class="mt-1 text-sm text-green-700">Youth events show 15%
                                     growth
                                     in first-time
                                     visitors</p>
@@ -401,14 +376,14 @@
         </main>
     </div>
 
-    <div id="newReportModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+    <div id="newReportModal" class="hidden fixed inset-0 z-50 items-center justify-center bg-black bg-opacity-40">
         <div class="bg-white rounded-lg w-full max-w-md p-6 shadow-xl">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">New Report</h3>
             <div class="space-y-3">
                 <input type="text" placeholder="Report title"
-                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
                 <select
-                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
                     <option>Attendance</option>
                     <option>Engagement</option>
                     <option>Demographics</option>
@@ -419,7 +394,7 @@
                 <button id="closeNewReport"
                     class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">Cancel</button>
                 <button id="createReport"
-                    class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Create</button>
+                    class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">Create</button>
             </div>
         </div>
     </div>

@@ -13,6 +13,10 @@ document.addEventListener("DOMContentLoaded", function () {
         ? JSON.parse(rawAttendanceDetail.dataset.attendancedetail)
         : null;
 
+    let engagementDetail = rawAttendanceDetail
+        ? JSON.parse(rawAttendanceDetail.dataset.engagementdetail)
+        : null;
+
     const state = {
         currentTab: "attendance",
         trendRange: "weekly",
@@ -86,15 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         tables: {
             attendance: attendanceDetail,
-            engagement: Array.from({ length: 24 }).map((_, i) => ({
-                name: `Member ${i + 1}`,
-                date: "Nov 2024",
-                type: "Engagement",
-                attendance: `${Math.floor(Math.random() * 12)}/14`,
-                capacity: "-",
-                firstTimers: "-",
-                engagement: `${60 + (i % 20)}%`,
-            })),
+            engagement: engagementDetail,
             demographics: Array.from({ length: 30 }).map((_, i) => ({
                 name: ["Binhi", "Kadiwa", "Buklod"][i % 3],
                 date: "—",
@@ -434,26 +430,26 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function bindEvents() {
-        document
-            .querySelector(".fa-print")
-            .closest("button")
-            .addEventListener("click", () => window.print());
-        const newReportBtn = document
-            .querySelector("button i.fa-plus")
-            .closest("button");
-        let modal = document.getElementById("newReportModal");
-        const openModal = () => modal.classList.remove("hidden");
-        const closeModal = () => modal.classList.add("hidden");
-        newReportBtn.addEventListener("click", openModal);
-        document
-            .getElementById("closeNewReport")
-            .addEventListener("click", closeModal);
-        document
-            .getElementById("createReport")
-            .addEventListener("click", () => {
-                closeModal();
-                alert("Mock: Report created");
-            });
+        // document
+        //     .querySelector(".fa-print")
+        //     .closest("button")
+        //     .addEventListener("click", () => window.print());
+        // const newReportBtn = document
+        //     .querySelector("button i.fa-plus")
+        //     .closest("button");
+        // let modal = document.getElementById("newReportModal");
+        // const openModal = () => modal.classList.remove("hidden");
+        // const closeModal = () => modal.classList.add("hidden");
+        // newReportBtn.addEventListener("click", openModal);
+        // document
+        //     .getElementById("closeNewReport")
+        //     .addEventListener("click", closeModal);
+        // document
+        //     .getElementById("createReport")
+        //     .addEventListener("click", () => {
+        //         closeModal();
+        //         alert("Mock: Report created");
+        //     });
 
         el.attendanceTabBtn.addEventListener("click", () => {
             state.currentTab = "attendance";
