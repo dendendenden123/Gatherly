@@ -5,6 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 use App\Models\User;
+use phpDocumentor\Reflection\Types\Nullable;
 
 return new class extends Migration {
     /**
@@ -15,7 +16,7 @@ return new class extends Migration {
         Schema::create('logs', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class)->nullable()->constrained()->onDelete('cascade');
-            $table->string('action');
+            $table->enum('action', ['login', 'create', 'update', 'delete', 'system'])->nullable();
             $table->text('description')->nullable();
             $table->string('user_agent')->nullable();
             $table->timestamps();

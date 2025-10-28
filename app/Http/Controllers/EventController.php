@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use App\Http\Requests\EventStoreRequest;
 use Illuminate\Http\Request;
 use App\Services\EventService;
 use App\Models\EventOccurrence;
 use App\Models\Event;
 use App\Models\Role;
+use App\Models\Log;
 
 class EventController extends Controller
 {
@@ -76,7 +78,15 @@ class EventController extends Controller
             }
 
             $validated = $request->validated();
-            Event::create($validated);
+            $event = Event::create($validated);
+
+            //logs action
+            Log::create([
+                'user_id' => Auth::id(),
+                'action' => 'create',
+                'description' => 'create new event. event : ' . $event
+            ]);
+
             return redirect()->back()->with(['success' => 'Event created successfully']);
         } catch (\Throwable $e) {
             \Log::error('Failed to create event. ', [$e]);
@@ -95,6 +105,14 @@ class EventController extends Controller
         try {
             $validated = $request->validated();
             Event::findOrFail($id)->update($validated);
+
+            //logs action
+            Log::create([
+                'user_id' => Auth::id(),
+                'action' => 'update',
+                'description' => 'update an event. event id: ' . $id,
+            ]);
+
             return redirect()->back()->with(['success' => 'Event updated successfully']);
         } catch (\Throwable $e) {
             \Log::error('Failed to Update event. ', [$e]);
@@ -106,6 +124,14 @@ class EventController extends Controller
     {
         $Event = Event::findOrFail($id);
         $Event->delete();
+
+        //logs action
+        Log::create([
+            'user_id' => Auth::id(),
+            'action' => 'delete',
+            'description' => 'delete an event. event id: ' . $id,
+        ]);
+
         return redirect()->route('admin.events.index')->with(['success' => '']);
     }
 
@@ -116,6 +142,14 @@ class EventController extends Controller
         ]);
         try {
             Event::whereIn('id', $validated['ids'])->delete();
+
+            //logs action
+            Log::create([
+                'user_id' => Auth::id(),
+                'action' => 'delete',
+                'description' => 'delete multiple events. event ids: ' . $validated['ids'],
+            ]);
+
             return response()->json(['success' => "Event deleted succesfully"]);
         } catch (\Throwable $e) {
             \Log::error('Failed to delete events:', [$e]);

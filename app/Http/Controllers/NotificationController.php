@@ -11,6 +11,7 @@ use App\Services\UserService;
 use App\Models\Notification;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Log;
 use Auth;
 
 class NotificationController extends Controller
@@ -52,7 +53,7 @@ class NotificationController extends Controller
         ]);
 
 
-        Notification::create([
+        $notif = Notification::create([
             'recipient_group' => $validated['recipient_group'] ?? null,
             'sender_id' => $this->userId,
             'subject' => $validated['subject'],
@@ -60,6 +61,14 @@ class NotificationController extends Controller
             'category' => $validated['category'] ?? null,
 
         ]);
+
+        //logs action
+        Log::create([
+            'user_id' => Auth::id(),
+            'action' => 'create',
+            'description' => 'create new notification. Detail: ' . $notif,
+        ]);
+
 
         return back()->with('success', 'Notification queued/sent successfully');
     }
@@ -81,6 +90,14 @@ class NotificationController extends Controller
     public function destroy(Notification $notification)
     {
         $notification->delete();
+
+        //logs action
+        Log::create([
+            'user_id' => Auth::id(),
+            'action' => 'delete',
+            'description' => 'delete notification. Detail: ' . $notification,
+        ]);
+
         return back()->with('success', 'Notification deleted');
     }
 
@@ -91,6 +108,14 @@ class NotificationController extends Controller
             return back()->with('error', 'No notifications selected');
         }
         Notification::whereIn('id', $ids)->delete();
+
+        //logs action
+        Log::create([
+            'user_id' => Auth::id(),
+            'action' => 'delete',
+            'description' => 'delete multiple notification. Detail: ' . implode(', ', $ids),
+        ]);
+
         return back()->with('success', 'Selected notifications deleted');
     }
 

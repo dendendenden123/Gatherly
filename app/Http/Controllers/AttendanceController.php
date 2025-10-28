@@ -12,6 +12,7 @@ use App\Services\AwsRekognitionService;
 use App\Models\Attendance;
 use App\Models\User;
 use App\Models\Event;
+use App\Models\Log;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Throwable;
 
@@ -103,7 +104,14 @@ class AttendanceController extends Controller
                 return response()->json(['error' => 'User already has record for this event']);
             }
 
-            Attendance::create($validated);
+            $storedAttendance = Attendance::create($validated);
+
+            Log::create([
+                'user_id' => Auth::id(),
+                'action' => 'create',
+                'description' => 'record attendance for user_id: ' . $storedAttendance->id,
+            ]);
+
             $attendance = $this->attendanceService->getAllAttendancePaginated();
             if (method_exists($attendance, 'withPath')) {
                 $attendance->withPath(route('admin.attendance.create'));
@@ -189,6 +197,12 @@ class AttendanceController extends Controller
 
         $user->update(['rekognition_face_id' => $faceId]);
 
+        Log::create([
+            'user_id' => Auth::id(),
+            'action' => 'create',
+            'description' => 'enroll new image for email: ' . $request->email,
+        ]);
+
         return response()->json(['message' => 'Face enrolled successfully!', 'data' => $user], 200);
     }
 
@@ -219,6 +233,13 @@ class AttendanceController extends Controller
                         'similarity' => $similarity,
                         'image_url' => $imageUrl,
                         'status' => 'present',
+                    ]);
+
+                    //logs action
+                    Log::create([
+                        'user_id' => Auth::id(),
+                        'action' => 'create',
+                        'description' => 'record attendance for user id: ' . $user->id,
                     ]);
                     return response()->json(['user' => $user, 'similarity' => $similarity, 'status' => '200']);
                 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LogController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OfficerController;
@@ -84,7 +85,13 @@ Route::controller(TaskController::class)->group(function () {
     Route::delete('/admin/tasks/destroy/{taskId}', 'destroy')->name('admin.tasks.destroy');
 });
 
+//Chatbot Routes
 Route::controller(ChatbotController::class)->group(function () {
     Route::get('/admin/chat', 'index')->name('admin.chat.index');
     Route::post('/admin/chat/store', 'send')->name('admin.chat.store');
+});
+
+//Logs Routes
+Route::controller(LogController::class)->group(function () {
+    Route::get('/admin/logs', 'index')->name('admin.logs.index');
 });

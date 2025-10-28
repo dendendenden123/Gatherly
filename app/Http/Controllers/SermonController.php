@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Sermon;
 use App\Models\User;
+use App\Models\Log;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Log;
 use Throwable;
+use Auth;
 
 class SermonController extends Controller
 {
@@ -92,6 +93,13 @@ class SermonController extends Controller
 
             $sermon->date_preached = $validated['date_preached'];
             $sermon->save();
+
+            //logs action
+            Log::create([
+                'user_id' => Auth::id(),
+                'action' => 'create',
+                'description' => 'upload new sermon video. Detail: ' . $sermon,
+            ]);
 
             return redirect()
                 ->route('admin.sermons.index')

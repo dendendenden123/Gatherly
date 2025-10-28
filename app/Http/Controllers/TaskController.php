@@ -9,6 +9,7 @@ use App\Services\UserService;
 use App\Models\Task;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Log;
 use Throwable;
 use DB;
 use Auth;
@@ -73,10 +74,18 @@ class TaskController extends Controller
     public function store(StoreTaskRequest $request)
     {
         $validated = $request->validated();
-        Task::create([
+        $task = Task::create([
             ...$validated,
             'task_creator_id' => $this->userId
         ]);
+
+        //logs action
+        Log::create([
+            'user_id' => Auth::id(),
+            'action' => 'create',
+            'description' => 'Create new task. Task detail: ' . $task,
+        ]);
+
         return redirect()->back()->with('success', 'Task created successfully!');
     }
 
@@ -93,10 +102,18 @@ class TaskController extends Controller
         $task = Task::findOrFail($taskId);
         $taskCreatorId = Auth::id();
 
-        $task->update([
+        $task = $task->update([
             ...$validated,
             'task_creator_id' => $this->userId
         ]);
+
+        //logs action
+        Log::create([
+            'user_id' => Auth::id(),
+            'action' => 'update',
+            'description' => 'Update a task. Task detail: ' . $task,
+        ]);
+
         return redirect()->back()->with('success', 'Task updated successfully!');
     }
 
