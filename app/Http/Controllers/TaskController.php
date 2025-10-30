@@ -121,7 +121,15 @@ class TaskController extends Controller
     public function destroy($taskId)
     {
         try {
-            Task::findOrFail($taskId)->delete();
+            $task = Task::findOrFail($taskId)->delete();
+
+            //logs action
+            Log::create([
+                'user_id' => Auth::id(),
+                'action' => 'delete',
+                'description' => 'deleted a task. Task detail: ' . $task,
+            ]);
+
             return back()->with(['success' => 'Task Deleted Successfully']);
         } catch (Throwable $e) {
             \Log::error('Failed to delete task id: ' . $taskId, ["error" => $e]);

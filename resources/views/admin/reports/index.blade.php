@@ -25,7 +25,7 @@
                     <div class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
                         <i class="fas fa-church text-white"></i>
                     </div>
-                    <h1 class="ml-3 text-xl font-bold text-gray-900">Grace Community Church</h1>
+                    <h1 class="ml-3 text-xl font-bold text-gray-900">Gatherly</h1>
                 </div>
                 <div class="flex items-center space-x-4">
                     <button class="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">

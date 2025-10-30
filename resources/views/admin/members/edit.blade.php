@@ -98,17 +98,10 @@
                             </option>
                             <option value="married" {{ $user->marital_status == 'married' ? 'selected' : '' }}>Married
                             </option>
-                            <option value="divorced" {{ $user->marital_status == 'divorced' ? 'selected' : '' }}>Divorced
-                            </option>
                             <option value="separated" {{ $user->marital_status == 'separated' ? 'selected' : '' }}>
                                 Separated</option>
                             <option value="widowed" {{ $user->marital_status == 'widowed' ? 'selected' : '' }}>Widowed
                             </option>
-                            <option value="engaged" {{ $user->marital_status == 'engaged' ? 'selected' : '' }}>Engaged
-                            </option>
-                            <option value="civil union" {{ $user->marital_status == 'civil union' ? 'selected' : '' }}>
-                                Civil Union</option>
-                            <option value="domestic partnership" {{ $user->marital_status == 'domestic partnership' ? 'selected' : '' }}>Domestic Partnership</option>
                             <option value="annulled" {{ $user->marital_status == 'annulled' ? 'selected' : '' }}>Annulled
                             </option>
                         </select>

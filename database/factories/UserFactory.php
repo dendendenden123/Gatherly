@@ -78,12 +78,8 @@ class UserFactory extends Factory
             'marital_status' => $this->faker->randomElement([
                 'single',
                 'married',
-                'divorced',
                 'separated',
                 'widowed',
-                'engaged',
-                'civil union',
-                'domestic partnership',
                 'annulled',
             ]),
             'profile_image' => 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',

@@ -78,13 +78,8 @@
         <option value="">Select your marital status</option>
         <option value="single" {{ old('marital_status') == 'single' ? 'selected' : '' }}>Single</option>
         <option value="married" {{ old('marital_status') == 'married' ? 'selected' : '' }}>Married</option>
-        <option value="divorced" {{ old('marital_status') == 'divorced' ? 'selected' : '' }}>Divorced</option>
         <option value="separated" {{ old('marital_status') == 'separated' ? 'selected' : '' }}>Separated</option>
         <option value="widowed" {{ old('marital_status') == 'widowed' ? 'selected' : '' }}>Widowed</option>
-        <option value="engaged" {{ old('marital_status') == 'engaged' ? 'selected' : '' }}>Engaged</option>
-        <option value="civil union" {{ old('marital_status') == 'civil union' ? 'selected' : '' }}>Civil Union</option>
-        <option value="domestic partnership" {{ old('marital_status') == 'domestic partnership' ? 'selected' : '' }}>Domestic
-            Partnership</option>
         <option value="annulled" {{ old('marital_status') == 'annulled' ? 'selected' : '' }}>Annulled</option>
     </x-form.field>
 

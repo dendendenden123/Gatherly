@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Log;
+use Auth;
 
 class UserController extends Controller
 {
@@ -56,7 +58,7 @@ class UserController extends Controller
                 'birthdate' => 'required|date',
                 'sex' => 'required|string|in:male,female',
                 'baptism_date' => 'nullable|date',
-                'marital_status' => 'required|string|in:single,married,divorced,separated,widowed,engaged,civil union,domestic partnership,annulled',
+                'marital_status' => 'required|string|in:single,married,separated,widowed,annulled',
                 'document_image' => 'nullable|image|mimes:jpg,jpeg,png,pdf|max:4096',
             ], [
                 'first_name.required' => 'Please enter your first name.',
@@ -99,6 +101,14 @@ class UserController extends Controller
 
             $user = User::create($validatedData);
 
+
+            //logs action
+            Log::create([
+                'user_id' => null,
+                'action' => 'create',
+                'description' => 'New account was created. Account detail: ' . $user,
+            ]);
+
             // Redirect to login with success message
             return redirect()->route('showLoginForm')->with('success', 'Registration successful! Please log in with your credentials.');
 
@@ -136,7 +146,7 @@ class UserController extends Controller
                 'last_name' => 'required|string|max:100',
                 'middle_name' => 'nullable|string|max:100',
                 'email' => 'required|email|max:255  ',
-                'password' => 'nullable|string|min:8|confirmed', // optional if not changing
+                'password' => 'nullable|string|min:8|confirmed',
                 'phone' => 'nullable|string|max:20',
                 'address' => 'nullable|string|max:255',
                 'district' => 'nullable|string|max:100',
@@ -145,7 +155,7 @@ class UserController extends Controller
                 'birthdate' => 'nullable|date',
                 'sex' => 'nullable|in:male,female,other',
                 'baptism_date' => 'nullable|date',
-                'marital_status' => 'nullable|in:single,married,divorced,widowed',
+                'marital_status' => 'required|string|in:single,married,separated,widowed,annulled',
                 'profile_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
                 'document_image' => 'nullable|image|mimes:jpg,jpeg,png,pdf|max:4096',
                 'status' => 'nullable|in:active,inactive,suspended',
@@ -153,6 +163,13 @@ class UserController extends Controller
             ]);
 
             $user = User::findOrFail($validated['id']);
+
+            //logs action
+            Log::create([
+                'user_id' => Auth::id(),
+                'action' => 'update',
+                'description' => 'Update user account. Account detail: ' . $user,
+            ]);
 
             if ($request->hasFile('profile_image')) {
                 if ($user->profile_image && Storage::disk('public')->exists($user->profile_image)) {
@@ -195,6 +212,13 @@ class UserController extends Controller
             $user->status = $validated['status'];
             $user->save();
 
+            //logs action
+            Log::create([
+                'user_id' => Auth::user(),
+                'action' => 'update',
+                'description' => 'Account status change. Account detail: ' . $user,
+            ]);
+
             return response()->json(['success' => true]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json(['success' => false, 'errors' => $e->errors()], 422);
@@ -210,6 +234,14 @@ class UserController extends Controller
     public function destroy($userId)
     {
         User::findOrFail($userId)->delete();
+
+        //logs action
+        Log::create([
+            'user_id' => Auth::id(),
+            'action' => 'delete',
+            'description' => 'Account deleted. Account Id: ' . $userId,
+        ]);
+
         return redirect()->route('admin.members')->with(['success' => '']);
     }
 
@@ -219,20 +251,6 @@ class UserController extends Controller
     //===========================================
     public function logout()
     {
-
-        //  $user = auth()->user();
-        // // Check if user is a Google user
-        // if ($user && $user->is_google_user) {
-        //     // For Google users, redirect to Google logout URL
-        //     auth()->logout();
-        //     request()->session()->invalidate();
-        //     request()->session()->regenerateToken();
-
-        //     // Google logout URL - this will log the user out of Google as well
-        //     $googleLogoutUrl = 'https://accounts.google.com/logout?continue=' . urlencode(route('landing_page'));
-        //     return redirect($googleLogoutUrl);
-        // }
-
         // Regular logout for non-Google users
         auth()->logout();
         request()->session()->invalidate();

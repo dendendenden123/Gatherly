@@ -28,12 +28,8 @@ return new class extends Migration {
             $table->enum('marital_status', [
                 'single',
                 'married',
-                'divorced',
                 'separated',
                 'widowed',
-                'engaged',
-                'civil union',
-                'domestic partnership',
                 'annulled'
             ]);
             $table->string('profile_image')->default('https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg')->nullable();

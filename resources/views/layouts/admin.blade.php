@@ -86,7 +86,7 @@
                 </a>
             </div>
             <div class="nav-item {{ request()->is('admin/chat') || request()->is('admin/sermons/*') ? 'active' : '' }}">
-                <a href="{{ route('admin.chat.index') }}" class="text-decoration-none text-reset hidden">
+                <a href="{{ route('admin.chat.index') }}" class="text-decoration-none text-reset">
                     <i class="fas fa-book"></i>
                     <span>Chatbot</span>
                 </a>
@@ -141,7 +141,7 @@
                 </a>
             </div>
             <div class="nav-item {{ request()->is('admin/logs') ? 'active' : '' }}">
-                <a href="{{ route('admin.logs.index') }}" class="text-decoration-none text-reset hidden">
+                <a href="{{ route('admin.logs.index') }}" class="text-decoration-none text-reset">
                     <i class="fas fa-chart-bar"></i>
                     <span>Logs</span>
                 </a>
