@@ -251,7 +251,14 @@ class UserController extends Controller
     //===========================================
     public function logout()
     {
-        // Regular logout for non-Google users
+
+        //logs action
+        Log::create([
+            'user_id' => Auth::id(),
+            'action' => 'logout',
+            'description' => 'Account sign out',
+        ]);
+
         auth()->logout();
         request()->session()->invalidate();
         request()->session()->regenerateToken();
@@ -287,6 +294,14 @@ class UserController extends Controller
 
         $getUserid = auth()->id();
         $user = User::with('officers')->findOrFail($getUserid);
+
+        //logs action
+        Log::create([
+            'user_id' => $user->id,
+            'action' => 'login',
+            'description' => 'Account logged in',
+        ]);
+
         if ($user->officers->contains('role_id', '1')) {
             return redirect()->route('admin.dashboard');
         }

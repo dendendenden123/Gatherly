@@ -16,7 +16,7 @@ return new class extends Migration {
         Schema::create('logs', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class)->nullable()->constrained()->onDelete('cascade');
-            $table->enum('action', ['login', 'create', 'update', 'delete', 'system'])->nullable();
+            $table->enum('action', ['login', 'logout', 'create', 'update', 'delete', 'system'])->nullable();
             $table->text('description')->nullable();
             $table->string('user_agent')->nullable();
             $table->timestamps();

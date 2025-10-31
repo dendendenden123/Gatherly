@@ -110,17 +110,13 @@
         <!-- Header -->
         <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
             <div>
-                <h1 class="text-3xl font-bold text-gray-800">System Logs & Activity Tracker</h1>
+              <h1 class="text-3xl font-bold text-gray-800 flex items-center space-x-3">
+    <a href="{{ route('admin.dashboard') }}" class="text-gray-600 hover:text-primary transition">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+    <span>System Logs & Activity Tracker</span>
+</h1>
                 <p class="text-gray-600 mt-2">Monitor all system activities and user actions</p>
-            </div>
-            <div class="mt-4 md:mt-0 flex items-center space-x-4">
-                <div class="text-right">
-                    <p class="text-sm text-gray-500">Last updated</p>
-                    <p class="font-medium">Just now</p>
-                </div>
-                <div class="h-10 w-10 bg-primary rounded-full flex items-center justify-center text-white">
-                    <i class="fas fa-user-shield"></i>
-                </div>
             </div>
         </div>
 
@@ -130,149 +126,198 @@
                 <div class="flex justify-between items-start">
                     <div>
                         <p class="text-sm text-gray-600">Total Logs</p>
-                        <p class="text-2xl font-bold text-gray-800">12,458</p>
+                        <p class="text-2xl font-bold text-gray-800">{{ $totalLogs }}</p>
                     </div>
                     <div class="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center">
                         <i class="fas fa-clipboard-list text-blue-600 text-xl"></i>
                     </div>
                 </div>
-                <p class="text-xs text-gray-500 mt-2">+245 in last 7 days</p>
             </div>
 
-            <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+                <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
                 <div class="flex justify-between items-start">
                     <div>
-                        <p class="text-sm text-gray-600">Active Users</p>
-                        <p class="text-2xl font-bold text-gray-800">342</p>
-                    </div>
-                    <div class="h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-users text-green-600 text-xl"></i>
-                    </div>
-                </div>
-                <p class="text-xs text-gray-500 mt-2">+12 this week</p>
-            </div>
-
-            <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <p class="text-sm text-gray-600">Login Activities</p>
-                        <p class="text-2xl font-bold text-gray-800">1,245</p>
+                        <p class="text-sm text-gray-600">Create Actions</p>
+                        <p class="text-2xl font-bold text-gray-800">{{$createCount }}</p>
                     </div>
                     <div class="h-12 w-12 bg-purple-100 rounded-lg flex items-center justify-center">
                         <i class="fas fa-sign-in-alt text-purple-600 text-xl"></i>
                     </div>
                 </div>
-                <p class="text-xs text-gray-500 mt-2">+89 today</p>
             </div>
 
             <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
                 <div class="flex justify-between items-start">
                     <div>
-                        <p class="text-sm text-gray-600">System Errors</p>
-                        <p class="text-2xl font-bold text-gray-800">24</p>
+                        <p class="text-sm text-gray-600">Update Actions</p>
+                        <p class="text-2xl font-bold text-gray-800">{{ $updateCount }}</p>
+                    </div>
+                    <div class="h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-users text-green-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+        
+
+            <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-sm text-gray-600">Delete Actions</p>
+                        <p class="text-2xl font-bold text-gray-800">{{ $deleteCount }}</p>
                     </div>
                     <div class="h-12 w-12 bg-red-100 rounded-lg flex items-center justify-center">
                         <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
                     </div>
                 </div>
-                <p class="text-xs text-gray-500 mt-2">-5 from last week</p>
             </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
             <!-- Left Column - Filters -->
-            <div class="lg:col-span-1">
-                <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200 sticky top-6">
-                    <h2 class="text-lg font-bold text-gray-800 mb-4">Filters</h2>
+          <form action="{{ route('admin.logs.index') }}" method="GET" class="lg:col-span-1">
+    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-200 sticky top-6">
+        <h2 class="text-lg font-bold text-gray-800 mb-4">Filters</h2>
 
-                    <!-- Search -->
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Search Logs</label>
-                        <div class="relative">
-                            <input type="text" id="searchInput" placeholder="Search by action, description..."
-                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fas fa-search text-gray-400"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Action Type Filter -->
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Action Type</label>
-                        <div class="space-y-2">
-                            <div class="flex items-center">
-                                <input type="checkbox" id="filter-login"
-                                    class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded" checked>
-                                <label for="filter-login" class="ml-2 text-sm text-gray-700">Login Activities</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input type="checkbox" id="filter-create"
-                                    class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded" checked>
-                                <label for="filter-create" class="ml-2 text-sm text-gray-700">Create Actions</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input type="checkbox" id="filter-update"
-                                    class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded" checked>
-                                <label for="filter-update" class="ml-2 text-sm text-gray-700">Update Actions</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input type="checkbox" id="filter-delete"
-                                    class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded" checked>
-                                <label for="filter-delete" class="ml-2 text-sm text-gray-700">Delete Actions</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input type="checkbox" id="filter-system"
-                                    class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded" checked>
-                                <label for="filter-system" class="ml-2 text-sm text-gray-700">System Actions</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Date Range -->
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Date Range</label>
-                        <div class="space-y-3">
-                            <div>
-                                <label for="startDate" class="block text-xs text-gray-500 mb-1">From</label>
-                                <input type="date" id="startDate"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
-                            </div>
-                            <div>
-                                <label for="endDate" class="block text-xs text-gray-500 mb-1">To</label>
-                                <input type="date" id="endDate"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- User Filter -->
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">User</label>
-                        <select id="userFilter"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
-                            <option value="">All Users</option>
-                            <option value="1">John Doe (Admin)</option>
-                            <option value="2">Sarah Johnson</option>
-                            <option value="3">Michael Brown</option>
-                            <option value="4">Robert Wilson</option>
-                            <option value="5">System</option>
-                        </select>
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div class="flex space-x-3">
-                        <button id="applyFilters"
-                            class="flex-1 bg-primary hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200">
-                            Apply
-                        </button>
-                        <button id="resetFilters"
-                            class="px-4 py-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 rounded-lg transition duration-200">
-                            <i class="fas fa-redo"></i>
-                        </button>
-                    </div>
+        <!-- Search -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Search Names</label>
+            <div class="relative">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    name="search_input"
+                    placeholder="Search by name, action, or description..."
+                    value="{{ request('search_input') }}"
+                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fas fa-search text-gray-400"></i>
                 </div>
             </div>
+        </div>
+
+        <!-- Action Type Filter -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Action Type</label>
+            <div class="space-y-2">
+                <div class="flex items-center">
+                    <input 
+                        type="checkbox" 
+                        id="filter-login" 
+                        name="filter-login"
+                        class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+                        {{ request('filter-login') ? 'checked' : '' }}>
+                    <label for="filter-login" class="ml-2 text-sm text-gray-700">Login Activities</label>
+                </div>
+
+                    <div class="flex items-center">
+                    <input 
+                        type="checkbox" 
+                        id="filter-logout" 
+                        name="filter-logout"
+                        class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+                        {{ request('filter-logout') ? 'checked' : '' }}>
+                    <label for="filter-logout" class="ml-2 text-sm text-gray-700">Log out Activities</label>
+                </div>
+                <div class="flex items-center">
+                    <input 
+                        type="checkbox" 
+                        id="filter-create" 
+                        name="filter-create"
+                        class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+                        {{ request('filter-create') ? 'checked' : '' }}>
+                    <label for="filter-create" class="ml-2 text-sm text-gray-700">Create Actions</label>
+                </div>
+                <div class="flex items-center">
+                    <input 
+                        type="checkbox" 
+                        id="filter-update" 
+                        name="filter-update"
+                        class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+                        {{ request('filter-update') ? 'checked' : '' }}>
+                    <label for="filter-update" class="ml-2 text-sm text-gray-700">Update Actions</label>
+                </div>
+                <div class="flex items-center">
+                    <input 
+                        type="checkbox" 
+                        id="filter-delete" 
+                        name="filter-delete"
+                        class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+                        {{ request('filter-delete') ? 'checked' : '' }}>
+                    <label for="filter-delete" class="ml-2 text-sm text-gray-700">Delete Actions</label>
+                </div>
+
+                 <input 
+                        type="checkbox" 
+                        name="filter-request"
+                        class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded hidden"
+                        {{ request('filter-request') ? 'checked' : '' }} checked>
+                
+            </div>
+        </div>
+
+        <!-- Date Range -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Date Range</label>
+            <div class="space-y-3">
+                <div>
+                    <label for="startDate" class="block text-xs text-gray-500 mb-1">From</label>
+                    <input 
+                        type="date" 
+                        id="startDate" 
+                        name="start_date"
+                        value="{{ request('start_date') }}"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                </div>
+                <div>
+                    <label for="endDate" class="block text-xs text-gray-500 mb-1">To</label>
+                    <input 
+                        type="date" 
+                        id="endDate" 
+                        name="end_date"
+                        value="{{ request('end_date') }}"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                </div>
+            </div>
+        </div>
+
+        <!-- User Role Filter -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">User Type</label>
+            <select 
+                id="userFilter" 
+                name="user_type"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                <option value="">All user types</option>
+                @forelse ($roleList as $role)
+                    <option 
+                        value="{{ $role->id }}" 
+                        {{ request('user_type') == $role->id ? 'selected' : '' }}>
+                        {{ $role->name }}
+                    </option>
+                @empty
+                    <option value="none">No roles available</option>
+                @endforelse
+            </select>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex space-x-3">
+            <button type="submit"
+                id="applyFilters"
+                class="flex-1 bg-primary hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200">
+                Apply
+            </button>
+
+            <a href="{{ route('admin.logs.index') }}" 
+                id="resetFilters"
+                class="px-4 py-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 rounded-lg transition duration-200 flex items-center justify-center">
+                <i class="fas fa-redo"></i>
+            </a>
+        </div>
+    </div>
+</form>
+
 
             <!-- Right Column - Logs Table -->
             <div class="lg:col-span-3">
@@ -281,23 +326,6 @@
                     <div
                         class="px-6 py-4 border-b border-gray-200 flex flex-col md:flex-row md:items-center md:justify-between">
                         <h2 class="text-lg font-bold text-gray-800">Activity Logs</h2>
-                        <div class="mt-2 md:mt-0 flex items-center space-x-3">
-                            <div class="text-sm text-gray-500">
-                                Showing <span class="font-medium">1-10</span> of <span class="font-medium">12,458</span>
-                            </div>
-                            <div class="flex space-x-1">
-                                <button class="p-2 text-gray-500 hover:text-gray-700 rounded-lg">
-                                    <i class="fas fa-chevron-left"></i>
-                                </button>
-                                <button class="p-2 text-gray-500 hover:text-gray-700 rounded-lg">
-                                    <i class="fas fa-chevron-right"></i>
-                                </button>
-                            </div>
-                            <button
-                                class="px-4 py-2 bg-primary hover:bg-blue-700 text-white rounded-lg transition duration-200 flex items-center">
-                                <i class="fas fa-download mr-2"></i> Export
-                            </button>
-                        </div>
                     </div>
 
                     <!-- Logs Table -->
@@ -316,9 +344,6 @@
                                         Description</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        User Agent</th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Timestamp</th>
                                     <th
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -326,203 +351,57 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                <!-- Log Entry 1 -->
-                                <tr class="table-row">
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <div
-                                                class="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-medium text-sm mr-3">
-                                                JD</div>
-                                            <div>
-                                                <div class="text-sm font-medium text-gray-900">John Doe</div>
-                                                <div class="text-xs text-gray-500">Admin</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="log-type-login px-2 py-1 rounded-full text-xs font-medium">User
-                                            Login</span>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="text-sm text-gray-900">Successful login from IP 192.168.1.105</div>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="text-xs text-gray-500 max-w-xs truncate">Mozilla/5.0 (Windows NT
-                                            10.0; Win64; x64) AppleWebKit/537.36</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        <div>Mar 20, 2023</div>
-                                        <div class="text-xs">10:24 AM</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <button class="text-primary hover:text-blue-700 view-details">View</button>
-                                    </td>
-                                </tr>
 
-                                <!-- Log Entry 2 -->
-                                <tr class="table-row">
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <div
-                                                class="h-8 w-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-medium text-sm mr-3">
-                                                SJ</div>
-                                            <div>
-                                                <div class="text-sm font-medium text-gray-900">Sarah Johnson</div>
-                                                <div class="text-xs text-gray-500">Member</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="log-type-update px-2 py-1 rounded-full text-xs font-medium">Profile
-                                            Update</span>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="text-sm text-gray-900">Updated personal information</div>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="text-xs text-gray-500 max-w-xs truncate">Mozilla/5.0 (iPhone; CPU
-                                            iPhone OS 15_4 like Mac OS X) AppleWebKit/605.1.15</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        <div>Mar 20, 2023</div>
-                                        <div class="text-xs">09:45 AM</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <button class="text-primary hover:text-blue-700 view-details">View</button>
-                                    </td>
-                                </tr>
+                                @forelse($logList as $log)
+                                    <tr class="table-row">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div>
+                                                    <div class="text-sm font-medium text-gray-900">
+                                                        {{ $log?->user?->first_name }} {{ $log?->user?->last_name }}
+                                                    </div>
+                                                    <div class="text-xs text-gray-500">
+                                                        {{ $log->user && $log->user->officers ? $log->user->officers->pluck('role.name')->implode(', ') : '—' }}
 
-                                <!-- Log Entry 3 -->
-                                <tr class="table-row">
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <div
-                                                class="h-8 w-8 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-medium text-sm mr-3">
-                                                MB</div>
-                                            <div>
-                                                <div class="text-sm font-medium text-gray-900">Michael Brown</div>
-                                                <div class="text-xs text-gray-500">Member</div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span
-                                            class="log-type-create px-2 py-1 rounded-full text-xs font-medium">Create</span>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="text-sm text-gray-900">Created new share capital deposit request:
-                                            ₱5,000.00</div>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="text-xs text-gray-500 max-w-xs truncate">Mozilla/5.0 (Macintosh;
-                                            Intel Mac OS X 10_15_7) AppleWebKit/537.36</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        <div>Mar 19, 2023</div>
-                                        <div class="text-xs">04:32 PM</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <button class="text-primary hover:text-blue-700 view-details">View</button>
-                                    </td>
-                                </tr>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span
+                                                class="log-type-login px-2 py-1 rounded-full text-xs font-medium">{{ $log?->action }}</span>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="text-sm text-gray-900">{{ $log?->description }}</div>
+                                        </td>
 
-                                <!-- Log Entry 4 -->
-                                <tr class="table-row">
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <div
-                                                class="h-8 w-8 bg-red-100 rounded-full flex items-center justify-center text-red-600 font-medium text-sm mr-3">
-                                                SYS</div>
-                                            <div>
-                                                <div class="text-sm font-medium text-gray-900">System</div>
-                                                <div class="text-xs text-gray-500">Automated</div>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <div>{{ $log->created_at->format('M d, Y') }}</div>
+                                            <div class="text-xs">{{ $log->created_at->format('h:i A') }}</div>
+                                        </td>   
+                                    </tr>
+                                @empty
+                                   <tr class="table-row">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div>
+                                                    <div class="text-sm font-medium text-gray-900">
+                                                        No more logs
+                                                    </div>
+                                                  
+                                                </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span
-                                            class="logtype-system px-2 py-1 rounded-full text-xs font-medium">System</span>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="text-sm text-gray-900">Daily backup completed successfully</div>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="text-xs text-gray-500 max-w-xs truncate">System/1.0</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        <div>Mar 19, 2023</div>
-                                        <div class="text-xs">02:15 AM</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <button class="text-primary hover:text-blue-700 view-details">View</button>
-                                    </td>
-                                </tr>
-
-                                <!-- Log Entry 5 -->
-                                <tr class="table-row">
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <div
-                                                class="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-medium text-sm mr-3">
-                                                JD</div>
-                                            <div>
-                                                <div class="text-sm font-medium text-gray-900">John Doe</div>
-                                                <div class="text-xs text-gray-500">Admin</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span
-                                            class="log-type-delete px-2 py-1 rounded-full text-xs font-medium">Delete</span>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="text-sm text-gray-900">Deleted expired event: Summer Picnic 2022
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="text-xs text-gray-500 max-w-xs truncate">Mozilla/5.0 (Windows NT
-                                            10.0; Win64; x64) AppleWebKit/537.36</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        <div>Mar 18, 2023</div>
-                                        <div class="text-xs">11:20 AM</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <button class="text-primary hover:text-blue-700 view-details">View</button>
-                                    </td>
-                                </tr>
+                                        </td>
+                                       
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
 
                     <!-- Pagination -->
                     <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
-                        <div class="text-sm text-gray-500">
-                            Showing <span class="font-medium">1</span> to <span class="font-medium">10</span> of <span
-                                class="font-medium">12,458</span> results
-                        </div>
-                        <div class="flex space-x-2">
-                            <button
-                                class="px-3 py-1 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition duration-200">
-                                Previous
-                            </button>
-                            <button
-                                class="px-3 py-1 bg-primary text-white rounded-lg hover:bg-blue-700 transition duration-200">
-                                1
-                            </button>
-                            <button
-                                class="px-3 py-1 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition duration-200">
-                                2
-                            </button>
-                            <button
-                                class="px-3 py-1 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition duration-200">
-                                3
-                            </button>
-                            <button
-                                class="px-3 py-1 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition duration-200">
-                                Next
-                            </button>
-                        </div>
+                      {{ $logList->links() }}
                     </div>
                 </div>
             </div>
@@ -611,11 +490,6 @@
         document.getElementById('startDate').value = sevenDaysAgo.toISOString().split('T')[0];
         document.getElementById('endDate').value = today.toISOString().split('T')[0];
 
-        // Apply filters
-        applyFiltersBtn.addEventListener('click', () => {
-            // In a real application, this would make an API call with the filter parameters
-            alert('Filters applied! In a real app, this would refresh the logs with the selected filters.');
-        });
 
         // Reset filters
         resetFiltersBtn.addEventListener('click', () => {
