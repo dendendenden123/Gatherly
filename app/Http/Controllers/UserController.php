@@ -214,7 +214,7 @@ class UserController extends Controller
 
             //logs action
             Log::create([
-                'user_id' => Auth::user(),
+                'user_id' => Auth::id(),
                 'action' => 'update',
                 'description' => 'Account status change. Account detail: ' . $user,
             ]);

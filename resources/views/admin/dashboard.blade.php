@@ -661,49 +661,6 @@
 
                     <!-- Recent Activity & Quick Actions -->
                     <div class="section">
-                        <div class="section-header">
-                            <div class="section-title">Recent Activity</div>
-                            <div class="section-actions">
-                                <a href="#">View All</a>
-                            </div>
-                        </div>
-
-                        <ul class="activity-list">
-                            <li class="activity-item">
-                                <div class="activity-icon"
-                                    style="background-color: var(--primary-light); color: var(--primary);">
-                                    <i class="fas fa-user-plus"></i>
-                                </div>
-                                <div class="activity-details">
-                                    <h4>New Member Added</h4>
-                                    <p>Sarah Johnson joined the church</p>
-                                    <div class="activity-time">2 hours ago</div>
-                                </div>
-                            </li>
-                            <li class="activity-item">
-                                <div class="activity-icon"
-                                    style="background-color: var(--secondary-light); color: var(--secondary);">
-                                    <i class="fas fa-calendar-check"></i>
-                                </div>
-                                <div class="activity-details">
-                                    <h4>Sunday Service</h4>
-                                    <p>Attendance recorded: 876 members</p>
-                                    <div class="activity-time">1 day ago</div>
-                                </div>
-                            </li>
-                            <li class="activity-item">
-                                <div class="activity-icon"
-                                    style="background-color: var(--accent-light); color: var(--accent);">
-                                    <i class="fas fa-envelope"></i>
-                                </div>
-                                <div class="activity-details">
-                                    <h4>Notification Sent</h4>
-                                    <p>Weekly bulletin sent to all members</p>
-                                    <div class="activity-time">2 days ago</div>
-                                </div>
-                            </li>
-                        </ul>
-
                         <div class="quick-actions">
                             <h3 class="section-title">Quick Actions</h3>
                             <div class="action-buttons">

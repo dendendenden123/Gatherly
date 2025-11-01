@@ -369,7 +369,7 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <span
-                                                class="log-type-login px-2 py-1 rounded-full text-xs font-medium">{{ $log?->action }}</span>
+                                                class="log-type-{{$log?->action}} px-2 py-1 rounded-full text-xs font-medium">{{ $log?->action }}</span>
                                         </td>
                                         <td class="px-6 py-4">
                                             <div class="text-sm text-gray-900">{{ $log?->description }}</div>

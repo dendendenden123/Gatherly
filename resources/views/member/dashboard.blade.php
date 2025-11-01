@@ -253,58 +253,41 @@
                 <div class="bg-white rounded-lg shadow overflow-hidden">
                     <div class="p-4 border-b border-gray-200 flex justify-between items-center">
                         <h2 class="text-lg font-semibold">Upcoming Events</h2>
-                        <a href="#" class="text-sm text-primary hover:text-secondary">View All</a>
+                        <a href="{{ route('member.event') }}" class="text-sm text-primary hover:text-secondary">View All</a>
                     </div>
                     <div class="p-4">
                         <div class="space-y-4">
-                            <div class="flex items-start">
-                                <div class="bg-primary text-white p-2 rounded text-center mr-3 flex-shrink-0">
-                                    <div class="text-sm font-bold">15</div>
-                                    <div class="text-xs">JUN</div>
-                                </div>
-                                <div>
-                                    <h3 class="font-medium">Vacation Bible School</h3>
-                                    <p class="text-sm text-gray-500">9:00 AM - 12:00 PM</p>
-                                    <div class="mt-1">
-                                        <span
-                                            class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
-                                            <i class="bi bi-check-circle mr-1"></i> Registered
-                                        </span>
+                            @forelse ($upcomingEvents as $event)
+                                <div class="flex items-start">
+                                    <div class="bg-primary text-white p-2 rounded text-center mr-3 flex-shrink-0">
+                                        <div class="text-sm font-bold">{{ $event->occurrence_date->format('M') }}</div>
+                                        <div class="text-xs">{{ $event->occurrence_date->format('d') }}</div>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-medium">{{ $event->event->event_name }}</h3>
+                                        <p class="text-sm text-gray-500">
+                                            {{ $event->occurrence_date->format('h:i A') }}
+                                        </p>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="flex items-start">
-                                <div class="bg-primary text-white p-2 rounded text-center mr-3 flex-shrink-0">
-                                    <div class="text-sm font-bold">18</div>
-                                    <div class="text-xs">JUN</div>
-                                </div>
-                                <div>
-                                    <h3 class="font-medium">Men's Breakfast</h3>
-                                    <p class="text-sm text-gray-500">8:00 AM - 10:00 AM</p>
-                                    <div class="mt-1">
-                                        <span
-                                            class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">
-                                            <i class="bi bi-exclamation-circle mr-1"></i> Not RSVP'd
-                                        </span>
+                            @empty
+                                <div class="flex items-start">
+                                    <div class="bg-primary text-white p-2 rounded text-center mr-3 flex-shrink-0">
+                                        <div class="text-sm font-bold">15</div>
+                                        <div class="text-xs">JUN</div>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-medium">No more events</h3>
+                                        <p class="text-sm text-gray-500">9:00 AM - 12:00 PM</p>
+                                        <div class="mt-1">
+                                            <span
+                                                class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                                                <i class="bi bi-check-circle mr-1"></i> Registered
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="flex items-start">
-                                <div class="bg-primary text-white p-2 rounded text-center mr-3 flex-shrink-0">
-                                    <div class="text-sm font-bold">25</div>
-                                    <div class="text-xs">JUN</div>
-                                </div>
-                                <div>
-                                    <h3 class="font-medium">Church Picnic</h3>
-                                    <p class="text-sm text-gray-500">4:00 PM - 8:00 PM</p>
-                                    <div class="mt-1">
-                                        <span
-                                            class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
-                                            <i class="bi bi-question-circle mr-1"></i> Tentative
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
+                            @endforelse
                         </div>
                     </div>
                 </div>
