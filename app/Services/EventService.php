@@ -83,9 +83,6 @@ class EventService
         return Attendance::with('event_occurrence.event')
             ->where('user_id', $userId)
             ->where('status', 'absent')
-            ->get()
-            ->map(function ($attendance) {
-                return $attendance->event_occurrence->event;
-            });
+            ->get();
     }
 }

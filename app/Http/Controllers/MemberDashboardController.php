@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\EventOccurrence;
 use App\Services\EventService;
 use Carbon\Carbon;
+use Auth;
 
 class MemberDashboardController extends Controller
 {
@@ -22,7 +23,8 @@ class MemberDashboardController extends Controller
             ->orderBy('occurrence_date', )
             ->limit(5)
             ->get();
+        $missedEvents = $this->eventService->getEventsMissedByUser(Auth::id());
 
-        return view('member.dashboard', compact('upcomingEvents'));
+        return view('member.dashboard', compact('upcomingEvents', 'missedEvents'));
     }
 }

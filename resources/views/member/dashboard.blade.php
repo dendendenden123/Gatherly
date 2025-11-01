@@ -298,32 +298,29 @@
                         <h2 class="text-lg font-semibold">Missed Events</h2>
                     </div>
                     <div class="p-4">
-                        <div class="flex items-start mb-3">
-                            <div class="bg-gray-200 text-gray-600 p-2 rounded text-center mr-3 flex-shrink-0">
-                                <div class="text-sm font-bold">11</div>
-                                <div class="text-xs">JUN</div>
-                            </div>
-                            <div>
-                                <h3 class="font-medium">Sunday Service</h3>
-                                <p class="text-sm text-gray-500">10:30 AM</p>
-                                <div class="mt-1 text-sm">
-                                    <a href="#" class="text-primary hover:text-secondary">Watch recording</a>
+                        @forelse($missedEvents as $event)
+                            <div class="flex items-start mb-3">
+                                <div class="bg-gray-200 text-gray-600 p-2 rounded text-center mr-3 flex-shrink-0">
+                                    <div class="text-sm font-bold">11</div>
+                                    <div class="text-xs">JUN</div>
+                                </div>
+                                <div>
+                                    <h3 class="font-medium">{{ $event->event_name }}</h3>
+                                    <p class="text-sm text-gray-500">10:30 AM</p>
+                                    <div class="mt-1 text-sm">
+                                        <a href="#"
+                                            class="text-primary hover:text-secondary">{{ $event->event_description }}</a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="flex items-start">
-                            <div class="bg-gray-200 text-gray-600 p-2 rounded text-center mr-3 flex-shrink-0">
-                                <div class="text-sm font-bold">7</div>
-                                <div class="text-xs">JUN</div>
-                            </div>
-                            <div>
-                                <h3 class="font-medium">Bible Study</h3>
-                                <p class="text-sm text-gray-500">7:00 PM</p>
-                                <div class="mt-1 text-sm">
-                                    <a href="#" class="text-primary hover:text-secondary">View notes</a>
+                        @empty
+                            <div class="flex items-start mb-3">
+                                <div>
+                                    <h3 class="font-medium">You have no missed events</h3>
                                 </div>
                             </div>
-                        </div>
+                        @endforelse
+
                     </div>
                 </div>
 
