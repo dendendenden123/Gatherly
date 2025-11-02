@@ -3,7 +3,7 @@
 @section('styles')
     <!-- Video.js CSS -->
     <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
-    
+
     <style>
         .sermon-card {
             transition: box-shadow 0.2s, transform 0.2s;
@@ -30,7 +30,8 @@
 
         .video-js {
             width: 100% !important;
-            height: 192px !important; /* h-48 equivalent */
+            height: 192px !important;
+            /* h-48 equivalent */
         }
 
         .sermon-thumbnail {
@@ -74,6 +75,12 @@
     <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-6">
         <div class="filter-bar rounded-lg shadow p-4 mb-8">
             <div class="flex flex-col md:flex-row md:items-center gap-4">
+                <div class="relative flex-1">
+                    <input type="text" id="search-input" placeholder="Search sermon by name..."
+                        value="{{ request('search') }}"
+                        class="w-full border border-gray-300 rounded-md pl-10 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+                    <i class="bi bi-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                </div>
                 <select id="date-filter"
                     class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
                     <option value="" {{ request('date') === null || request('date') === '' ? 'selected' : '' }}>All Dates
