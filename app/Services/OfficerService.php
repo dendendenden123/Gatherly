@@ -73,11 +73,33 @@ class OfficerService
      * 
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getUsersWithOfficerRoles()
+    public function getUsersWithOfficerRoles(array $filters = [])
     {
-        return \App\Models\User::whereHas('officers')
-            ->with('officers.role')
-            ->get();
+        $query = \App\Models\User::whereHas('officers', function($q) use ($filters) {
+            if (!empty($filters['role'])) {
+                $q->where('role_id', $filters['role']);
+            }
+            
+            if (!empty($filters['start_date'])) {
+                $q->whereDate('created_at', '>=', $filters['start_date']);
+            }
+            
+            if (!empty($filters['end_date'])) {
+                $q->whereDate('created_at', '<=', $filters['end_date']);
+            }
+        })->with(['officers.role']);
+        
+        if (!empty($filters['search'])) {
+            $search = '%' . $filters['search'] . '%';
+            $query->where(function($q) use ($search) {
+                $q->where('first_name', 'like', $search)
+                  ->orWhere('last_name', 'like', $search)
+                  ->orWhere('email', 'like', $search)
+                  ->orWhere('id', 'like', $search);
+            });
+        }
+        
+        return $query->get();
     }
 
     /**

@@ -1,7 +1,8 @@
-//===========================SET UP=================b=============
+//===========================SET UP================================
 const addOfficerModal = $("#addOfficerModal");
 const roleCheckBoxes = $(".role-checkbox");
 const officerForm = $("#officerForm");
+const filterForm = $("#officerFilters");
 let userList = $("#autoCompleteNames").data("user");
 let ajaxRequest = null;
 let debounceTimer = null;
@@ -29,6 +30,31 @@ $(document).on("click", ".autocomplete-item", function () {
 $(".delete-btn").on("click", (e) => {
     e.preventDefault();
     confirmDeleteEvent(e);
+});
+
+// Filter form submission
+filterForm.on('submit', function(e) {
+    e.preventDefault();
+    applyFilters();
+});
+
+// Reset filters
+$('#resetFilters').on('click', function() {
+    filterForm.trigger('reset');
+    applyFilters();
+});
+
+// Apply filters with debounce for search input
+$('#search').on('input', function() {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+        applyFilters();
+    }, 500);
+});
+
+// Apply filters when date or role changes
+$('#role, #start_date, #end_date').on('change', function() {
+    applyFilters();
 });
 
 //===========================FUNCTIONS==============================
@@ -96,6 +122,64 @@ function applyUserRolesToForm(selectedUser) {
         const shouldBeChecked = attainedRoleIds.includes(checkboxId);
         $(this).prop("checked", shouldBeChecked);
     });
+}
+
+//=================================
+//===Applies the current filters and updates the officers list
+//=================================
+function applyFilters() {
+    const formData = filterForm.serialize();
+    
+    // Show loading state
+    const officersList = $('#officersList');
+    officersList.addClass('opacity-50 pointer-events-none');
+    
+    // Cancel any pending request
+    if (ajaxRequest) {
+        ajaxRequest.abort();
+    }
+    
+    // Make AJAX request
+    ajaxRequest = $.ajax({
+        url: window.location.pathname,
+        type: 'GET',
+        data: formData,
+        dataType: 'html',
+        success: function(response) {
+            officersList.html(response);
+            updateUrlWithFilters(formData);
+        },
+        error: function(xhr, status, error) {
+            if (status !== 'abort') {
+                console.error('Error applying filters:', error);
+                alert('An error occurred while applying filters. Please try again.');
+            }
+        },
+        complete: function() {
+            officersList.removeClass('opacity-50 pointer-events-none');
+            ajaxRequest = null;
+        }
+    });
+}
+
+//=================================
+//===Updates the URL with the current filters without page reload
+//=================================
+function updateUrlWithFilters(params) {
+    const url = new URL(window.location);
+    const searchParams = new URLSearchParams(params);
+    
+    // Remove empty params
+    for (const [key, value] of searchParams.entries()) {
+        if (value) {
+            url.searchParams.set(key, value);
+        } else {
+            url.searchParams.delete(key);
+        }
+    }
+    
+    // Update URL without page reload
+    window.history.pushState({}, '', url);
 }
 
 //==================================================

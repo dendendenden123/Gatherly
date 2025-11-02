@@ -25,8 +25,21 @@ class OfficerController extends Controller
         $usersCollection = $this->userService->getAllUsers();
         $formattedUser = UserTransformHelper::transformUserListToJson($usersCollection);
         $roles = $this->officerService->getAvailableRoles();
-        $officers = $this->officerService->getUsersWithOfficerRoles();
+        
+        $filters = [
+            'role' => request('role'),
+            'search' => request('search'),
+            'start_date' => request('start_date'),
+            'end_date' => request('end_date')
+        ];
+        
+        $officers = $this->officerService->getUsersWithOfficerRoles($filters);
         $totalOfficers = OfficerHelper::countTotalOfficer($officers);
+        
+        if (request()->ajax()) {
+            return view('admin.officers.index-officers-list', compact('officers'))->render();
+        }
+        
         return view('admin.officers.index', compact('officers', 'totalOfficers', 'formattedUser', 'roles'));
     }
 

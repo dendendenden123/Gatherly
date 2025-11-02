@@ -15,35 +15,48 @@
 
 @section('content')
     <!-- Main Content -->
-    <div class="content">
-        <!-- Dashboard Cards -->
-        <div class="dashboard-cards">
-            <div class="dashboard-card">
-                <div class="card-header">
-                    <div class="card-title">Total Officers</div>
-                    <i class="fas fa-user-tie"></i>
+    <div class="content" style="padding-top: 0;">
+        <!-- Filters -->
+        <div class="filters-container">
+            <form id="officerFilters" class="filter-form">
+                <div class="filter-group">
+                    <label for="search">Search</label>
+                    <input type="text" name="search" id="search" placeholder="Search by name or ID"
+                        value="{{ request('search') }}" class="filter-input">
                 </div>
-                <div class="card-value">{{ $totalOfficers }}</div>
-                <div class="card-footer">5 added this quarter</div>
-            </div>
 
-            <div class="dashboard-card">
-                <div class="card-header">
-                    <div class="card-title">Active Roles</div>
-                    <i class="fas fa-list"></i>
+                <div class="filter-group">
+                    <label for="role">Role</label>
+                    <select name="role" id="role" class="filter-select">
+                        <option value="">All Roles</option>
+                        @foreach($roles as $role)
+                            <option value="{{ $role->id }}" {{ request('role') == $role->id ? 'selected' : '' }}>
+                                {{ $role->name }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
-                <div class="card-value">12</div>
-                <div class="card-footer">Different positions</div>
-            </div>
 
-            <div class="dashboard-card">
-                <div class="card-header">
-                    <div class="card-title">Training Needed</div>
-                    <i class="fas fa-graduation-cap"></i>
+                <div class="filter-group">
+                    <label for="start_date">Start Date</label>
+                    <input type="date" name="start_date" id="start_date" value="{{ request('start_date') }}"
+                        class="filter-input">
                 </div>
-                <div class="card-value">3</div>
-                <div class="card-footer">Officers require training</div>
-            </div>
+
+                <div class="filter-group">
+                    <label for="end_date">End Date</label>
+                    <input type="date" name="end_date" id="end_date" value="{{ request('end_date') }}" class="filter-input">
+                </div>
+
+                <div class="filter-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-filter"></i> Apply Filters
+                    </button>
+                    <button type="button" id="resetFilters" class="btn btn-outline">
+                        <i class="fas fa-undo"></i> Reset
+                    </button>
+                </div>
+            </form>
         </div>
 
         <!-- Officer Table -->
@@ -54,10 +67,9 @@
                     <i class="fas fa-plus"></i> Add Officer
                 </button>
             </div>
-            <div class="officer-list">
+            <div class="officer-list" id="officersList">
                 @include('admin.officers.index-officers-list')
             </div>
-
         </div>
     </div>
 
