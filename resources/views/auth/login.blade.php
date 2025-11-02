@@ -39,5 +39,5 @@
 
 @section("footer-text")
     <p>Already have an account? <a href="{{ route('showRegisterForm') }}" class="auth-link">Sign Up</a></p>
-    <a href="#" class="forgot-password auth-link">Forgot password?</a>
+    <a href="{{ route('showForgotPassword') }}" class="forgot-password auth-link">Forgot password?</a>
 @endsection

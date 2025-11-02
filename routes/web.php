@@ -7,12 +7,22 @@ Route::get('/', function () {
     return view('welcome');
 })->name('landing_page');
 
+// Authentication Routes
 Route::controller(UserController::class)->group(function () {
+    // Login/Logout
     Route::get('/login', 'showLoginForm')->name('showLoginForm');
     Route::post('/login', 'login')->name('login');
+    Route::get('/logout', 'logout')->name('logout');
+
+    // Registration
     Route::get('/register', 'showRegisterForm')->name('showRegisterForm');
     Route::post('/register', 'store')->name('register');
-    Route::get('/logout', 'logout')->name('logout');
+
+    // Password Reset
+    Route::get('/forgot-password', 'showForgotPasswordForm')->name('showForgotPassword');
+    Route::post('/forgot-password', 'sendResetLinkEmail')->name('password.email');
+    Route::get('/reset-password/{token}', 'showResetPasswordForm')->name('password.reset');
+    Route::post('/reset-password', 'resetPassword')->name('password.update');
 });
 
 // Google OAuth routes
