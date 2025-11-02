@@ -169,12 +169,12 @@
                                         <div
                                             class="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center flex-shrink-0">
                                             <i
-                                                class="bi bi-{{ $attendance->attendance_method === 'fingerprint' ? 'fingerprint' : ($attendance->attendance_method === 'online' ? 'wifi' : ($attendance->attendance_method === 'mobile' ? 'phone' : 'person')) }} text-purple-600 text-sm"></i>
+                                                class="bi bi-{{ $attendance->attendance_method === 'fingerprint' ? 'face' : ($attendance->attendance_method === 'online' ? 'wifi' : ($attendance->attendance_method === 'mobile' ? 'phone' : 'person')) }} text-purple-600 text-sm"></i>
                                         </div>
                                         <div class="min-w-0">
-                                            <p class="text-xs text-gray-500 leading-tight">Method</p>
+                                            <p class="text-xs text-gray-500 leading-tight">Type</p>
                                             <p class="font-medium text-gray-900 truncate capitalize">
-                                                {{ $attendance->attendance_method ?? 'N/A' }}
+                                                {{ $attendance->event_occurrence->event->event_type ?? 'N/A' }}
                                             </p>
                                         </div>
                                     </div>
