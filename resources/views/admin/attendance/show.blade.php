@@ -1,6 +1,23 @@
-@extends("layouts.admin")
+<!DOCTYPE html>
+<html lang="en">
 
-@section('content')
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance History</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <!-- CSRF Token for AJAX -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+</head>
+
+<body class="min-h-screen flex flex-col bg-gray-50">
+
     <!-- Main Content -->
     <main class="flex-grow bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
@@ -8,8 +25,11 @@
             @section('header')
                 <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
                     <div>
-                        <h1 class="text-2xl text-xl font-bold text-gray-800">Attendance History</h1>
-                        <p class="text-gray-500  tex-lg mt-1">Detailed attendance records and analytics</p>
+                        <h1 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
+
+                            Attendance History
+                        </h1>
+                        <p class="text-gray-500 text-lg mt-1">Detailed attendance records and analytics</p>
                     </div>
                     <div class="flex space-x-3">
                         <button onclick="window.history.back()" class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
@@ -18,7 +38,6 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                             </svg>
-
                         </button>
                     </div>
                 </div>
@@ -27,14 +46,24 @@
             <!-- User Profile Section -->
             <div class="mb-8">
                 <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                    <a href="javascript:history.back()" class="text-gray-500 hover:text-gray-700 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                    </a>
                     <div class="p-6 flex items-center">
-                        <img class="h-sm w-sm rounded-full ring-4 ring-emerald-100 "
+
+                        <img class="h-20 w-20 rounded-full ring-4 ring-emerald-100"
                             src="https://ui-avatars.com/api/?name={{ urlencode($user->first_name . ' ' . $user->last_name) }}&background=10b981&color=fff"
                             alt="User avatar">
                         <div class="ml-6">
-                            <h3 class="text-sm font-semibold text-gray-800">{{ $user->first_name }} {{ $user->last_name }}
+                            <h3 class="text-lg font-semibold text-gray-800"> {{ $user->first_name }}
+                                {{ $user->last_name }}
                             </h3>
-                            <p class="text-gray-500 mt-1 text-sm">Member since: {{ $user->created_at->format('F Y') }}</p>
+                            <p class="text-gray-500 mt-1 text-sm">Member since: {{ $user->created_at->format('F Y') }}
+                            </p>
                             <div class="flex mt-3 space-x-2">
                                 <span
                                     class="bg-emerald-50 text-emerald-700 text-xs font-medium px-3 py-1 rounded-full">{{ $user->status }}</span>
@@ -60,7 +89,7 @@
                                             $ageGroup = "Buklod/Married";
                                         }
                                     @endphp
-                                    {{  $ageGroup  }}
+                                    {{ $ageGroup }}
                                 </p>
                             </div>
                         </div>
@@ -76,9 +105,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-500 text-sm font-medium">Total Attendance</p>
-                            <p class="text-lg font-bold text-gray-800 mt-1">
-                                {{ $totalAttendanceCount }}
-                            </p>
+                            <p class="text-lg font-bold text-gray-800 mt-1">{{ $totalAttendanceCount }}</p>
                         </div>
                         <div class="bg-emerald-100 p-3 rounded-lg">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-emerald-600" fill="none"
@@ -97,7 +124,7 @@
                                         d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z"
                                         clip-rule="evenodd" />
                                 </svg>
-                                {{ $attendanceGrowthRateLastMonth['value'] }}% growth in the month of
+                                {{ $attendanceGrowthRateLastMonth['value'] }}% growth in
                                 {{ now()->subMonth()->format('F') }}
                             </span>
                         @else
@@ -108,8 +135,7 @@
                                         d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z"
                                         clip-rule="evenodd" />
                                 </svg>
-
-                                {{ $attendanceGrowthRateLastMonth['value'] }}% decline in the month of
+                                {{ $attendanceGrowthRateLastMonth['value'] }}% decline in
                                 {{ now()->subMonth()->format('F') }}
                             </span>
                         @endif
@@ -117,7 +143,8 @@
                 </div>
 
                 <!-- Attendance Rate -->
-                <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-blue-500 hover:shadow-md transition-shadow">
+                <div
+                    class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-blue-500 hover:shadow-md transition-shadow">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-500 text-sm font-medium">Attendance Rate
@@ -155,20 +182,19 @@
             </div>
         </div>
     </main>
+
+    <!-- JavaScript -->
     <script>
         $(document).ready(function () {
             let ajaxRequest = null;
             let debounceTimer = null;
 
-            // Debounced AJAX request
             function requestData() {
                 const filterForm = $('#filter-form').serialize();
                 clearTimeout(debounceTimer);
 
                 debounceTimer = setTimeout(() => {
-                    if (ajaxRequest) {
-                        ajaxRequest.abort();
-                    }
+                    if (ajaxRequest) ajaxRequest.abort();
 
                     ajaxRequest = $.ajax({
                         url: $('#filter-form').attr('action'),
@@ -177,7 +203,7 @@
                         success: function (data) {
                             $(".show-attendance-list").html(data.list);
                             $(".chart-container").html(data.chart);
-                            renderAttendanceChart()
+                            renderAttendanceChart();
                         },
                         error: function (xhr) {
                             console.error("Error:", xhr.responseText);
@@ -186,12 +212,11 @@
                 }, 300);
             }
 
-            // Watch filter form for changes
             $('#filter-form').on("input change", requestData);
-
-            // Initial render
             renderAttendanceChart();
         });
     </script>
 
-@endsection
+</body>
+
+</html>
