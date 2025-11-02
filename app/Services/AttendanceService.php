@@ -141,7 +141,7 @@ class AttendanceService
      * @param array $filters
      * @param int $perPage
      */
-    public function getFilteredAttendances(int $userId, array $filters, int $perPage = 10)
+    public function getFilteredAttendances(int $userId, array $filters = null, int $perPage = 10)
     {
         $query = Attendance::query()
             ->select('attendances.*')

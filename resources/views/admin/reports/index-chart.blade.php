@@ -58,11 +58,7 @@
                 <option value="excel">Excel</option>
                 <option value="pdf">PDF</option>
             </select>
-            <button class="btn btn-primary" id="rawExportBtn"
-                data-csv="{{ route('admin.reports.attendance.export.csv') }}"
-                data-excel="{{ route('admin.reports.attendance.export.excel') }}" style="margin-left: 10px;">
-                <i class="fas fa-download"></i> Download
-            </button>
+
         </div>
     </div>
     <table class="report-table">

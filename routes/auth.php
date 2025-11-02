@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\SermonController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AttendanceController;
@@ -13,9 +14,6 @@ Route::controller(MemberDashboardController::class)->group(function () {
     Route::get('/member', 'index')->name('member');
 });
 
-Route::get('/member/sermon', function () {
-    return view("member.sermon");
-});
 Route::get('/member/tasks', function () {
     return view("member.tasks");
 });
@@ -47,6 +45,11 @@ Route::controller(NotificationController::class)->group(function () {
 Route::controller(TaskController::class)->group(function () {
     Route::get('/member/task', 'viewMytask')->name('member.task');
 });
+
+Route::controller(SermonController::class)->group(function () {
+    Route::get('/member/sermon', 'mySermons')->name('member.sermon');
+});
+
 
 
 

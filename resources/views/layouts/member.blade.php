@@ -160,17 +160,7 @@
             <header class="bg-white shadow-sm">
                 <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
                     <h1 class="text-xl font-semibold text-gray-900">@yield('header-text', 'Member Dashboard')</h1>
-                    <div class="flex items-center space-x-4">
-                        <div class="relative">
-                            <button class="text-gray-500 hover:text-gray-700">
-                                <i class="bi bi-bell text-xl"></i>
-                                <span class="notification-dot"></span>
-                            </button>
-                        </div>
-                        <button class="md:hidden text-gray-500">
-                            <i class="bi bi-list text-xl"></i>
-                        </button>
-                    </div>
+
                 </div>
             </header>
             @show

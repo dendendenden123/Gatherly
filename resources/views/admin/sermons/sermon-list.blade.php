@@ -30,14 +30,7 @@
                         <span>{{ $sermon->created_at->format('M d Y') }}</span>
                     </div>
                 </div>
-                <div class="flex justify-between mt-auto">
-                    <button class="text-primary hover:text-secondary flex items-center font-semibold">
-                        <i class="fas fa-play-circle mr-1"></i> Watch
-                    </button>
-                    <button class="text-gray-600 hover:text-gray-800 flex items-center font-semibold">
-                        <i class="fas fa-download mr-1"></i> Download
-                    </button>
-                </div>
+
             </div>
         </div>
     @empty

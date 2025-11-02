@@ -21,58 +21,6 @@
 
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-        <!-- Summary Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            <!-- Monthly Attendance -->
-            <div class="bg-white rounded-lg shadow p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-500 text-sm">Last Month Attendance Rate</p>
-                        <h3 class="text-2xl font-bold">{{ $monthlyAttendancePct ?? 0 }}%</h3>
-                    </div>
-                    <div class="relative w-16 h-16">
-                        <svg class="w-full h-full" viewBox="0 0 36 36">
-                            <circle cx="18" cy="18" r="16" fill="none" stroke="#e5e7eb" stroke-width="3"></circle>
-                            <circle cx="18" cy="18" r="16" fill="none" stroke="#2ecc71" stroke-width="3"
-                                stroke-dasharray="100" stroke-dashoffset="15"
-                                style="stroke-dashoffset: {{  100 - $monthlyAttendancePct }};">
-                            </circle>
-                        </svg>
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <i class="bi bi-calendar-check text-primary text-xl"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Current Streak -->
-            <div class="bg-white rounded-lg shadow p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-500 text-sm">Current Streak</p>
-                        <h3 class="text-2xl font-bold">4 weeks</h3>
-                        <p class="text-xs text-gray-500">Since May 21</p>
-                    </div>
-                    <div class="w-16 h-16 rounded-full bg-primary bg-opacity-10 flex items-center justify-center">
-                        <i class="bi bi-lightning-charge text-primary text-2xl"></i>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Favorite Service -->
-            <div class="bg-white rounded-lg shadow p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-500 text-sm">Most Attended</p>
-                        <h3 class="text-2xl font-bold">Sunday AM</h3>
-                        <p class="text-xs text-gray-500">92% attendance</p>
-                    </div>
-                    <div class="w-16 h-16 rounded-full bg-primary bg-opacity-10 flex items-center justify-center">
-                        <i class="bi bi-heart text-primary text-2xl"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- Filters -->
         <div class="bg-white rounded-lg shadow p-4 mb-6">
