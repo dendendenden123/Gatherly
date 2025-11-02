@@ -2,9 +2,9 @@
     <div class="p-5 flex-1 flex flex-col">
         <div class="flex items-center justify-between mb-2">
             <span
-                class="text-xs px-2 py-1 rounded bg-secondary text-white uppercase tracking-wide">{{ $event->event_occurrence->event?->event_type }}</span>
+                class="text-xs px-2 py-1 rounded bg-secondary text-white uppercase tracking-wide">{{ $event->event->event_type }}</span>
         </div>
-        <h2 class="text-lg font-semibold text-gray-900 mb-1">{{ $event->event_name }}</h2>
+        <h2 class="text-lg font-semibold text-gray-900 mb-1">{{ $event->event->event_name }}</h2>
         <p class="text-gray-600 mb-2 line-clamp-2">{{ $event->event_description }}</p>
         <div class="flex flex-wrap gap-2 text-xs mb-2">
             <span class="bg-gray-100 px-2 py-1 rounded"><i class="bi bi-geo-alt text-accent"></i>

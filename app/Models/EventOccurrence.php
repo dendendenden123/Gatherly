@@ -15,7 +15,7 @@ class EventOccurrence extends Model
     public $table = 'event_occurrences';
 
     protected $casts = [
-        'occurrence_date' => 'date',
+        'occurrence_date' => 'datetime',
     ];
 
     public function event()

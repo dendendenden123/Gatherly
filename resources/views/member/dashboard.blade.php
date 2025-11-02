@@ -301,15 +301,15 @@
                         @forelse($missedEvents as $event)
                             <div class="flex items-start mb-3">
                                 <div class="bg-gray-200 text-gray-600 p-2 rounded text-center mr-3 flex-shrink-0">
-                                    <div class="text-sm font-bold">11</div>
-                                    <div class="text-xs">JUN</div>
+                                    <div class="text-sm font-bold">{{ $event->occurrence_date->format('d') }}</div>
+                                    <div class="text-xs">{{ $event->occurrence_date->format('M') }}</div>
                                 </div>
                                 <div>
-                                    <h3 class="font-medium">{{ $event->event_name }}</h3>
-                                    <p class="text-sm text-gray-500">10:30 AM</p>
+                                    <h3 class="font-medium">{{ $event->event->event_name }}</h3>
+
                                     <div class="mt-1 text-sm">
                                         <a href="#"
-                                            class="text-primary hover:text-secondary">{{ $event->event_description }}</a>
+                                            class="text-primary hover:text-secondary">{{ $event->event->event_description }}</a>
                                     </div>
                                 </div>
                             </div>

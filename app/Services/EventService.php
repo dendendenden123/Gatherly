@@ -58,31 +58,31 @@ class EventService
 
     public function getUpcomingEvent()
     {
-        return Event::with('event_occurrences')
-            ->whereHas('event_occurrences', function ($query) {
-                $query->where('occurrence_date', '>=', now()->toDateString())
-                    ->where('status', 'pending');
-            })
+        return EventOccurrence::with(['event', 'attendances'])
+            ->where('attendance_checked', '0')
+            ->where('status', 'pending')
             ->orderByDesc('updated_at')
             ->get();
     }
 
     public function getEventsAttendedByUser($userId)
     {
-        return Attendance::with('event_occurrence.event')
-            ->where('user_id', $userId)
-            ->where('status', 'present')
-            ->get()
-            ->map(function ($attendance) {
-                return $attendance->event_occurrence->event;
-            });
+        return EventOccurrence::with(['event', 'attendances'])
+            ->whereHas('attendances', function ($attendance) use ($userId) {
+                $attendance->where('user_id', $userId)->where('status', 'present');
+            })
+            ->where('attendance_checked', '1')
+            ->get();
     }
 
     public function getEventsMissedByUser($userId)
     {
-        return Attendance::with('event_occurrence.event')
-            ->where('user_id', $userId)
-            ->where('status', 'absent')
+        return EventOccurrence::with(['event', 'attendances'])
+            ->whereHas('attendances', function ($attendance) use ($userId) {
+                $attendance->where('user_id', $userId)->where('status', 'absent');
+            })
+            ->where('attendance_checked', '1')
+            ->orderByDesc('updated_at')
             ->get();
     }
 }

@@ -163,7 +163,7 @@ class EventController extends Controller
         $userId = auth()->id();
         $upcomingEvents = $this->eventService->getUpcomingEvent();
         $attendedEvents = $this->eventService->getEventsAttendedByUser($userId);
-        $missedEvents = $this->eventService->getEventsMissedByUser($userId);
+        $missedEvents = $this->eventService->getEventsMissedByUser($userId)->take(5);
 
         return view('member.event', compact('upcomingEvents', 'attendedEvents', 'missedEvents'));
     }
