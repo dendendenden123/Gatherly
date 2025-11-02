@@ -1,6 +1,8 @@
 (function () {
     const dateFilter = document.getElementById("date-filter");
+    const searchInput = document.getElementById("search-input");
     const listContainer = document.querySelector(".sermon-list");
+    let searchTimeout;
 
     function buildUrl(baseUrl, params) {
         const url = new URL(baseUrl, window.location.origin);
@@ -43,9 +45,18 @@
         }
     }
 
-    // On change of filter, fetch
+    // On change of date filter, fetch
     dateFilter.addEventListener("change", function () {
-        fetchList({ date: this.value, page: 1 });
+        fetchList({ date: this.value, search: searchInput.value, page: 1 });
+    });
+
+    // On search input with debounce
+    searchInput.addEventListener("input", function () {
+        clearTimeout(searchTimeout);
+        const searchValue = this.value;
+        searchTimeout = setTimeout(() => {
+            fetchList({ search: searchValue, date: dateFilter.value, page: 1 });
+        }, 500);
     });
 
     // Delegate pagination clicks to fetch via AJAX and preserve filter
@@ -57,7 +68,7 @@
             e.preventDefault();
             const url = new URL(a.href, window.location.origin);
             const page = url.searchParams.get("page") || 1;
-            fetchList({ date: dateFilter.value, page });
+            fetchList({ date: dateFilter.value, search: searchInput.value, page });
         }
     });
 
@@ -69,6 +80,9 @@
         if (dateFilter) {
             dateFilter.value = params.date || "";
         }
-        fetchList({ date: params.date || "", page: params.page || 1 }, false);
+        if (searchInput) {
+            searchInput.value = params.search || "";
+        }
+        fetchList({ date: params.date || "", search: params.search || "", page: params.page || 1 }, false);
     });
 })();

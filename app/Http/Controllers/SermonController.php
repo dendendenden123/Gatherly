@@ -114,8 +114,14 @@ class SermonController extends Controller
     {
 
         $dateFilter = $request->input('date');
+        $search = $request->input('search');
 
         $query = Sermon::with('preacher');
+
+        // Apply search filter if provided
+        if ($search) {
+            $query->where('title', 'like', '%' . $search . '%');
+        }
 
         // Apply filtering and sorting based on the selected date option
         switch ($dateFilter) {
