@@ -1,4 +1,34 @@
 @extends('layouts.member')
+
+@section('styles')
+    <!-- Video.js CSS -->
+    <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
+    
+    <style>
+        .video-js {
+            width: 100% !important;
+            height: 192px !important; /* h-48 equivalent */
+        }
+
+        .sermon-thumbnail {
+            position: relative;
+            height: 192px;
+            background: #000;
+        }
+
+        .sermon-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+@endsection
+
+@section('scripts')
+    <!-- Video.js JS -->
+    <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+@endsection
+
 @section('header')
     <header class="bg-white shadow-sm">
         <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">

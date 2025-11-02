@@ -3,8 +3,52 @@
     @forelse ($sermons as $sermon)
         <div class="bg-white rounded-xl shadow sermon-card overflow-hidden flex flex-col">
             <div class="relative">
-                <img src="https://cdn-icons-png.flaticon.com/512/727/727245.png" alt="Sermon thumbnail"
-                    class="w-full h-48 object-cover">
+                @php
+                    $videoUrl = $sermon->video_url;
+                    $isYouTube = preg_match('/youtube\.com|youtu\.be/', $videoUrl);
+                    $isVimeo = preg_match('/vimeo\.com/', $videoUrl);
+                    $isLocalVideo = !$isYouTube && !$isVimeo && $videoUrl;
+                    
+                    // Extract YouTube thumbnail
+                    $youtubeId = null;
+                    if ($isYouTube) {
+                        preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/', $videoUrl, $matches);
+                        $youtubeId = $matches[1] ?? null;
+                    }
+                    
+                    // Extract Vimeo thumbnail (requires API call in production, using placeholder for now)
+                    $vimeoId = null;
+                    if ($isVimeo) {
+                        preg_match('/vimeo\.com\/(\d+)/', $videoUrl, $matches);
+                        $vimeoId = $matches[1] ?? null;
+                    }
+                @endphp
+                
+                <div class="sermon-thumbnail">
+                    @if ($isYouTube && $youtubeId)
+                        <!-- YouTube Thumbnail -->
+                        <img src="https://img.youtube.com/vi/{{ $youtubeId }}/maxresdefault.jpg" 
+                             alt="{{ $sermon->title }}"
+                             onerror="this.src='https://img.youtube.com/vi/{{ $youtubeId }}/hqdefault.jpg'">
+                    @elseif ($isVimeo && $vimeoId)
+                        <!-- Vimeo Thumbnail -->
+                        <img src="https://vumbnail.com/{{ $vimeoId }}.jpg" 
+                             alt="{{ $sermon->title }}"
+                             onerror="this.src='https://cdn-icons-png.flaticon.com/512/727/727245.png'">
+                    @elseif ($isLocalVideo)
+                        <!-- Local Video with Video.js -->
+                        <video id="sermon-video-{{ $sermon->id }}" 
+                               class="video-js vjs-default-skin" 
+                               preload="metadata"
+                               data-setup='{"controls": false, "preload": "metadata"}'>
+                            <source src="{{ $videoUrl }}#t=0.1" type="video/mp4">
+                        </video>
+                    @else
+                        <!-- Fallback placeholder -->
+                        <img src="https://cdn-icons-png.flaticon.com/512/727/727245.png" alt="Sermon thumbnail">
+                    @endif
+                </div>
+                
                 <div
                     class="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
                     <button
@@ -70,11 +114,34 @@
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        // Initialize Video.js for all local video thumbnails
+        document.querySelectorAll('.video-js').forEach(function(videoElement) {
+            if (window.videojs) {
+                const player = videojs(videoElement.id, {
+                    controls: false,
+                    preload: 'metadata',
+                    fluid: false,
+                    aspectRatio: '16:9'
+                });
+                
+                // Seek to first frame to show thumbnail
+                player.on('loadedmetadata', function() {
+                    player.currentTime(0.1);
+                });
+                
+                // Pause immediately to show as thumbnail
+                player.on('play', function() {
+                    player.pause();
+                });
+            }
+        });
+
         const modal = document.getElementById('video-modal');
         const videoPlayer = document.getElementById('video-player');
         const modalTitle = document.getElementById('modal-title');
         const modalDescription = document.getElementById('modal-description');
         const closeModalBtn = document.getElementById('close-modal');
+        
         document.querySelectorAll('.play-button').forEach(btn => {
             btn.addEventListener('click', function () {
                 const videoUrl = btn.getAttribute('data-video-url');
@@ -103,10 +170,12 @@
                 modal.classList.remove('hidden');
             });
         });
+        
         closeModalBtn.addEventListener('click', function () {
             modal.classList.add('hidden');
             videoPlayer.src = '';
         });
+        
         // Optional: close modal on outside click
         modal.addEventListener('click', function (e) {
             if (e.target === modal) {
