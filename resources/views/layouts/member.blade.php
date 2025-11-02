@@ -27,6 +27,44 @@
     <style>
         .sidebar {
             transition: all 0.3s ease;
+            transform: translateX(0);
+            position: fixed;
+            height: 100vh;
+            z-index: 40;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar-open {
+                transform: translateX(0);
+            }
+        }
+
+        .main-content {
+            transition: margin 0.3s ease;
+            margin-left: 16rem;
+            /* 64 * 4 = 256px */
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                margin-left: 5rem;
+                /* 20 * 4 = 80px */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+            }
+        }
+
+        .sidebar-collapsed .main-content {
+            margin-left: 5rem;
         }
 
         .notification-dot {
@@ -78,18 +116,101 @@
             color: white;
         }
     </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get DOM elements
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const closeSidebar = document.getElementById('close-sidebar');
+            const toggleSidebar = document.getElementById('toggle-sidebar');
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+
+            // Check if elements exist before adding event listeners
+            if (mobileMenuButton && sidebar) {
+                // Toggle mobile menu
+                mobileMenuButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    sidebar.classList.toggle('sidebar-open');
+                });
+            }
+
+            if (closeSidebar && sidebar) {
+                // Close mobile menu
+                closeSidebar.addEventListener('click', () => {
+                    sidebar.classList.remove('sidebar-open');
+                });
+            }
+
+            if (toggleSidebar) {
+                // Toggle desktop sidebar
+                toggleSidebar.addEventListener('click', () => {
+                    document.body.classList.toggle('sidebar-collapsed');
+                    const icon = toggleSidebar.querySelector('i');
+                    if (document.body.classList.contains('sidebar-collapsed')) {
+                        icon.classList.remove('bi-chevron-left');
+                        icon.classList.add('bi-chevron-right');
+                    } else {
+                        icon.classList.remove('bi-chevron-right');
+                        icon.classList.add('bi-chevron-left');
+                    }
+                });
+            }
+
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth < 768 && sidebar && mobileMenuButton) {
+                    if (!sidebar.contains(e.target) && !mobileMenuButton.contains(e.target)) {
+                        sidebar.classList.remove('sidebar-open');
+                    }
+                }
+            });
+
+            // Handle window resize
+            function handleResize() {
+                if (!sidebar) return;
+
+                if (window.innerWidth >= 768) {
+                    sidebar.classList.remove('sidebar-open');
+                    sidebar.style.transform = 'translateX(0)';
+                } else {
+                    if (!sidebar.classList.contains('sidebar-open')) {
+                        sidebar.style.transform = 'translateX(-100%)';
+                    }
+                }
+            }
+
+            // Initial call
+            handleResize();
+
+            // Add event listener
+            window.addEventListener('resize', handleResize);
+
+            // Clean up event listener when component unmounts
+            return () => {
+                window.removeEventListener('resize', handleResize);
+            };
+        });
+    </script>
     @yield('styles')
 </head>
 
 <body class="bg-gray-100 font-sans antialiased">
     <div class="flex h-screen overflow-hidden">
+        <!-- Mobile menu button -->
+        <button id="mobile-menu-button" class="md:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-white shadow-md">
+            <i class="bi bi-list text-xl"></i>
+        </button>
+
         <!-- Sidebar -->
-        <div class="sidebar bg-white w-64 md:w-20 lg:w-64 flex-shrink-0 shadow-md">
-            <div class="p-4 flex items-center justify-between md:justify-center lg:justify-between">
-                <span class="text-xl font-bold text-primary md:hidden lg:block">Gatherly</span>
-                <i class="bi bi-church text-primary text-2xl hidden md:block lg:hidden"></i>
-                <button class="text-gray-500 md:hidden">
+        <div id="sidebar" class="sidebar bg-white w-64 md:w-20 lg:w-64 flex-shrink-0 shadow-md">
+            <div class="p-4 flex items-center justify-between">
+                <span class="text-xl font-bold text-primary hidden md:block">Gatherly</span>
+                <i class="bi bi-church text-primary text-2xl md:hidden"></i>
+                <button id="close-sidebar" class="text-gray-500 md:hidden">
                     <i class="bi bi-x-lg"></i>
+                </button>
+                <button id="toggle-sidebar" class="text-gray-500 hidden md:block">
+                    <i class="bi bi-chevron-left"></i>
                 </button>
             </div>
             <div class="p-4">
@@ -155,7 +276,7 @@
         </div>
 
         <!-- Main Content -->
-        <div class="flex-1 overflow-auto">
+        <div id="main-content" class="flex-1 overflow-auto main-content">
             <!-- Header -->
             @section('header')
             <header class="bg-white shadow-sm">
