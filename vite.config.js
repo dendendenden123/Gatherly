@@ -23,6 +23,7 @@ export default defineConfig({
                 "resources/js/admin-tasks-index.js",
                 "resources/js/admin-tasks-create.js",
                 "resources/js/chat.js",
+                "resources/js/member-attendance.js",
             ],
             refresh: true,
         }),

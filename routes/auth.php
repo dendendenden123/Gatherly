@@ -32,6 +32,7 @@ Route::middleware(['Role:9'])->controller(AttendanceController::class)->group(fu
 
 Route::controller(AttendanceController::class)->group(function () {
     Route::get('/member/attendance', 'showMyAttendance')->name('my.attendance');
+    Route::post('/member/attendance/{id}/add-reason', 'addAbsenceReason')->name('my.attendance.add-reason');
 });
 
 Route::controller(EventController::class)->group(function () {

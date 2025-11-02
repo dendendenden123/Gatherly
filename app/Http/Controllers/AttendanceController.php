@@ -265,4 +265,60 @@ class AttendanceController extends Controller
 
         return response()->json(['message' => 'Email is Valid', 'status' => '200']);
     }
+
+    public function addAbsenceReason(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'notes' => 'required|string|max:500',
+            ]);
+
+            $attendance = Attendance::findOrFail($id);
+
+            // Verify that the attendance belongs to the authenticated user
+            if ($attendance->user_id !== Auth::id()) {
+                return response()->json([
+                    'message' => 'Unauthorized access'
+                ], 403);
+            }
+
+            // Verify that the attendance status is absent
+            if (strtolower($attendance->status) !== 'absent') {
+                return response()->json([
+                    'message' => 'Can only add reason for absent records'
+                ], 400);
+            }
+
+            // Update the notes field
+            $attendance->notes = $request->notes;
+            $attendance->save();
+
+            // Log the action
+            Log::create([
+                'user_id' => Auth::id(),
+                'action' => 'update',
+                'description' => 'Added absence reason for attendance ID: ' . $id,
+            ]);
+
+            return response()->json([
+                'message' => 'Absence reason added successfully',
+                'data' => $attendance
+            ], 200);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Attendance record not found'
+            ], 404);
+        } catch (Throwable $e) {
+            \Log::error('Failed to add absence reason', ['error' => $e->getMessage()]);
+            return response()->json([
+                'message' => 'Failed to add absence reason'
+            ], 500);
+        }
+    }
 }
