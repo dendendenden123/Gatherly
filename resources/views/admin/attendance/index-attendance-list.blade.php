@@ -4,12 +4,13 @@
             <th scope="col"
                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 text-sm uppercase tracking-wider">
                 Member</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Role</th>
+
             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Event</th>
             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Status</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Reasons</th>
             <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Actions</th>
         </tr>
@@ -32,22 +33,7 @@
                     </div>
                 </div>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-900">{{$record->user->role}}</div>
-                <div class="text-sm text-gray-500">
-                    @php
-                        $age = $record->user->birthdate->age;
-                        if ($age < 18) {
-                            $ageGroup = "Binhi Youth";
-                        } else if ($age >= 18 && $record->user->marital_status != "married") {
-                            $ageGroup = "Kadiwa Youth";
-                        } else if ($age >= 18 && $record->user->marital_status == "married") {
-                            $ageGroup = "Buklod/Married";
-                        }
-                    @endphp
-                    {{  $ageGroup  }}
-                </div>
-            </td>
+
             <td class="px-6 py-4 whitespace-nowrap">
                 <div class="text-sm text-gray-900">
                     {{  $record->updated_at->format('M d, Y') ? $record->updated_at->format('M d, Y') : 'No record'}}
@@ -66,6 +52,9 @@
                     <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">Unknown</span>
                 @endif
 
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+                {{ $record->notes }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <a href="{{ route('admin.attendance.show', $record->user_id) }}">
