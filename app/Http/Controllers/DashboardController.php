@@ -81,8 +81,6 @@ class DashboardController extends Controller
         $chartLabels = $months->keys();
         $chartValues = $months->values();
 
-
-
         return view('admin.dashboard', [
             'totalMembers' => $totalMembers,
             'activeCount' => $activeCount,

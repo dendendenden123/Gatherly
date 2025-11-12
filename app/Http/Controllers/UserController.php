@@ -346,6 +346,7 @@ class UserController extends Controller
     //===========================================
     public function login(Request $request)
     {
+        logger($request->all());
         $credentials = $request->only('email', 'password');
         if (!auth()->attempt($credentials)) {
             return redirect()->back()->with('error', 'Invalid Credentials');
