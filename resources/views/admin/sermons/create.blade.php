@@ -36,35 +36,6 @@
 
     <!-- Main Content -->
     <div class="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        <!-- Progress Steps -->
-        <div class="mb-8">
-            <div class="flex items-center justify-center">
-                <div class="flex items-center text-primary">
-                    <div
-                        class="rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 border-primary bg-primary text-white text-center">
-                        <i class="fas fa-pen"></i>
-                    </div>
-                    <div class="hidden sm:block text-center ml-2 text-primary font-medium">Basic Info</div>
-                </div>
-                <div class="flex-auto border-t-2 transition duration-500 ease-in-out border-gray-300"></div>
-                <div class="flex items-center text-gray-500">
-                    <div
-                        class="rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 border-gray-300 text-center">
-                        <i class="fas fa-photo-film"></i>
-                    </div>
-                    <div class="hidden sm:block text-center ml-2 text-gray-500 font-medium">Media</div>
-                </div>
-                <div class="flex-auto border-t-2 transition duration-500 ease-in-out border-gray-300"></div>
-                <div class="flex items-center text-gray-500">
-                    <div
-                        class="rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 border-gray-300 text-center">
-                        <i class="fas fa-cog"></i>
-                    </div>
-                    <div class="hidden sm:block text-center ml-2 text-gray-500 font-medium">Settings</div>
-                </div>
-            </div>
-        </div>
-
         <!-- Success/Error Messages -->
         <div id="form-messages" class="hidden mb-6 p-4 rounded-lg"></div>
 
@@ -96,13 +67,6 @@
 
             <!-- Basic Information Section -->
             <div class="form-section border-b border-gray-200">
-                <div class="section-header p-6 bg-gray-50 flex justify-between items-center">
-                    <div>
-                        <h2 class="text-lg font-semibold text-gray-800">Basic Information</h2>
-                        <p class="text-sm text-gray-600 mt-1">Provide the essential details about your sermon</p>
-                    </div>
-                    <i class="fas fa-chevron-down text-gray-500 text-lg"></i>
-                </div>
                 <div class="section-content p-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Sermon Title -->
@@ -162,13 +126,6 @@
 
             <!-- Media Section -->
             <div class="form-section border-b border-gray-200">
-                <div class="section-header p-6 bg-gray-50 flex justify-between items-center">
-                    <div>
-                        <h2 class="text-lg font-semibold text-gray-800">Media Files</h2>
-                        <p class="text-sm text-gray-600 mt-1">Upload video, audio, and thumbnail for your sermon</p>
-                    </div>
-                    <i class="fas fa-chevron-down text-gray-500 text-lg"></i>
-                </div>
                 <div class="section-content p-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Video File Upload -->
@@ -200,23 +157,13 @@
             <!-- Form Actions -->
             <div class="p-6 bg-gray-50 flex flex-col sm:flex-row justify-between space-y-4 sm:space-y-0">
                 <div class="flex space-x-3">
-                    <button type="button" id="save-draft"
-                        class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 flex items-center">
-                        <i class="far fa-save mr-2"></i> Save Draft
-                    </button>
-                    <button type="reset"
-                        class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 flex items-center">
-                        <i class="fas fa-undo mr-2"></i> Reset Form
-                    </button>
-                </div>
-                <div class="flex space-x-3">
-                    <a href="sermons.html"
+                    <a href="{{ route('admin.sermons.index') }}"
                         class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 flex items-center">
                         <i class="fas fa-times mr-2"></i> Cancel
                     </a>
                     <button type="submit"
                         class="px-6 py-2 bg-primary hover:bg-secondary text-white rounded-lg font-medium flex items-center">
-                        <i class="fas fa-plus mr-2"></i> Create Sermon
+                        <i class="fas fa-plus mr-2"></i> Upload Sermon
                     </button>
                 </div>
             </div>

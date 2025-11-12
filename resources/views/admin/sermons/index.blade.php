@@ -100,5 +100,5 @@
             @include('admin.sermons.sermon-list')
         </div>
     </div>
-    @vite('resources/js/admin-sermon-index.js');
+    @vite('resources/js/admin-sermon-index.js')
 @endsection

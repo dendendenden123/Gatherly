@@ -15,8 +15,10 @@ class SermonController extends Controller
 {
     public function index(Request $request)
     {
-        $dateFilter = $request->input('date');
+        logger( $request->all);
 
+        $dateFilter = $request->input('date');
+        $sermonName = $request->input('search') ?? null;
         $query = Sermon::with('preacher');
 
         // Apply filtering and sorting based on the selected date option
@@ -49,7 +51,12 @@ class SermonController extends Controller
                 break;
         }
 
-        $sermons = $query->simplePaginate(6)->appends($request->query());
+        
+
+        $sermons = $query->when($sermonName,function($sermons)use($sermonName){
+            $sermons->where('title', "like", '%' . $sermonName . '%');
+        } )
+        ->simplePaginate(6)->appends($request->query());
 
         if ($request->ajax()) {
             $listView = view('admin.sermons.sermon-list', compact('sermons'))->render();

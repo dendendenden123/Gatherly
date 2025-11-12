@@ -29,6 +29,8 @@
                 params
             )
         );
+
+        console.log('the url ' + url)
         try {
             const resp = await fetch(url, {
                 headers: { "X-Requested-With": "XMLHttpRequest" },
