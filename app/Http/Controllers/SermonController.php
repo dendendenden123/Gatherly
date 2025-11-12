@@ -110,6 +110,47 @@ class SermonController extends Controller
         }
     }
 
+    public function destroy($id)
+    {
+        try {
+            logger('code goes here');
+            $sermon = Sermon::findOrFail($id);
+
+            // Delete the video file if it exists
+            if ($sermon->video_url) {
+                $filePath = str_replace('/storage', 'public', $sermon->video_url);
+                if (Storage::exists($filePath)) {
+                    Storage::delete($filePath);
+                }
+            }
+
+            $sermon->delete();
+
+            // Log the action
+            Log::create([
+                'user_id' => Auth::id(),
+                'action' => 'delete',
+                'description' => 'deleted sermon: ' . $sermon->title,
+            ]);
+
+            if (request()->ajax()) {
+                return response()->json(['success' => true]);
+            }
+
+            return redirect()->route('admin.sermons.index')
+                ->with('success', 'Sermon deleted successfully.');
+
+        } catch (\Exception $e) {
+            \Log::error('Failed to delete sermon', ['error' => $e->getMessage()]);
+
+            if (request()->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Failed to delete sermon.'], 500);
+            }
+
+            return back()->with('error', 'Failed to delete sermon.');
+        }
+    }
+
     public function mySermons(Request $request)
     {
 

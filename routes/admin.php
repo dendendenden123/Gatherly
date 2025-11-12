@@ -72,6 +72,7 @@ Route::controller(SermonController::class)->group(function () {
     Route::get('/admin/sermons/create', 'create')->name('admin.sermons.create');
     Route::post('/admin/sermons/store', 'store')->name('admin.sermons.store');
     Route::post('/admin/sermons/upload-video', 'uploadVideo')->name('admin.sermons.uploadVideo');
+    Route::post('/admin/sermons/destroy/{id}', 'destroy')->name('admin.sermons.destroy');
 });
 
 // Tasks Routes

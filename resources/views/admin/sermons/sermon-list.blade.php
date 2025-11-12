@@ -74,6 +74,15 @@
                         <span>{{ $sermon->created_at->format('M d Y') }}</span>
                     </div>
                 </div>
+                <div class="mt-auto">
+                    <form class="delete-form" action="{{ route('admin.sermons.destroy', $sermon->id) }}" method="POST" class="inline">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md text-sm transition-colors flex items-center justify-center gap-2">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </form>
+                </div>
 
             </div>
         </div>
@@ -113,6 +122,55 @@
     </div>
 </div>
 <script>
+   
+    // Handle delete confirmation
+    $(document).on('submit', '.delete-form', function(e) {
+        e.preventDefault();
+        
+        if (confirm('Are you sure you want to delete this sermon? This action cannot be undone.')) {
+            const form = $(this);
+            const url = form.attr('action');
+
+            console.log(url)
+            
+            ajaxRequest = $.ajax({
+            url:  url,
+            headers: {
+                "X-CSRF-TOKEN": document.querySelector(
+                    'meta[name="csrf-token"]'
+                ).content,
+                "Content-Type": "application/json",
+            },
+            type: "POST",
+            success: function (response) {
+    
+                    form.closest('.sermon-card').fadeOut(300, function() {
+                        $(this).remove();
+                        // Show message if no sermons left
+                        if ($('.sermon-card').length === 0) {
+                            $('.sermon-list').html('<div class="col-span-3 text-center py-10">No sermons found.</div>');
+                        }
+                    });
+
+                    console.log(response)
+                    
+                    // Show success message
+                    alert('Sermon deleted successfully.');
+            },
+            error: function (xhr, status, error) {
+                 console.error('Error deleting sermon:', xhr);
+                 alert('An error occurred while deleting the sermon. Please try again.');
+            },
+        });
+        }
+    });
+
+
+     
+
+
+    
+
     document.addEventListener('DOMContentLoaded', function () {
         // Initialize Video.js for all local video thumbnails
         document.querySelectorAll('.video-js').forEach(function(videoElement) {
