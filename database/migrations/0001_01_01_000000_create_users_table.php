@@ -26,7 +26,7 @@ return new class extends Migration {
             $table->enum('sex', ['male', 'female']);
             $table->date('baptism_date')->nullable();
             $table->enum('marital_status', [
-                'single',
+                'single',   
                 'married',
                 'separated',
                 'widowed',
@@ -34,7 +34,7 @@ return new class extends Migration {
             ]);
             $table->string('profile_image')->default('https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg')->nullable();
             $table->string('document_image')->nullable();
-            $table->enum('status', ['active', 'inactive', 'partially-active', "expelled"])->default('active');
+            $table->enum('status', ['active', 'inactive', 'partially-active', "expelled", 'pending'])->default('pending');
             $table->boolean('is_Verify')->default(false);
             $table->boolean('email_verified')->default(false);
             $table->timestamp('last_login_at')->nullable();

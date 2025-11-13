@@ -53,8 +53,8 @@ $('#search').on('input', function() {
     }, 500);
 });
 
-// Apply filters when date or role changes
-$('#role, #start_date, #end_date').on('change', function() {
+// Apply filters when date, role, or status changes
+$('#role, #status, #start_date, #end_date').on('change', function() {
     applyFilters();
 });
 

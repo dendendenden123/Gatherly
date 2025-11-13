@@ -26,6 +26,18 @@
                 </div>
 
                 <div class="filter-group">
+                    <label for="status">Status</label>
+                    <select name="status" id="status" class="filter-select">
+                        <option value="">All Statuses</option>
+                        <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
+                        <option value="partially-active" {{ request('status') == 'partially-active' ? 'selected' : '' }}>Partially Active</option>
+                        <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                        <option value="expelled" {{ request('status') == 'expelled' ? 'selected' : '' }}>Expelled</option>
+                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
                     <label for="role">Role</label>
                     <select name="role" id="role" class="filter-select">
                         <option value="">All Roles</option>
