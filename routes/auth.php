@@ -14,7 +14,7 @@ Route::controller(MemberDashboardController::class)->group(function () {
     Route::get('/member', 'index')->name('member');
     Route::get('/member/profile', 'profile')->name('member.profile');
     Route::get('/member/profile/edit', 'editProfile')->name('member.profile.edit');
-    Route::put('/member/profile/update', 'updatePofile')->name('member.profile.update');
+    Route::put('/member/profile/update', 'updateProfile')->name('member.profile.update');
 });
 
 Route::get('/member/tasks', function () {

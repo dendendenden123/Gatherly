@@ -14,7 +14,7 @@
 
 @section('content')
     <div class="max-w-auto mx-auto px-4">
-        <form method='POST' action="{{ route('admin.members.update') }}" enctype="multipart/form-data"
+        <form method='POST' action="{{ route('member.profile.update') }}" enctype="multipart/form-data"
             class="bg-white rounded-xl shadow-lg overflow-hidden form-card">
             @csrf
             @method('PUT')
@@ -175,38 +175,40 @@
                 </h2>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div
-                        class="upload-area border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer"
+                    <div class="upload-area border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer"
                         id="profile_upload_area">
                         @if($user->profile_image && !str_contains($user->profile_image, 'Default_pfp.jpg'))
-                            <img id="profile_preview" src="{{ asset('storage/' . $user->profile_image) }}" alt="Profile Preview" 
+                            <img id="profile_preview" src="{{ asset('storage/' . $user->profile_image) }}" alt="Profile Preview"
                                 class="w-24 h-24 object-cover rounded-full mx-auto mb-3">
                             <i class="fas fa-user-circle text-4xl text-gray-400 mb-3 hidden" id="profile_icon"></i>
                         @else
-                            <img id="profile_preview" src="" alt="Profile Preview" 
+                            <img id="profile_preview" src="" alt="Profile Preview"
                                 class="hidden w-24 h-24 object-cover rounded-full mx-auto mb-3">
                             <i class="fas fa-user-circle text-4xl text-gray-400 mb-3" id="profile_icon"></i>
                         @endif
                         <p class="text-gray-600 font-medium" id="profile_text">Profile Image</p>
                         <p class="text-gray-500 text-sm mt-1" id="profile_subtext">Click to upload or drag and drop</p>
                         <p class="text-gray-400 text-xs mt-1">JPG, PNG (Max 2MB)</p>
-                        <input type="file" class="hidden" id="profile_image" name="profile_image" accept="image/jpeg,image/png,image/jpg">
+                        <input type="file" class="hidden" id="profile_image" name="profile_image"
+                            accept="image/jpeg,image/png,image/jpg">
                     </div>
 
-                    <div
-                        class="upload-area border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer"
+                    <div class="upload-area border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer"
                         id="document_upload_area">
                         @if($user->document_image)
                             @if(str_ends_with($user->document_image, '.pdf'))
                                 <div id="document_preview_container">
                                     <i class="fas fa-file-pdf text-5xl text-red-500 mb-3"></i>
                                     <p class="text-sm text-gray-600 mt-2">Current: {{ basename($user->document_image) }}</p>
-                                    <a href="{{ asset('storage/' . $user->document_image) }}" target="_blank" class="text-blue-500 text-xs hover:underline">View PDF</a>
+                                    <a href="{{ asset('storage/' . $user->document_image) }}" target="_blank"
+                                        class="text-blue-500 text-xs hover:underline">View PDF</a>
                                 </div>
                                 <i class="fas fa-file-alt text-4xl text-gray-400 mb-3 hidden" id="document_icon"></i>
-                                <img id="document_preview" src="" alt="Document Preview" class="hidden w-32 h-32 object-cover mx-auto mb-3 rounded">
+                                <img id="document_preview" src="" alt="Document Preview"
+                                    class="hidden w-32 h-32 object-cover mx-auto mb-3 rounded">
                             @else
-                                <img id="document_preview" src="{{ asset('storage/' . $user->document_image) }}" alt="Document Preview" class="w-32 h-32 object-cover mx-auto mb-3 rounded">
+                                <img id="document_preview" src="{{ asset('storage/' . $user->document_image) }}"
+                                    alt="Document Preview" class="w-32 h-32 object-cover mx-auto mb-3 rounded">
                                 <div id="document_preview_container" class="hidden">
                                     <i class="fas fa-file-pdf text-5xl text-red-500 mb-3"></i>
                                     <p class="text-sm text-gray-600 mt-2"></p>
@@ -215,7 +217,8 @@
                                 <i class="fas fa-file-alt text-4xl text-gray-400 mb-3 hidden" id="document_icon"></i>
                             @endif
                         @else
-                            <img id="document_preview" src="" alt="Document Preview" class="hidden w-32 h-32 object-cover mx-auto mb-3 rounded">
+                            <img id="document_preview" src="" alt="Document Preview"
+                                class="hidden w-32 h-32 object-cover mx-auto mb-3 rounded">
                             <div id="document_preview_container" class="hidden">
                                 <i class="fas fa-file-pdf text-5xl text-red-500 mb-3"></i>
                                 <p class="text-sm text-gray-600 mt-2"></p>
@@ -226,7 +229,8 @@
                         <p class="text-gray-600 font-medium" id="document_text">Document Image</p>
                         <p class="text-gray-500 text-sm mt-1" id="document_subtext">Click to upload or drag and drop</p>
                         <p class="text-gray-400 text-xs mt-1">JPG, PNG, PDF (Max 5MB)</p>
-                        <input type="file" class="hidden" id="document_image" name="document_image" accept="image/jpeg,image/png,image/jpg,application/pdf">
+                        <input type="file" class="hidden" id="document_image" name="document_image"
+                            accept="image/jpeg,image/png,image/jpg,application/pdf">
                     </div>
                 </div>
             </div>
@@ -235,7 +239,7 @@
             <div class="px-6 py-4 bg-gray-50 flex flex-col md:flex-row justify-end items-center">
 
                 <div class="flex space-x-3">
-                    <a href="{{ route('admin.members') }}">
+                    <a href="{{ route('member.profile') }}">
                         <button type="button"
                             class="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition">
                             Cancel
@@ -412,7 +416,7 @@
             const documentPreview = document.getElementById('document_preview');
             const documentPreviewContainer = document.getElementById('document_preview_container');
             const documentIcon = document.getElementById('document_icon');
-            
+
             documentText.textContent = file.name;
             documentSubtext.textContent = 'File ready for upload';
 
@@ -426,11 +430,11 @@
                 const pdfIcon = documentPreviewContainer.querySelector('.fa-file-pdf');
                 const pdfName = documentPreviewContainer.querySelector('p.text-sm');
                 const pdfLink = documentPreviewContainer.querySelector('a');
-                
+
                 pdfName.textContent = file.name;
                 pdfLink.href = URL.createObjectURL(file);
                 pdfLink.textContent = 'Preview PDF';
-                
+
                 documentPreviewContainer.classList.remove('hidden');
             } else {
                 // Show image preview

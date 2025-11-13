@@ -253,7 +253,7 @@ class UserController extends Controller
             return redirect()->back()->with('success', 'User updated successfully');
         } catch (\Exception $e) {
             \Log::error('Updating user data failed: ' . $e->getMessage());
-            return redirect()->back()->with('error', $e);
+            return redirect()->back()->with('error', 'Failed to update user: ' . $e->getMessage());
         }
     }
 
