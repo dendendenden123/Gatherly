@@ -113,21 +113,6 @@
                     </div>
                 </div>
 
-                <!-- Address Card
-                                                        <div class="bg-white rounded-xl shadow-sm p-6 info-card transition-all duration-300">
-                                                            <h2 class="text-xl font-semibold text-gray-800 mb-6 flex items-center">
-                                                                <i class="fas fa-home text-green-500 mr-3"></i>Address
-                                                            </h2>
-                                                            <div>
-                                                                <p class="text-sm text-gray-500">Complete Address</p>
-                                                                <p class="font-medium">{{ $user->address }}</p>
-                                                            </div>
-                                                            <div class="mt-4 h-48 bg-gray-100 rounded-lg flex items-center justify-center">
-                                                                <i class="fas fa-map-marked-alt text-4xl text-gray-400"></i>
-                                                            </div>
-                                                        </div>
-                                                    </div> -->
-
                 <!-- Right Column -->
                 <div class="space-y-6">
                     <!-- Status Card -->
@@ -159,10 +144,6 @@
                             <div>
                                 <p class="text-sm text-gray-500">Member Since</p>
                                 <p class="font-medium">{{ $user->baptism_date }}</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-500">Last Profile Update</p>
-                                <p class="font-medium">3 days ago</p>
                             </div>
                             <div>
                                 <p class="text-sm text-gray-500">User ID</p>

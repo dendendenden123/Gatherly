@@ -56,7 +56,7 @@
                     <div class="p-6 flex items-center">
 
                         <img class="h-20 w-20 rounded-full ring-4 ring-emerald-100"
-                            src="https://ui-avatars.com/api/?name={{ urlencode($user->first_name . ' ' . $user->last_name) }}&background=10b981&color=fff"
+                                 src="{{ $user->profile_image && !str_contains($user->profile_image, 'Default_pfp.jpg') ? asset('storage/' . $user->profile_image) : $user->profile_image }}"
                             alt="User avatar">
                         <div class="ml-6">
                             <h3 class="text-lg font-semibold text-gray-800"> {{ $user->first_name }}

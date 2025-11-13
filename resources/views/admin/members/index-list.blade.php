@@ -18,7 +18,10 @@
                     <td>
                         <a href="{{ route('admin.members.show', $user->id) }}">
                             <div class="member-info">
-                                <div class="profile_image"></div>
+                                <div class="profile_image">
+                                    <img src="{{ $user->profile_image && !str_contains($user->profile_image, 'Default_pfp.jpg') ? asset('storage/' . $user->profile_image) : $user->profile_image }}"
+                                        alt="{{ $user->full_name }}">
+                                </div>
                                 <div>
                                     <div class="member-name">{{ $user->full_name }}</div>
                                     <div class="member-email">{{ $user->email }}</div>

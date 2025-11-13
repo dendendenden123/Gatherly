@@ -93,7 +93,7 @@ class UserController extends Controller
     //===========================================
     public function show($id)
     {
-        $user = User::findOrFail($id)->first();
+        $user = User::findOrFail($id);
         return view('admin.members.show', compact('user'));
     }
 
@@ -188,7 +188,7 @@ class UserController extends Controller
     //===========================================
     public function edit($userId)
     {
-        $user = User::with('officers')->findOrFail($userId)->first();
+        $user = User::with('officers')->findOrFail($userId);
         return view('admin.members.edit', compact('user'));
     }
 
