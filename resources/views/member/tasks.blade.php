@@ -42,22 +42,6 @@
                     <option value="low">Low</option>
                 </select>
             </div>
-            <div>
-                <label for="task-category" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                <select id="task-category" name="category"
-                    class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-primary focus:border-primary">
-                    <option value="*">All Members</option>
-                    <option value="volunteers">All Officers/Volunteer</option>
-                    <option value="buklod">Buklod</option>
-                    <option value="kadiwa">kadiwa</option>
-                    <option value="binhi">Binhi</option>
-                    @forelse ($roleNames as $roleName)
-                        <option value="{{  $roleName }}">{{  $roleName }}</option>
-                    @empty
-                        <option value="">No more...</option>
-                    @endforelse
-                </select>
-            </div>
         </form>
     </div>
 
