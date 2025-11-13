@@ -50,6 +50,12 @@ class AppServiceProvider extends ServiceProvider
             return ($loggedUser->officers->contains('role_id', 1));
         });
 
+        Blade::if('member', function () {
+            $userId = Auth::id();
+            $loggedUser = User::with('officers')->find($userId);
+            return !($loggedUser->officers->contains('role_id', 1));
+        });
+
         Task::observe(TaskObserver::class);
         User::observe(UserObserver::class);
         Attendance::observe(AttendanceObserver::class);

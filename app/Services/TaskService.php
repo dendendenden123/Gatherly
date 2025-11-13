@@ -26,8 +26,12 @@ class TaskService
 
         $task = $task ?? Task::with(['user:id,first_name,middle_name,last_name']);
 
+        // Check if we're filtering a BelongsToMany relationship (for member tasks)
+        $isPivotQuery = $task instanceof \Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
         return $task
-            ->when($status, fn($task) => $task->where('status', $status))
+            ->when($status && $isPivotQuery, fn($task) => $task->wherePivot('status', $status))
+            ->when($status && !$isPivotQuery, fn($task) => $task->where('status', $status))
             ->when($priority, fn($task) => $task->where('priority', $priority))
             ->when($category, fn($task) => $task->where('assignee', $category))
             ->orderByDesc('id')

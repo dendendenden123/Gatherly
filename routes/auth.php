@@ -48,6 +48,7 @@ Route::controller(NotificationController::class)->group(function () {
 
 Route::controller(TaskController::class)->group(function () {
     Route::get('/member/task', 'viewMytask')->name('member.task');
+    Route::put('/member/tasks/{taskId}/update-status', 'updateTaskStatus')->name('member.task.updateStatus');
 });
 
 Route::controller(SermonController::class)->group(function () {

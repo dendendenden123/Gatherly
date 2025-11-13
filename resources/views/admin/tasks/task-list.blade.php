@@ -7,9 +7,7 @@
     <div class="col-span-2">Priority</div>
     <div class="col-span-2">Due Date</div>
     <div class="col-span-1">Created_at</div>
-    @admin
     <div class="col-span-1">Action</div>
-    @endadmin
 </div>
 
 <!-- Task Items -->
@@ -85,7 +83,7 @@
 
             <!-- Action Edit and Delete -->
             @admin
-            <div class="col-span-12 md:col-span-1">
+            <div class="col-span-12 md:col-span-1 flex flex-col gap-2">
                 <a href="{{ route('admin.tasks.edit', $task->id) }}"> <button
                         class="action-btn edit-btn text-primary border border-primary px-2 py-1 rounded">Edit</button>
                 </a>
@@ -120,6 +118,20 @@
                 </form>
             </div>
             @endadmin
+
+            <!-- Update Task Status Button for Members -->
+            @member
+            <div class="col-span-12 md:col-span-1">
+                <button type="button" 
+                    class="update-task-btn text-white bg-primary hover:bg-primary-dark px-3 py-1 rounded"
+                    data-task-id="{{ $task->id }}"
+                    data-task-title="{{ $task->title }}"
+                    data-task-status="{{ $task->pivot->status ?? 'pending' }}"
+                    data-task-comment="{{ $task->pivot->comment ?? '' }}">
+                    Update
+                </button>
+            </div>
+            @endmember
         </div>
     </div>
     @empty
@@ -138,3 +150,44 @@
     $containerClass = "task-list"
 @endphp
 <x-pagination :containerClass="$containerClass" :data="$tasks" />
+
+<!-- Update Task Modal -->
+<div id="updateTaskModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4" id="modal-title">Update Task Status</h3>
+            <form id="updateTaskForm" method="POST">
+                @csrf
+                @method('PUT')
+                
+                <div class="mb-4">
+                    <label for="task_status" class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                    <select id="task_status" name="status" 
+                        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-primary focus:border-primary">
+                        <option value="pending">Pending</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="task_comment" class="block text-sm font-medium text-gray-700 mb-2">Comment</label>
+                    <textarea id="task_comment" name="comment" rows="4" 
+                        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-primary focus:border-primary"
+                        placeholder="Add your comment here..."></textarea>
+                </div>
+
+                <div class="flex justify-end gap-3">
+                    <button type="button" id="closeModal" 
+                        class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">
+                        Cancel
+                    </button>
+                    <button type="submit" 
+                        class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark">
+                        Update
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -143,10 +143,10 @@ class TaskController extends Controller
         $assignedTask = $this->user->assignedTasks();
         $tasks = $this->taskService->getFilteredTask($request, (clone $assignedTask));
         $totalTaskCount = (clone $assignedTask)->count();
-        $pendingTaskCount = (clone $assignedTask)->where('status', 'pending')->count();
-        $inProgressTaskCount = (clone $assignedTask)->where('status', 'in_progress')->count();
-        $completedTaskCount = (clone $assignedTask)->where('status', 'completed')->count();
-        $overdueTaskCount = (clone $assignedTask)->where('status', 'overdue')->count();
+        $pendingTaskCount = (clone $assignedTask)->wherePivot('status', 'pending')->count();
+        $inProgressTaskCount = (clone $assignedTask)->wherePivot('status', 'in_progress')->count();
+        $completedTaskCount = (clone $assignedTask)->wherePivot('status', 'completed')->count();
+        $overdueTaskCount = (clone $assignedTask)->wherePivot('status', 'overdue')->count();
         $roleNames = $this->roleNames;
 
         if ($request->wantsJson()) {
@@ -168,5 +168,43 @@ class TaskController extends Controller
             'overdueTaskCount',
             'roleNames'
         ));
+    }
+
+    public function updateTaskStatus(Request $request, $taskId)
+    {
+        try {
+            $validated = $request->validate([
+                'status' => 'required|in:pending,in_progress,completed',
+                'comment' => 'nullable|string|max:1000',
+            ]);
+
+            $userId = Auth::id();
+            
+            // Update the pivot table
+            $user = User::find($userId);
+            $user->assignedTasks()->updateExistingPivot($taskId, [
+                'status' => $validated['status'],
+                'comment' => $validated['comment'],
+            ]);
+
+            // Log the action
+            Log::create([
+                'user_id' => $userId,
+                'action' => 'update',
+                'description' => "Updated task status to {$validated['status']} for task ID: {$taskId}",
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Task updated successfully!'
+            ]);
+
+        } catch (\Throwable $e) {
+            \Log::error('Failed to update task status', ['error' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update task'
+            ], 500);
+        }
     }
 }
