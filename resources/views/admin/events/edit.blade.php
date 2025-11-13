@@ -153,7 +153,8 @@
                         <!-- Start Time -->
                         <div>
                             <label for="startTime" class="block text-sm font-medium text-gray-700">Start Time *</label>
-                            <input type="time" name="start_time" id="startTime" value="{{ $event->start_time }}"
+                            <input type="time" name="start_time" id="startTime"
+                                value="{{ $event->getRawOriginal('start_time') ? \Carbon\Carbon::parse($event->getRawOriginal('start_time'))->format('H:i') : '' }}"
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                         </div>
 
@@ -167,7 +168,8 @@
                         <!-- End Time -->
                         <div>
                             <label for="endTime" class="block text-sm font-medium text-gray-700">End Time</label>
-                            <input type="time" name="end_time" id="endTime" value="{{ $event->end_time }}"
+                            <input type="time" name="end_time" id="endTime"
+                                value="{{ $event->getRawOriginal('end_time') ? \Carbon\Carbon::parse($event->getRawOriginal('end_time'))->format('H:i') : '' }}"
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                         </div>
                     </div>

@@ -218,6 +218,8 @@ class AttendanceController extends Controller
 
             if ($match) {
                 $faceId = $match['Face']['FaceId'];
+
+                logger($faceId);
                 $similarity = $match['Similarity'];
                 $user = User::where('rekognition_face_id', $faceId)->first();
 

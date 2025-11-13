@@ -129,6 +129,7 @@ class EventController extends Controller
 
     public function edit($id)
     {
+
         $event = Event::findOrFail($id);
         return view('admin.events.edit', compact('event'));
     }
@@ -136,7 +137,25 @@ class EventController extends Controller
     public function update(EventStoreRequest $request, $id)
     {
         try {
+
+            $overlapEventCounts = $this->eventService->eventAndUserTypeOverlap($request)->count();
+            $firstOverlap = $this->eventService
+                ->eventAndUserTypeOverlap($request)
+                ->first();
+
+            $overlappingEventNames = $firstOverlap
+                ? "{$firstOverlap->event?->event_name} ({$firstOverlap->event?->start_time} - {$firstOverlap->event?->end_time})"
+                : null;
+
+            if ($overlapEventCounts > 0) {
+                return back()->withErrors(
+                    'Unable to proceed. Your event conflicts with an existing event: '
+                    . $overlappingEventNames
+                );
+            }
+
             $validated = $request->validated();
+
             Event::findOrFail($id)->update($validated);
 
             //logs action
