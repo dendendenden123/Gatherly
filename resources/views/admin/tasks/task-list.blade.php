@@ -13,7 +13,7 @@
 <!-- Task Items -->
 <div class="divide-y divide-gray-200">
     @forelse ($tasks as $task)
-    <div class="p-4 hover:bg-gray-50 task-card transition priority-{{ $task?->priority }}">
+    <div class="p-4 hover:bg-gray-50 task-card transition priority-{{ $task?->priority }} cursor-pointer" onclick="window.location='{{ route('admin.tasks.show', $task->id) }}'">
 
         <div class="grid grid-cols-12 gap-4 items-center">
 
@@ -83,7 +83,7 @@
 
             <!-- Action Edit and Delete -->
             @admin
-            <div class="col-span-12 md:col-span-1 flex flex-col gap-2">
+            <div class="col-span-12 md:col-span-1 flex flex-col gap-2" onclick="event.stopPropagation();">
                 <a href="{{ route('admin.tasks.edit', $task->id) }}"> <button
                         class="action-btn edit-btn text-primary border border-primary px-2 py-1 rounded">Edit</button>
                 </a>
@@ -121,7 +121,7 @@
 
             <!-- Update Task Status Button for Members -->
             @member
-            <div class="col-span-12 md:col-span-1">
+            <div class="col-span-12 md:col-span-1" onclick="event.stopPropagation();">
                 <button type="button" 
                     class="update-task-btn text-white bg-primary hover:bg-primary-dark px-3 py-1 rounded"
                     data-task-id="{{ $task->id }}"
