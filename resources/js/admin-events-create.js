@@ -50,6 +50,7 @@ $(document).ready(() => {
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: "dayGridMonth",
             selectable: true,
+            timeZone: "local",
             events: getEvent(),
             eventClick: function (info) {
                 viewEvent(info);
@@ -59,7 +60,11 @@ $(document).ready(() => {
                 console.log("Date selected:", info.startStr, "to", info.endStr);
                 //set the value for start and end Date
                 $("#startDate").val(info.startStr);
-                $("#endDate").val(info.endStr);
+                // FullCalendar's endStr is exclusive (day after), so subtract one day
+                var endDate = new Date(info.endStr);
+                endDate.setDate(endDate.getDate() - 1);
+                var endDateStr = endDate.toISOString().split("T")[0];
+                $("#endDate").val(endDateStr);
 
                 showTimeModal();
             },
@@ -77,16 +82,19 @@ $(document).ready(() => {
             item.event_occurrences.map((occurrence) => {
                 // Create a clean occurrence object without time properties that might confuse FullCalendar
                 const { start_time, end_time, ...cleanOccurrence } = occurrence;
+
+                // Get CSS class based on event type
+                const eventTypeClass = getEventTypeClass(item.event_type);
+                const statusClass = `status-${item.status}`;
+
+                // Parse the occurrence date properly without timezone conversion
+                const occurrenceDate = occurrence.occurrence_date.split("T")[0];
+
                 return {
                     title: item.event_name,
-                    start:
-                        occurrence.occurrence_date.split("T")[0] +
-                        "T" +
-                        start_time,
-                    end:
-                        occurrence.occurrence_date.split("T")[0] +
-                        "T" +
-                        end_time,
+                    start: occurrenceDate + "T" + start_time,
+                    end: occurrenceDate + "T" + end_time,
+                    allDay: false,
                     eventDescription: item.event_description,
                     eventType: item.event_type,
                     eventLocation: item.location ?? "No specified location",
@@ -99,10 +107,27 @@ $(document).ready(() => {
                     eventEndTime: formatTo12Hour(item.end_time),
                     eventRepeat: item.repeat,
                     eventStatus: item.status,
+                    className: `${eventTypeClass} ${statusClass}`,
                     ...cleanOccurrence,
                 };
             })
         );
+    }
+
+    function getEventTypeClass(eventType) {
+        const typeMap = {
+            Baptism: "event-baptism",
+            "Charity Event": "event-charity",
+            "Christian Family Organization (CFO) activity": "event-cfo",
+            "Evangelical Mission": "event-mission",
+            "Inauguration of New Chapels/ Structure": "event-inauguration",
+            Meeting: "event-meeting",
+            Panata: "event-panata",
+            Weddings: "event-wedding",
+            "Worship Service": "event-worship",
+        };
+
+        return typeMap[eventType] || "event-default";
     }
 
     function viewEvent(info) {

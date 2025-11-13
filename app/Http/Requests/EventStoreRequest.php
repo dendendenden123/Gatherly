@@ -27,12 +27,28 @@ class EventStoreRequest extends FormRequest
             'event_type' => 'required|string|max:100',
             'status' => 'required|in:upcoming,ongoing,completed,cancelled',
             'start_date' => 'required|date',
-            'start_time' => 'nullable|date_format:H:i',
+            'start_time' => 'nullable|date_format:H:i:s,H:i',
             'end_date' => 'nullable|date|after_or_equal:start_date',
-            'end_time' => 'nullable|date_format:H:i',
+            'end_time' => 'nullable|date_format:H:i:s,H:i',
             'location' => 'nullable|string|max:255',
             'number_Volunteer_needed' => 'nullable|integer|min:1',
             'repeat' => 'nullable|in:once,daily,weekly,monthly,yearly',
         ];
+    }
+
+    /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        // Convert empty strings to null for nullable time fields
+        $this->merge([
+            'start_time' => $this->start_time ?: null,
+            'end_time' => $this->end_time ?: null,
+            'end_date' => $this->end_date ?: null,
+            'location' => $this->location ?: null,
+            'number_Volunteer_needed' => $this->number_Volunteer_needed ?: null,
+            'repeat' => $this->repeat ?: 'once',
+        ]);
     }
 }

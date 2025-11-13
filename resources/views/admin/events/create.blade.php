@@ -3,6 +3,106 @@
 @section('styles')
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Calendar styling */
+        #calendar {
+            max-width: 100%;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .fc {
+            font-size: 0.9em;
+        }
+        
+        .fc-toolbar-title {
+            font-size: 1.5em !important;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        .fc-button {
+            padding: 0.4em 0.8em !important;
+            font-size: 0.9em !important;
+            background-color: #2ecc71 !important;
+            border-color: #27ae60 !important;
+        }
+        
+        .fc-button:hover {
+            background-color: #27ae60 !important;
+        }
+        
+        .fc .fc-daygrid-day.fc-day-today {
+            background-color: #f0fdf4 !important;
+        }
+        
+        /* Event Styling */
+        .fc-event {
+            cursor: pointer;
+            border: none !important;
+            border-radius: 4px !important;
+            padding: 2px 4px !important;
+            font-size: 0.85em !important;
+        }
+        
+        .fc-event:hover {
+            opacity: 0.9;
+        }
+        
+        /* Event type colors - simple solid colors */
+        .fc-event.event-baptism {
+            background-color: #6366f1 !important;
+            color: white !important;
+        }
+        
+        .fc-event.event-charity {
+            background-color: #ec4899 !important;
+            color: white !important;
+        }
+        
+        .fc-event.event-cfo {
+            background-color: #3b82f6 !important;
+            color: white !important;
+        }
+        
+        .fc-event.event-mission {
+            background-color: #10b981 !important;
+            color: white !important;
+        }
+        
+        .fc-event.event-inauguration {
+            background-color: #f59e0b !important;
+            color: white !important;
+        }
+        
+        .fc-event.event-meeting {
+            background-color: #8b5cf6 !important;
+            color: white !important;
+        }
+        
+        .fc-event.event-panata {
+            background-color: #06b6d4 !important;
+            color: white !important;
+        }
+        
+        .fc-event.event-wedding {
+            background-color: #f43f5e !important;
+            color: white !important;
+        }
+        
+        .fc-event.event-worship {
+            background-color: #f97316 !important;
+            color: white !important;
+        }
+        
+        .fc-event.event-default {
+            background-color: #2ecc71 !important;
+            color: white !important;
+        }
+    </style>
 @endsection
 
 
@@ -10,7 +110,7 @@
 <!-- Header -->
 <header>
     <div class="max-w-7xl mx-auto px-4 py-1 sm:px-6 lg:px-8 flex justify-between items-center">
-        <div class="page-tite">
+        <div class="page-title">
             <h1 class="text-xl font-semibold text-gray-900">Events Management</h1>
             <p class="text-gray-500">Efficiently monitor event progress and participation</p>
         </div>
@@ -25,7 +125,7 @@
         </div>
     </div>
 </header>
-@endSection
+@endsection
 
 @section('content')
 
@@ -55,7 +155,7 @@
                 @if ($errors->any())
                     <script>
                         Swal.fire({
-                            icon: 'Failed',
+                            icon: 'error',
                             title: 'Failed!',
                             text: '{{ $errors->first() }}',
                             confirmButtonColor: '#d63030ff',
@@ -263,17 +363,17 @@
 
                         <div class="flex items-center">
                             <span class="text-sm font-medium text-gray-500 w-28">Location</span>
-                            <span class="text-gray-800"><span id='viewEventLocation'><i>NA</i></span>
+                            <span class="text-gray-800"><span id='viewEventLocation'><i>NA</i></span></span>
                         </div>
 
                         <div class="flex items-center">
                             <span class="text-sm font-medium text-gray-500 w-28">Date</span>
-                            <span class="text-gray-800"><span id='viewEventDate'><i>NA</i></span>
+                            <span class="text-gray-800"><span id='viewEventDate'><i>NA</i></span></span>
                         </div>
 
                         <div class="flex items-center">
                             <span class="text-sm font-medium text-gray-500 w-28">Start at</span>
-                            <span class="text-gray-800"><span id='viewEventStartTime'><i>NA</i></span>
+                            <span class="text-gray-800"><span id='viewEventStartTime'><i>NA</i></span></span>
                         </div>
 
                         <div class="flex items-center">

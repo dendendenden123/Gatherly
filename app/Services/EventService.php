@@ -31,30 +31,32 @@ class EventService
 
     public function eventAndUserTypeOverlap($request)
     {
-        $upcomingEvents = EventOccurrence::with('event')->where(function ($q) {
-            $q->where('occurrence_date', '>', today())
-                ->orWhere(function ($q2) {
-                    $q2->whereDate('occurrence_date', today())
-                        ->whereTime('start_time', '>=', now());
+        $startDate = Carbon::parse($request->start_date)->addDay();
+        $endDate = Carbon::parse($request->end_date)->addDay();
+        $startTime = Carbon::parse($request->start_time);
+        $endTime = Carbon::parse($request->end_time ?? Carbon::parse($request->start_time)->addHour());
+
+        return EventOccurrence::with('event')
+            ->where(function ($q) use ($startDate, $endDate) {
+                // Check if occurrence date overlaps with the requested date range
+                $q->whereBetween('occurrence_date', [$startDate, $endDate]);
+            })
+            ->where(function ($q) use ($startTime, $endTime) {
+                // Core overlap condition (time-based)
+                $q->where(function ($query) use ($startTime, $endTime) {
+                    $query
+                        // Starts before requested event ends, and ends after requested event starts
+                        ->whereTime('start_time', '<=', $endTime)
+                        ->whereTime(DB::raw('COALESCE(end_time, DATE_ADD(start_time, INTERVAL 1 HOUR))'), '>=', $startTime);
                 });
-        })->where(function ($upcomingEvents) use ($request) {
-            $upcomingEvents->whereHas('event', function ($event) use ($request) {
-                $event->where('event_type', $request->event_type);
-            })->whereBetween('occurrence_date', [$request->start_date, $request->end_date])
-                ->where(function ($checkTime) use ($request) {
-                    $request->end_time = $request->end_time ?? Carbon::parse($request->start_time)->addHour();
-
-                    $checkTime->whereBetween('start_time', [$request->start_time, $request->end_time])
-                        ->orWhereBetween(
-                            DB::raw("COALESCE(end_time, DATE_ADD(start_time, INTERVAL 1 HOUR))"),
-                            [$request->start_time, $request->end_time]
-                        );
-                });
-
-        })->get();
-
-        return $upcomingEvents;
+            })
+            ->where(function ($q) {
+                // Only check upcoming events (today onward)
+                $q->where('occurrence_date', '>=', today());
+            })
+            ->get();
     }
+
 
     public function getUpcomingEvent()
     {

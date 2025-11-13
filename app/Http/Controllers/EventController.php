@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Auth;
+use Carbon\Carbon;
 use App\Http\Requests\EventStoreRequest;
 use Illuminate\Http\Request;
 use App\Services\EventService;
@@ -54,7 +55,29 @@ class EventController extends Controller
     public function create(Request $request)
     {
         $roles = Role::select('id', 'name')->orderBy('id')->get();
-        $existingEvents = Event::with(['event_occurrences'])->get();
+        $existingEvents = Event::with(['event_occurrences'])->get()->map(function ($event) {
+            return [
+                'id' => $event->id,
+                'event_name' => $event->event_name,
+                'event_description' => $event->event_description,
+                'event_type' => $event->event_type,
+                'status' => $event->status,
+                'location' => $event->location,
+                'start_date' => $event->start_date,
+                'end_date' => $event->end_date,
+                'start_time' => $event->getRawOriginal('start_time'),
+                'end_time' => $event->getRawOriginal('end_time'),
+                'repeat' => $event->repeat,
+                'event_occurrences' => $event->event_occurrences->map(function ($occurrence) {
+                    return [
+                        'id' => $occurrence->id,
+                        'occurrence_date' => $occurrence->occurrence_date,
+                        'start_time' => $occurrence->start_time ?? '00:00:00',
+                        'end_time' => $occurrence->end_time ?? '23:59:59',
+                    ];
+                }),
+            ];
+        });
 
         if ($request->ajax()) {
             return response()->json(['data' => $existingEvents]);
@@ -66,18 +89,28 @@ class EventController extends Controller
     {
         try {
             $overlapEventCounts = $this->eventService->eventAndUserTypeOverlap($request)->count();
-            $overlappingEventNames = $this->eventService->eventAndUserTypeOverlap($request)->map(function ($eventOccurrence) {
-                return $eventOccurrence->event?->event_name;
-            })->join(', ');
+            $firstOverlap = $this->eventService
+                ->eventAndUserTypeOverlap($request)
+                ->first();
+
+            $overlappingEventNames = $firstOverlap
+                ? "{$firstOverlap->event?->event_name} ({$firstOverlap->event?->start_time} - {$firstOverlap->event?->end_time})"
+                : null;
 
             if ($overlapEventCounts > 0) {
                 return back()->withErrors(
-                    'Failed! Your event overlaps with these existing events: '
+                    'Unable to proceed. Your event conflicts with an existing event: '
                     . $overlappingEventNames
                 );
             }
 
             $validated = $request->validated();
+
+            // Add one day to start_date and end_date
+            $validated['start_date'] = Carbon::parse($validated['start_date'])->addDay();
+            $validated['end_date'] = Carbon::parse($validated['end_date'])->addDay();
+
+            // Create the event
             $event = Event::create($validated);
 
             //logs action
