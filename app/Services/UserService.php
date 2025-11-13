@@ -46,6 +46,7 @@ class UserService
     public function getUsersRoles($userId)
     {
         try {
+            $roles = [];
             $user = User::find($userId);
             if ($user && method_exists($user, 'officers')) {
                 $officers = $user->officers()->with('role')->get();
@@ -68,6 +69,7 @@ class UserService
             return $roles;
         } catch (\Throwable $e) {
             \log::error('failed to get users role', ['error' => $e]);
+            return [];
         }
     }
 
