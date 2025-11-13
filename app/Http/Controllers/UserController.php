@@ -359,6 +359,10 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'Login access is currently unavailable for your account. Kindly reach out to your nearest Iglesia Ni Cristo (INC) chapel.');
         }
 
+        if ((clone $user)->status === 'pending') {
+            return redirect()->back()->with('error', 'Login is not yet available. Your account is currently pending approval');
+        }
+
         //logs action
         Log::create([
             'user_id' => $user->id,

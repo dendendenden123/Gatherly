@@ -16,7 +16,7 @@ $("#closeAddOfficerModalBtn, #cancelAddOfficer").on("click", () =>
     hideAddOfficerForm()
 );
 
-$(".edit-btn").on("click", function () {
+$(document).on("click", ".edit-btn", function () {
     showAddOfficerForm(this);
 });
 

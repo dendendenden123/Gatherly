@@ -25,18 +25,26 @@
                 </td>
                 <td>{{ optional(optional($officer->officers->first())->created_at)->format('M d, Y')}}</td>
                 <td>
-                    <button id="{{ $officer->id }}" data-name='{{ $officer->full_name  }}' class="action-btn edit-btn">
+
+                    <!-- Edit Button -->
+                    <button id="{{ $officer->id }}" data-name='{{ $officer->full_name }}'
+                        class="edit-btn px-3 py-1.5 rounded-md bg-blue-600 text-white text-sm font-medium inline-flex items-center gap-1 hover:bg-blue-700 transition shadow-sm hover:shadow-md">
                         <i class="fas fa-edit"></i> Edit
                     </button>
-                    <form method="POST" action="{{ route('admin.officers.destroy', $officer->id) }}"
-                        style="display:inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="action-btn delete-btn">
-                            <i class="fas fa-user-minus"></i>
-                        </button>
-                    </form>
+
+                    @if($officer->status === 'pending')
+                        <!-- Approve Button -->
+                        <form method="POST" action="{{ route('admin.officers.approve', $officer->id) }}" class="inline">
+                            @csrf
+                            @method('PATCH')
+                            <button type="submit"
+                                class="px-3 py-1.5 rounded-md bg-green-600 text-white text-sm font-medium inline-flex items-center gap-1 hover:bg-green-700 transition shadow-sm hover:shadow-md">
+                                <i class="fas fa-check"></i> Approve
+                            </button>
+                        </form>
+                    @endif
                 </td>
+
             </tr>
         @endforeach
     </tbody>

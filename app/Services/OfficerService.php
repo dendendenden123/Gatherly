@@ -113,6 +113,9 @@ class OfficerService
      */
     public function getAvailableRoles()
     {
-        return \App\Models\Role::select('name', 'id')->get();
+        return \App\Models\Role::select('name', 'id')
+            ->where('id', '!=', 100)
+            ->get();
+
     }
 }

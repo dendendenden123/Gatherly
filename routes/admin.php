@@ -51,6 +51,7 @@ Route::controller(NotificationController::class)->group(function () {
 Route::controller(OfficerController::class)->group(function () {
     Route::get('/admin/officers', 'index')->name('admin.officers');
     Route::post('/admin/officers/store', 'store')->name('admin.officers.store');
+    Route::patch('/admin/officers/approve/{id}', 'approve')->name('admin.officers.approve');
     Route::delete('/admin/officers/destroy/{id}', 'destroy')->name('admin.officers.destroy');
 });
 

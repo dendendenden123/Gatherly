@@ -9,6 +9,7 @@ use App\Helpers\OfficerHelper;
 use App\Services\OfficerService;
 use App\Services\UserService;
 use App\Models\Log;
+use App\Models\User;
 
 class OfficerController extends Controller
 {
@@ -64,6 +65,24 @@ class OfficerController extends Controller
             return back()->with('success', 'Roles updated successfully!');
         } catch (\Exception $e) {
             return back()->with('error', 'Failed to update roles. Please try again.');
+        }
+    }
+
+    public function approve($id)
+    {
+        try {
+            User::find($id)->update(['status' => 'active']);
+
+            //logs action
+            Log::create([
+                'user_id' => Auth::id(),
+                'action' => 'update',
+                'description' => 'Approved pending member. User Id: ' . $id,
+            ]);
+
+            return back()->with('success', 'Member approved successfully!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to approve member. Please try again.');
         }
     }
 
