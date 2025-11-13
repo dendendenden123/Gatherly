@@ -18,7 +18,7 @@
                     <td>
                         <a href="{{ route('admin.members.show', $user->id) }}">
                             <div class="member-info">
-                                <div class="member-avatar"></div>
+                                <div class="profile_image"></div>
                                 <div>
                                     <div class="member-name">{{ $user->full_name }}</div>
                                     <div class="member-email">{{ $user->email }}</div>

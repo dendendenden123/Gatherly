@@ -9,7 +9,7 @@
     <div class="flex flex-col md:flex-row items-center">
         <div class="w-32 h-32 rounded-full bg-white bg-opacity-20 p-1 mb-4 md:mb-0">
             <img class="w-full h-full rounded-full object-cover border-4 border-white border-opacity-30"
-                src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1160&q=80"
+                src="{{ $user->profile_image && !str_contains($user->profile_image, 'Default_pfp.jpg') ? asset('storage/' . $user->profile_image) : $user->profile_image }}"
                 alt="Profile Image">
         </div>
         <div class="md:ml-6 text-center md:text-left">
@@ -174,49 +174,40 @@
                     <!-- Documents Card -->
                     <div class="bg-white rounded-xl shadow-sm p-6">
                         <h2 class="text-xl font-semibold text-gray-800 mb-4">Documents</h2>
-                        <div class="space-y-3">
-                            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                                <div class="flex items-center">
-                                    <i class="fas fa-file-pdf text-red-500 text-xl mr-3"></i>
-                                    <span>Baptismal Certificate.pdf</span>
+                        @if($user->document_image)
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                    <div class="flex items-center">
+                                        @if(str_ends_with($user->document_image, '.pdf'))
+                                            <i class="fas fa-file-pdf text-red-500 text-xl mr-3"></i>
+                                            <span>{{ basename($user->document_image) }}</span>
+                                        @else
+                                            <i class="fas fa-file-image text-blue-500 text-xl mr-3"></i>
+                                            <span>{{ basename($user->document_image) }}</span>
+                                        @endif
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <a href="{{ asset('storage/' . $user->document_image) }}" target="_blank" class="text-green-600 hover:text-green-800">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ asset('storage/' . $user->document_image) }}" download class="text-green-600 hover:text-green-800">
+                                            <i class="fas fa-download"></i>
+                                        </a>
+                                    </div>
                                 </div>
-                                <button class="text-green-600 hover:text-green-800">
-                                    <i class="fas fa-download"></i>
-                                </button>
                             </div>
-                            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                                <div class="flex items-center">
-                                    <i class="fas fa-file-image text-blue-500 text-xl mr-3"></i>
-                                    <span>Valid ID.jpg</span>
-                                </div>
-                                <button class="text-green-600 hover:text-green-800">
-                                    <i class="fas fa-download"></i>
-                                </button>
+                        @else
+                            <div class="text-center py-8 text-gray-400">
+                                <i class="fas fa-folder-open text-4xl mb-3"></i>
+                                <p>No document uploaded</p>
                             </div>
-                        </div>
-                        <button
-                            class="w-full mt-4 px-4 py-2 bg-green-50 text-green-600 rounded-lg font-medium hover:bg-green-100 transition">
-                            <i class="fas fa-upload mr-2"></i>Upload Document
-                        </button>
-                    </div>
-
-                    <!-- Quick Actions Card -->
-                    <div class="bg-white rounded-xl shadow-sm p-6">
-                        <h2 class="text-xl font-semibold text-gray-800 mb-4">Quick Actions</h2>
-                        <div class="space-y-3">
+                        @endif
+                        <a href="{{ route('admin.members.edit', $user->id) }}">
                             <button
-                                class="w-full flex items-center justify-center px-4 py-2 bg-green-50 text-green-700 rounded-lg font-medium hover:bg-green-100 transition">
-                                <i class="fas fa-envelope mr-2"></i>Send Message
+                                class="w-full mt-4 px-4 py-2 bg-green-50 text-green-600 rounded-lg font-medium hover:bg-green-100 transition">
+                                <i class="fas fa-upload mr-2"></i>Upload Document
                             </button>
-                            <button
-                                class="w-full flex items-center justify-center px-4 py-2 bg-blue-50 text-blue-700 rounded-lg font-medium hover:bg-blue-100 transition">
-                                <i class="fas fa-calendar-plus mr-2"></i>Schedule Visit
-                            </button>
-                            <button
-                                class="w-full flex items-center justify-center px-4 py-2 bg-purple-50 text-purple-700 rounded-lg font-medium hover:bg-purple-100 transition">
-                                <i class="fas fa-file-invoice mr-2"></i>Generate Report
-                            </button>
-                        </div>
+                        </a>
                     </div>
                 </div>
             </div>

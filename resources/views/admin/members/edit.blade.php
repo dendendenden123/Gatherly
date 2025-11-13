@@ -176,21 +176,57 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div
-                        class="upload-area border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer">
-                        <i class="fas fa-user-circle text-4xl text-gray-400 mb-3"></i>
-                        <p class="text-gray-600 font-medium">Profile Image</p>
-                        <p class="text-gray-500 text-sm mt-1">Click to upload or drag and drop</p>
+                        class="upload-area border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer"
+                        id="profile_upload_area">
+                        @if($user->profile_image && !str_contains($user->profile_image, 'Default_pfp.jpg'))
+                            <img id="profile_preview" src="{{ asset('storage/' . $user->profile_image) }}" alt="Profile Preview" 
+                                class="w-24 h-24 object-cover rounded-full mx-auto mb-3">
+                            <i class="fas fa-user-circle text-4xl text-gray-400 mb-3 hidden" id="profile_icon"></i>
+                        @else
+                            <img id="profile_preview" src="" alt="Profile Preview" 
+                                class="hidden w-24 h-24 object-cover rounded-full mx-auto mb-3">
+                            <i class="fas fa-user-circle text-4xl text-gray-400 mb-3" id="profile_icon"></i>
+                        @endif
+                        <p class="text-gray-600 font-medium" id="profile_text">Profile Image</p>
+                        <p class="text-gray-500 text-sm mt-1" id="profile_subtext">Click to upload or drag and drop</p>
                         <p class="text-gray-400 text-xs mt-1">JPG, PNG (Max 2MB)</p>
-                        <input type="file" class="hidden" id="profile_image" name="profile_image" accept="image/*">
+                        <input type="file" class="hidden" id="profile_image" name="profile_image" accept="image/jpeg,image/png,image/jpg">
                     </div>
 
                     <div
-                        class="upload-area border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer">
-                        <i class="fas fa-file-alt text-4xl text-gray-400 mb-3"></i>
-                        <p class="text-gray-600 font-medium">Document Image</p>
-                        <p class="text-gray-500 text-sm mt-1">Click to upload or drag and drop</p>
+                        class="upload-area border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer"
+                        id="document_upload_area">
+                        @if($user->document_image)
+                            @if(str_ends_with($user->document_image, '.pdf'))
+                                <div id="document_preview_container">
+                                    <i class="fas fa-file-pdf text-5xl text-red-500 mb-3"></i>
+                                    <p class="text-sm text-gray-600 mt-2">Current: {{ basename($user->document_image) }}</p>
+                                    <a href="{{ asset('storage/' . $user->document_image) }}" target="_blank" class="text-blue-500 text-xs hover:underline">View PDF</a>
+                                </div>
+                                <i class="fas fa-file-alt text-4xl text-gray-400 mb-3 hidden" id="document_icon"></i>
+                                <img id="document_preview" src="" alt="Document Preview" class="hidden w-32 h-32 object-cover mx-auto mb-3 rounded">
+                            @else
+                                <img id="document_preview" src="{{ asset('storage/' . $user->document_image) }}" alt="Document Preview" class="w-32 h-32 object-cover mx-auto mb-3 rounded">
+                                <div id="document_preview_container" class="hidden">
+                                    <i class="fas fa-file-pdf text-5xl text-red-500 mb-3"></i>
+                                    <p class="text-sm text-gray-600 mt-2"></p>
+                                    <a href="#" target="_blank" class="text-blue-500 text-xs hover:underline">View PDF</a>
+                                </div>
+                                <i class="fas fa-file-alt text-4xl text-gray-400 mb-3 hidden" id="document_icon"></i>
+                            @endif
+                        @else
+                            <img id="document_preview" src="" alt="Document Preview" class="hidden w-32 h-32 object-cover mx-auto mb-3 rounded">
+                            <div id="document_preview_container" class="hidden">
+                                <i class="fas fa-file-pdf text-5xl text-red-500 mb-3"></i>
+                                <p class="text-sm text-gray-600 mt-2"></p>
+                                <a href="#" target="_blank" class="text-blue-500 text-xs hover:underline">View PDF</a>
+                            </div>
+                            <i class="fas fa-file-alt text-4xl text-gray-400 mb-3" id="document_icon"></i>
+                        @endif
+                        <p class="text-gray-600 font-medium" id="document_text">Document Image</p>
+                        <p class="text-gray-500 text-sm mt-1" id="document_subtext">Click to upload or drag and drop</p>
                         <p class="text-gray-400 text-xs mt-1">JPG, PNG, PDF (Max 5MB)</p>
-                        <input type="file" class="hidden" id="document_image" name="document_image" accept="image/*,.pdf">
+                        <input type="file" class="hidden" id="document_image" name="document_image" accept="image/jpeg,image/png,image/jpg,application/pdf">
                     </div>
                 </div>
             </div>
@@ -217,43 +253,194 @@
 
     <script>
         // File upload functionality
-        document.querySelectorAll('.upload-area').forEach(area => {
-            const input = area.querySelector('input[type="file"]');
+        const profileInput = document.getElementById('profile_image');
+        const profileArea = document.getElementById('profile_upload_area');
+        const profilePreview = document.getElementById('profile_preview');
+        const profileIcon = document.getElementById('profile_icon');
+        const profileText = document.getElementById('profile_text');
+        const profileSubtext = document.getElementById('profile_subtext');
 
-            area.addEventListener('click', () => {
-                input.click();
-            });
+        const documentInput = document.getElementById('document_image');
+        const documentArea = document.getElementById('document_upload_area');
+        const documentIcon = document.getElementById('document_icon');
+        const documentText = document.getElementById('document_text');
+        const documentSubtext = document.getElementById('document_subtext');
 
-            area.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                area.classList.add('border-indigo-400', 'bg-indigo-50');
-            });
-
-            area.addEventListener('dragleave', () => {
-                area.classList.remove('border-indigo-400', 'bg-indigo-50');
-            });
-
-            area.addEventListener('drop', (e) => {
-                e.preventDefault();
-                area.classList.remove('border-indigo-400', 'bg-indigo-50');
-
-                if (e.dataTransfer.files.length) {
-                    input.files = e.dataTransfer.files;
-
-                    // Update UI to show file name
-                    const fileName = e.dataTransfer.files[0].name;
-                    area.querySelector('p.text-gray-600').textContent = fileName;
-                    area.querySelector('p.text-gray-500').textContent = 'File ready for upload';
-                }
-            });
-
-            input.addEventListener('change', () => {
-                if (input.files.length) {
-                    const fileName = input.files[0].name;
-                    area.querySelector('p.text-gray-600').textContent = fileName;
-                    area.querySelector('p.text-gray-500').textContent = 'File ready for upload';
-                }
-            });
+        // Profile image upload
+        profileArea.addEventListener('click', () => {
+            profileInput.click();
         });
+
+        profileArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            profileArea.classList.add('border-green-400', 'bg-green-50');
+        });
+
+        profileArea.addEventListener('dragleave', () => {
+            profileArea.classList.remove('border-green-400', 'bg-green-50');
+        });
+
+        profileArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            profileArea.classList.remove('border-green-400', 'bg-green-50');
+
+            if (e.dataTransfer.files.length) {
+                const file = e.dataTransfer.files[0];
+                if (validateProfileImage(file)) {
+                    profileInput.files = e.dataTransfer.files;
+                    displayProfilePreview(file);
+                }
+            }
+        });
+
+        profileInput.addEventListener('change', () => {
+            if (profileInput.files.length) {
+                const file = profileInput.files[0];
+                if (validateProfileImage(file)) {
+                    displayProfilePreview(file);
+                }
+            }
+        });
+
+        function validateProfileImage(file) {
+            const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+            const maxSize = 2 * 1024 * 1024; // 2MB
+
+            if (!validTypes.includes(file.type)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid File Type',
+                    text: 'Please upload a JPG or PNG image.',
+                    confirmButtonColor: '#3085d6'
+                });
+                profileInput.value = '';
+                return false;
+            }
+
+            if (file.size > maxSize) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'File Too Large',
+                    text: 'Profile image must be less than 2MB.',
+                    confirmButtonColor: '#3085d6'
+                });
+                profileInput.value = '';
+                return false;
+            }
+
+            return true;
+        }
+
+        function displayProfilePreview(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                profilePreview.src = e.target.result;
+                profilePreview.classList.remove('hidden');
+                profileIcon.classList.add('hidden');
+                profileText.textContent = file.name;
+                profileSubtext.textContent = 'File ready for upload';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Document image upload
+        documentArea.addEventListener('click', () => {
+            documentInput.click();
+        });
+
+        documentArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            documentArea.classList.add('border-green-400', 'bg-green-50');
+        });
+
+        documentArea.addEventListener('dragleave', () => {
+            documentArea.classList.remove('border-green-400', 'bg-green-50');
+        });
+
+        documentArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            documentArea.classList.remove('border-green-400', 'bg-green-50');
+
+            if (e.dataTransfer.files.length) {
+                const file = e.dataTransfer.files[0];
+                if (validateDocumentImage(file)) {
+                    documentInput.files = e.dataTransfer.files;
+                    displayDocumentInfo(file);
+                }
+            }
+        });
+
+        documentInput.addEventListener('change', () => {
+            if (documentInput.files.length) {
+                const file = documentInput.files[0];
+                if (validateDocumentImage(file)) {
+                    displayDocumentInfo(file);
+                }
+            }
+        });
+
+        function validateDocumentImage(file) {
+            const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
+            const maxSize = 5 * 1024 * 1024; // 5MB
+
+            if (!validTypes.includes(file.type)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid File Type',
+                    text: 'Please upload a JPG, PNG, or PDF file.',
+                    confirmButtonColor: '#3085d6'
+                });
+                documentInput.value = '';
+                return false;
+            }
+
+            if (file.size > maxSize) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'File Too Large',
+                    text: 'Document must be less than 5MB.',
+                    confirmButtonColor: '#3085d6'
+                });
+                documentInput.value = '';
+                return false;
+            }
+
+            return true;
+        }
+
+        function displayDocumentInfo(file) {
+            const documentPreview = document.getElementById('document_preview');
+            const documentPreviewContainer = document.getElementById('document_preview_container');
+            const documentIcon = document.getElementById('document_icon');
+            
+            documentText.textContent = file.name;
+            documentSubtext.textContent = 'File ready for upload';
+
+            // Hide all preview elements first
+            documentPreview.classList.add('hidden');
+            documentPreviewContainer.classList.add('hidden');
+            documentIcon.classList.add('hidden');
+
+            if (file.type === 'application/pdf') {
+                // Show PDF preview
+                const pdfIcon = documentPreviewContainer.querySelector('.fa-file-pdf');
+                const pdfName = documentPreviewContainer.querySelector('p.text-sm');
+                const pdfLink = documentPreviewContainer.querySelector('a');
+                
+                pdfName.textContent = file.name;
+                pdfLink.href = URL.createObjectURL(file);
+                pdfLink.textContent = 'Preview PDF';
+                
+                documentPreviewContainer.classList.remove('hidden');
+            } else {
+                // Show image preview
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    documentPreview.src = e.target.result;
+                    documentPreview.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
     </script>
 @endsection
