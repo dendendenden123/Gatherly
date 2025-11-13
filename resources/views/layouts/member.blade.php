@@ -9,6 +9,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Grace Community | Member Portal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script>
@@ -216,7 +217,7 @@
             <div class="p-4">
                 <div class="flex items-center space-x-3 mb-8">
                     <div class="relative">
-                        <img src="https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80"
+                        <img   src="{{ Auth::user()->profile_image && !str_contains(Auth::user()->profile_image, 'Default_pfp.jpg') ? asset('storage/' . Auth::user()->profile_image) : Auth::user()->profile_image }}"
                             alt="User" class="w-10 h-10 rounded-full object-cover">
                         <span
                             class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>

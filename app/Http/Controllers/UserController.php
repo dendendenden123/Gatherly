@@ -355,6 +355,10 @@ class UserController extends Controller
         $getUserid = auth()->id();
         $user = User::with('officers')->findOrFail($getUserid);
 
+        if ((clone $user)->status === 'expelled') {
+            return redirect()->back()->with('error', 'Login access is currently unavailable for your account. Kindly reach out to your nearest Iglesia Ni Cristo (INC) chapel.');
+        }
+
         //logs action
         Log::create([
             'user_id' => $user->id,

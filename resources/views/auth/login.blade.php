@@ -448,7 +448,7 @@
                             placeholder="you@example.com" required>
                     </div>
                     @if(session('error'))
-                        <label class="text-red-500">Invalid Credentials</label>
+                        <label class="text-red-500">{{session('error')}}</label>
                     @endif
 
                     <!-- Password -->
@@ -770,7 +770,7 @@
             const illustrationText = document.getElementById('illustration-text');
             const toggleFieldsBtn = document.getElementById('toggle-fields-btn');
             const additionalFields = document.getElementById('additional-fields');
-            
+
             // Check if there are validation errors or success message from registration
             const hasRegistrationErrors = {!! $errors->any() && (old('email') || old('first_name') || old('last_name')) ? 'true' : 'false' !!};
             const hasRegistrationSuccess = {!! session('success') ? 'true' : 'false' !!};
@@ -805,15 +805,15 @@
             // Event Listeners for Form Toggle
             loginToggle.addEventListener('click', showLoginForm);
             registerToggle.addEventListener('click', showRegisterForm);
-            goToRegister.addEventListener('click', function(e) {
+            goToRegister.addEventListener('click', function (e) {
                 e.preventDefault();
                 showRegisterForm();
             });
-            goToLogin.addEventListener('click', function(e) {
+            goToLogin.addEventListener('click', function (e) {
                 e.preventDefault();
                 showLoginForm();
             });
-            
+
             // Show appropriate form based on page load state
             if (hasRegistrationErrors || hasRegistrationSuccess) {
                 showRegisterForm();
