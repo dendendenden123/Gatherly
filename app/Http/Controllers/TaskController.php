@@ -92,17 +92,17 @@ class TaskController extends Controller
     public function show($taskId)
     {
         $task = Task::with(['user', 'assignedUsers'])->findOrFail($taskId);
-        
+
         // Get assigned users with their pivot data
         $assignedUsers = $task->assignedUsers()->withPivot('status', 'comment', 'created_at', 'updated_at')->get();
-        
+
         // Count statistics
         $totalAssigned = $assignedUsers->count();
         $pendingCount = $assignedUsers->where('pivot.status', 'pending')->count();
         $inProgressCount = $assignedUsers->where('pivot.status', 'in_progress')->count();
         $completedCount = $assignedUsers->where('pivot.status', 'completed')->count();
         $overdueCount = $assignedUsers->where('pivot.status', 'overdue')->count();
-        
+
         return view('admin.tasks.show', compact(
             'task',
             'assignedUsers',
@@ -204,7 +204,7 @@ class TaskController extends Controller
             ]);
 
             $userId = Auth::id();
-            
+
             // Update the pivot table
             $user = User::find($userId);
             $user->assignedTasks()->updateExistingPivot($taskId, [

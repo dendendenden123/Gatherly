@@ -13,7 +13,8 @@
 <!-- Task Items -->
 <div class="divide-y divide-gray-200">
     @forelse ($tasks as $task)
-    <div class="p-4 hover:bg-gray-50 task-card transition priority-{{ $task?->priority }} cursor-pointer" onclick="window.location='{{ route('admin.tasks.show', $task->id) }}'">
+    <div class="p-4 hover:bg-gray-50 task-card transition priority-{{ $task?->priority }} cursor-pointer"
+        onclick="window.location='{{ route('admin.tasks.show', $task->id) }}'">
 
         <div class="grid grid-cols-12 gap-4 items-center">
 
@@ -122,10 +123,9 @@
             <!-- Update Task Status Button for Members -->
             @member
             <div class="col-span-12 md:col-span-1" onclick="event.stopPropagation();">
-                <button type="button" 
+                <button type="button"
                     class="update-task-btn text-white bg-primary hover:bg-primary-dark px-3 py-1 rounded"
-                    data-task-id="{{ $task->id }}"
-                    data-task-title="{{ $task->title }}"
+                    data-task-id="{{ $task->id }}" data-task-title="{{ $task->title }}"
                     data-task-status="{{ $task->pivot->status ?? 'pending' }}"
                     data-task-comment="{{ $task->pivot->comment ?? '' }}">
                     Update
@@ -159,10 +159,10 @@
             <form id="updateTaskForm" method="POST">
                 @csrf
                 @method('PUT')
-                
+
                 <div class="mb-4">
                     <label for="task_status" class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                    <select id="task_status" name="status" 
+                    <select id="task_status" name="status"
                         class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-primary focus:border-primary">
                         <option value="pending">Pending</option>
                         <option value="in_progress">In Progress</option>
@@ -172,18 +172,17 @@
 
                 <div class="mb-4">
                     <label for="task_comment" class="block text-sm font-medium text-gray-700 mb-2">Comment</label>
-                    <textarea id="task_comment" name="comment" rows="4" 
+                    <textarea id="task_comment" name="comment" rows="4"
                         class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-primary focus:border-primary"
                         placeholder="Add your comment here..."></textarea>
                 </div>
 
                 <div class="flex justify-end gap-3">
-                    <button type="button" id="closeModal" 
+                    <button type="button" id="closeModal"
                         class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">
                         Cancel
                     </button>
-                    <button type="submit" 
-                        class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark">
+                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark">
                         Update
                     </button>
                 </div>

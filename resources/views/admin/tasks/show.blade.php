@@ -6,6 +6,7 @@
         body {
             font-family: 'Inter', sans-serif;
         }
+
         .status-badge {
             display: inline-flex;
             align-items: center;
@@ -14,30 +15,37 @@
             font-size: 0.75rem;
             font-weight: 500;
         }
+
         .status-pending {
             background-color: #FEF3C7;
             color: #92400E;
         }
+
         .status-in_progress {
             background-color: #DBEAFE;
             color: #1E40AF;
         }
+
         .status-completed {
             background-color: #D1FAE5;
             color: #065F46;
         }
+
         .status-overdue {
             background-color: #FEE2E2;
             color: #991B1B;
         }
+
         .priority-high {
             background-color: #FEE2E2;
             color: #991B1B;
         }
+
         .priority-medium {
             background-color: #FEF3C7;
             color: #92400E;
         }
+
         .priority-low {
             background-color: #DBEAFE;
             color: #1E40AF;
@@ -140,7 +148,8 @@
                 <div>
                     <div class="mb-4">
                         <h3 class="text-sm font-medium text-gray-500">Created By</h3>
-                        <p class="mt-1 text-sm text-gray-900">{{ $task->user->first_name . ' ' . $task->user->last_name }}</p>
+                        <p class="mt-1 text-sm text-gray-900">{{ $task->user->first_name . ' ' . $task->user->last_name }}
+                        </p>
                     </div>
 
                     <div class="mb-4">
@@ -177,63 +186,68 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 User
                             </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Email
                             </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Status
                             </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Comment
                             </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Last Updated
                             </th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @forelse ($assignedUsers as $user)
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center">
-                                    <div class="flex-shrink-0 h-10 w-10">
-                                        <img class="h-10 w-10 rounded-full object-cover" 
-                                             src="{{ $user->profile_image && !str_contains($user->profile_image, 'Default_pfp.jpg') ? asset('storage/' . $user->profile_image) : $user->profile_image }}" 
-                                             alt="{{ $user->first_name }}">
-                                    </div>
-                                    <div class="ml-4">
-                                        <div class="text-sm font-medium text-gray-900">
-                                            {{ $user->first_name . ' ' . $user->last_name }}
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 h-10 w-10">
+                                            <img class="h-10 w-10 rounded-full object-cover"
+                                                src="{{ $user->profile_image && !str_contains($user->profile_image, 'Default_pfp.jpg') ? asset('storage/' . $user->profile_image) : $user->profile_image }}"
+                                                alt="{{ $user->first_name }}">
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-gray-900">
+                                                {{ $user->first_name . ' ' . $user->last_name }}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ $user->email }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="status-badge status-{{ $user->pivot->status }}">
-                                    {{ ucfirst(str_replace('_', ' ', $user->pivot->status)) }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm text-gray-900 max-w-xs truncate" title="{{ $user->pivot->comment }}">
-                                    {{ $user->pivot->comment ?? 'No comment' }}
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ \Carbon\Carbon::parse($user->pivot->updated_at)->format('M j, Y g:i A') }}
-                            </td>
-                        </tr>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">{{ $user->email }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="status-badge status-{{ $user->pivot->status }}">
+                                        {{ ucfirst(str_replace('_', ' ', $user->pivot->status)) }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm text-gray-900 max-w-xs truncate" title="{{ $user->pivot->comment }}">
+                                        {{ $user->pivot->comment ?? 'No comment' }}
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {{ \Carbon\Carbon::parse($user->pivot->updated_at)->format('M j, Y g:i A') }}
+                                </td>
+                            </tr>
                         @empty
-                        <tr>
-                            <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">
-                                No users assigned to this task yet.
-                            </td>
-                        </tr>
+                            <tr>
+                                <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">
+                                    No users assigned to this task yet.
+                                </td>
+                            </tr>
                         @endforelse
                     </tbody>
                 </table>
