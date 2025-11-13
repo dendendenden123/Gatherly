@@ -50,7 +50,7 @@ $(document).ready(() => {
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: "dayGridMonth",
             selectable: true,
-            timeZone: "local",
+            timeZone: "Asia/Manila",
             events: getEvent(),
             eventClick: function (info) {
                 viewEvent(info);

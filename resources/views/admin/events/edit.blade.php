@@ -41,7 +41,7 @@
             <!-- Form -->
             <form method="POST" action="{{ route('admin.events.update', $event->id) }}" id="eventForm"
                 class="divide-y divide-gray-200">
-                @csrf
+                 @csrf
                 @method('PUT')
                 @if (session('success'))
                     <script>
@@ -52,12 +52,13 @@
                             confirmButtonColor: '#3085d6',
                         });
                     </script>
-                @elseif(session('error'))
+                @endif
+                @if ($errors->any())
                     <script>
                         Swal.fire({
-                            icon: 'Failed',
+                            icon: 'error',
                             title: 'Failed!',
-                            text: '{{ session('error') }}',
+                            text: '{{ $errors->first() }}',
                             confirmButtonColor: '#d63030ff',
                         });
                     </script>
@@ -183,16 +184,7 @@
                             <label for="location" class="block text-sm font-medium text-gray-700">Location</label>
                             <input type="text" name="location" id="location" value="{{ $event->location }}"
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                        </div>
-
-                        <!-- Volunteers Needed -->
-                        <div>
-                            <label for="volunteersNeeded" class="block text-sm font-medium text-gray-700">Volunteers
-                                Needed</label>
-                            <input type="number" name="number_Volunteer_needed" id="volunteersNeeded" min="0"
-                                value="{{ $event->number_Volunteer_needed }}"
-                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                        </div>
+                        </div>  
                     </div>
                 </div>
 

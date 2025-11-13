@@ -42,14 +42,6 @@
 
             <div class="dashboard-card bg-white rounded-lg shadow p-6">
                 <div class="card-header flex justify-between items-center mb-4">
-                    <div class="card-title text-gray-500 font-medium">Volunteers Needed</div>
-                    <i class="fas fa-users text-green-500"></i>
-                </div>
-                <div class="card-value text-2xl font-semibold text-gray-800">{{ $event->number_Volunteer_needed }}</div>
-            </div>
-
-            <div class="dashboard-card bg-white rounded-lg shadow p-6">
-                <div class="card-header flex justify-between items-center mb-4">
                     <div class="card-title text-gray-500 font-medium">Occurrences</div>
                     <i class="fas fa-calendar-day text-purple-500"></i>
                 </div>
@@ -114,10 +106,6 @@
         <div class="bg-white shadow rounded-lg overflow-hidden">
             <div class="px-6 py-5 border-b border-gray-200 flex justify-between items-center">
                 <h2 class="text-lg font-semibold text-gray-900">Event Occurrences</h2>
-                <a
-                    class="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                    <i class="bi bi-plus mr-1"></i> Add Occurrence
-                </a>
             </div>
 
             <div class="show-events-list divide-y divide-gray-200">

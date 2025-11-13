@@ -71,7 +71,7 @@ class EventController extends Controller
                 'event_occurrences' => $event->event_occurrences->map(function ($occurrence) {
                     return [
                         'id' => $occurrence->id,
-                        'occurrence_date' => $occurrence->occurrence_date,
+                        'occurrence_date' => $occurrence->occurrence_date->format('Y-m-d'),
                         'start_time' => $occurrence->start_time ?? '00:00:00',
                         'end_time' => $occurrence->end_time ?? '23:59:59',
                     ];
@@ -105,10 +105,6 @@ class EventController extends Controller
             }
 
             $validated = $request->validated();
-
-            // Add one day to start_date and end_date
-            $validated['start_date'] = Carbon::parse($validated['start_date'])->addDay();
-            $validated['end_date'] = Carbon::parse($validated['end_date'])->addDay();
 
             // Create the event
             $event = Event::create($validated);
