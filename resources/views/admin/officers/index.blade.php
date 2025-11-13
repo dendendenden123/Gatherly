@@ -47,22 +47,13 @@
                     <label for="end_date">End Date</label>
                     <input type="date" name="end_date" id="end_date" value="{{ request('end_date') }}" class="filter-input">
                 </div>
-
-                <div class="filter-actions">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-filter"></i> Apply Filters
-                    </button>
-                    <button type="button" id="resetFilters" class="btn btn-outline">
-                        <i class="fas fa-undo"></i> Reset
-                    </button>
-                </div>
             </form>
         </div>
 
         <!-- Officer Table -->
         <div class="officer-table-container">
             <div class="table-header">
-                <div class="table-title">Church Officers</div>
+                <div class="table-title">Members Roles</div>
                 <button class="btn btn-primary" id="addOfficerBtn">
                     <i class="fas fa-plus"></i> Add Officer
                 </button>

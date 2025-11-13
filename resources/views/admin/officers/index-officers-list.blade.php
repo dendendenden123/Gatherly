@@ -4,7 +4,6 @@
             <th>Officer</th>
             <th>Role</th>
             <th>Term Start</th>
-            <th>Status</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -25,21 +24,6 @@
             return $officers->role->name; })->implode(', ')}}</span>
                 </td>
                 <td>{{ optional(optional($officer->officers->first())->created_at)->format('M d, Y')}}</td>
-                <td>
-                    @if($officer->status == 'active')
-                        <span class="status-active">
-                            {{ $officer->status}}
-                        </span>
-                    @elseif($officer->status == 'partially-active')
-                        <span class="status-partial">
-                            {{ $officer->status}}
-                        </span>
-                    @else
-                        <span class="status-inactive">
-                            {{ $officer->status}}
-                        </span>
-                    @endif
-                </td>
                 <td>
                     <button id="{{ $officer->id }}" data-name='{{ $officer->full_name  }}' class="action-btn edit-btn">
                         <i class="fas fa-edit"></i> Edit

@@ -1,3 +1,4 @@
+
 //===========================SET UP================================
 const addOfficerModal = $("#addOfficerModal");
 const roleCheckBoxes = $(".role-checkbox");
