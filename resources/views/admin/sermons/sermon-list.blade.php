@@ -8,14 +8,14 @@
                     $isYouTube = preg_match('/youtube\.com|youtu\.be/', $videoUrl);
                     $isVimeo = preg_match('/vimeo\.com/', $videoUrl);
                     $isLocalVideo = !$isYouTube && !$isVimeo && $videoUrl;
-                    
+
                     // Extract YouTube thumbnail
                     $youtubeId = null;
                     if ($isYouTube) {
                         preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/', $videoUrl, $matches);
                         $youtubeId = $matches[1] ?? null;
                     }
-                    
+
                     // Extract Vimeo thumbnail (requires API call in production, using placeholder for now)
                     $vimeoId = null;
                     if ($isVimeo) {
@@ -23,24 +23,20 @@
                         $vimeoId = $matches[1] ?? null;
                     }
                 @endphp
-                
+
                 <div class="sermon-thumbnail">
                     @if ($isYouTube && $youtubeId)
                         <!-- YouTube Thumbnail -->
-                        <img src="https://img.youtube.com/vi/{{ $youtubeId }}/maxresdefault.jpg" 
-                             alt="{{ $sermon->title }}"
-                             onerror="this.src='https://img.youtube.com/vi/{{ $youtubeId }}/hqdefault.jpg'">
+                        <img src="https://img.youtube.com/vi/{{ $youtubeId }}/maxresdefault.jpg" alt="{{ $sermon->title }}"
+                            onerror="this.src='https://img.youtube.com/vi/{{ $youtubeId }}/hqdefault.jpg'">
                     @elseif ($isVimeo && $vimeoId)
                         <!-- Vimeo Thumbnail -->
-                        <img src="https://vumbnail.com/{{ $vimeoId }}.jpg" 
-                             alt="{{ $sermon->title }}"
-                             onerror="this.src='https://cdn-icons-png.flaticon.com/512/727/727245.png'">
+                        <img src="https://vumbnail.com/{{ $vimeoId }}.jpg" alt="{{ $sermon->title }}"
+                            onerror="this.src='https://cdn-icons-png.flaticon.com/512/727/727245.png'">
                     @elseif ($isLocalVideo)
                         <!-- Local Video with Video.js -->
-                        <video id="sermon-video-{{ $sermon->id }}" 
-                               class="video-js vjs-default-skin" 
-                               preload="metadata"
-                               data-setup='{"controls": false, "preload": "metadata"}'>
+                        <video id="sermon-video-{{ $sermon->id }}" class="video-js vjs-default-skin" preload="metadata"
+                            data-setup='{"controls": false, "preload": "metadata"}'>
                             <source src="{{ $videoUrl }}#t=0.1" type="video/mp4">
                         </video>
                     @else
@@ -48,7 +44,7 @@
                         <img src="https://cdn-icons-png.flaticon.com/512/727/727245.png" alt="Sermon thumbnail">
                     @endif
                 </div>
-                
+
                 <div
                     class="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
                     <button
@@ -75,10 +71,12 @@
                     </div>
                 </div>
                 <div class="mt-auto">
-                    <form class="delete-form" action="{{ route('admin.sermons.destroy', $sermon->id) }}" method="POST" class="inline">
+                    <form class="delete-form" action="{{ route('admin.sermons.destroy', $sermon->id) }}" method="POST"
+                        class="inline">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md text-sm transition-colors flex items-center justify-center gap-2">
+                        <button type="submit"
+                            class="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md text-sm transition-colors flex items-center justify-center gap-2">
                             <i class="fas fa-trash"></i> Delete
                         </button>
                     </form>
@@ -122,58 +120,74 @@
     </div>
 </div>
 <script>
-   
+
     // Handle delete confirmation
-    $(document).on('submit', '.delete-form', function(e) {
+    // Handle delete confirmation
+    $(document).on('submit', '.delete-form', async function (e) {
         e.preventDefault();
-        
-        if (confirm('Are you sure you want to delete this sermon? This action cannot be undone.')) {
+
+        const deleteConfirmation = await Swal.fire({
+            title: "Are you sure you want to delete this sermon? This action cannot be undone.",
+            text: "This video will be deleted.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "Cancel",
+        });
+
+        if (deleteConfirmation.isConfirmed) {
             const form = $(this);
             const url = form.attr('action');
 
-            console.log(url)
-            
-            ajaxRequest = $.ajax({
-            url:  url,
-            headers: {
-                "X-CSRF-TOKEN": document.querySelector(
-                    'meta[name="csrf-token"]'
-                ).content,
-                "Content-Type": "application/json",
-            },
-            type: "POST",
-            success: function (response) {
-    
-                    form.closest('.sermon-card').fadeOut(300, function() {
-                        $(this).remove();
-                        // Show message if no sermons left
-                        if ($('.sermon-card').length === 0) {
-                            $('.sermon-list').html('<div class="col-span-3 text-center py-10">No sermons found.</div>');
-                        }
-                    });
+            try {
+                // Use fetch instead of $.ajax for easier async/await support
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                        "Content-Type": "application/json",
+                    },
+                });
 
-                    console.log(response)
-                    
-                    // Show success message
-                    alert('Sermon deleted successfully.');
-            },
-            error: function (xhr, status, error) {
-                 console.error('Error deleting sermon:', xhr);
-                 alert('An error occurred while deleting the sermon. Please try again.');
-            },
-        });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                // Remove card smoothly
+                form.closest('.sermon-card').fadeOut(300, function () {
+                    $(this).remove();
+                    if ($('.sermon-card').length === 0) {
+                        $('.sermon-list').html('<div class="col-span-3 text-center py-10">No sermons found.</div>');
+                    }
+                });
+
+                // SweetAlert after successful delete
+                await Swal.fire({
+                    icon: "success",
+                    title: "Video Deleted",
+                    text: "Sermon deleted successfully.",
+                    timer: 1500,
+                    showConfirmButton: false,
+                });
+
+            } catch (error) {
+                console.error('Error deleting sermon:', error);
+                await Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "An error occurred while deleting the sermon. Please try again.",
+                });
+            }
         }
     });
 
 
-     
-
-
-    
 
     document.addEventListener('DOMContentLoaded', function () {
         // Initialize Video.js for all local video thumbnails
-        document.querySelectorAll('.video-js').forEach(function(videoElement) {
+        document.querySelectorAll('.video-js').forEach(function (videoElement) {
             if (window.videojs) {
                 const player = videojs(videoElement.id, {
                     controls: false,
@@ -181,14 +195,14 @@
                     fluid: false,
                     aspectRatio: '16:9'
                 });
-                
+
                 // Seek to first frame to show thumbnail
-                player.on('loadedmetadata', function() {
+                player.on('loadedmetadata', function () {
                     player.currentTime(0.1);
                 });
-                
+
                 // Pause immediately to show as thumbnail
-                player.on('play', function() {
+                player.on('play', function () {
                     player.pause();
                 });
             }
@@ -199,7 +213,7 @@
         const modalTitle = document.getElementById('modal-title');
         const modalDescription = document.getElementById('modal-description');
         const closeModalBtn = document.getElementById('close-modal');
-        
+
         document.querySelectorAll('.play-button').forEach(btn => {
             btn.addEventListener('click', function () {
                 const videoUrl = btn.getAttribute('data-video-url');
@@ -228,12 +242,12 @@
                 modal.classList.remove('hidden');
             });
         });
-        
+
         closeModalBtn.addEventListener('click', function () {
             modal.classList.add('hidden');
             videoPlayer.src = '';
         });
-        
+
         // Optional: close modal on outside click
         modal.addEventListener('click', function (e) {
             if (e.target === modal) {

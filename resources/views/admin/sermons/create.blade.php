@@ -134,7 +134,7 @@
                                 file</label>
                             <div class="flex">
                                 <input type="file" id="video_file" name="video_file" value="{{ old('video_file') }}"
-                                    accept="video/*" class="hidden">
+                                    accept="video/*" class="hidden" required>
                                 <input type="text" id="video_file_name" readonly
                                     class="flex-1 px-4 py-2 border border-gray-300 rounded-l-lg border-r-0 bg-gray-100 cursor-not-allowed"
                                     placeholder="No file selected">
