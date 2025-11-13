@@ -233,10 +233,15 @@
                         <i class="bi bi-house-door"></i>
                         <span class="md:hidden lg:block">Dashboard</span>
                     </a>
+                    <a href="{{ route('member.profile') }}"
+                        class="{{ Request::is('member/profile') ? 'flex items-center space-x-3 p-2 rounded-lg bg-primary bg-opacity-10 text-primary' : 'flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100' }}">
+                        <i class="bi bi-person"></i>
+                        <span class="md:hidden lg:block">Profile</span>
+                    </a>
                     <a href="{{ route('my.attendance') }}"
                         class="{{ Request::is('member/attendance') ? 'flex items-center space-x-3 p-2 rounded-lg bg-primary bg-opacity-10 text-primary' : 'flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100' }}">
                         <i class="bi bi-calendar-check"></i>
-                        <span class="md:hidden lg:block">MY Attendance</span>
+                        <span class="md:hidden lg:block">My Attendance</span>
                     </a>
                     <a href="{{ route('member.notification') }}"
                         class="{{ Request::is('member/notification') ? 'flex items-center space-x-3 p-2 rounded-lg bg-primary bg-opacity-10 text-primary' : 'flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100' }}">

@@ -8,10 +8,13 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\MemberAnnouncementController;
 use App\Http\Controllers\MemberAttendanceController;
 use App\Http\Controllers\MemberDashboardController;
-
+use App\Http\Controllers\UserController;
 
 Route::controller(MemberDashboardController::class)->group(function () {
     Route::get('/member', 'index')->name('member');
+    Route::get('/member/profile', 'profile')->name('member.profile');
+    Route::get('/member/profile/edit', 'editProfile')->name('member.profile.edit');
+    Route::put('/member/profile/update', 'updatePofile')->name('member.profile.update');
 });
 
 Route::get('/member/tasks', function () {
@@ -49,6 +52,10 @@ Route::controller(TaskController::class)->group(function () {
 
 Route::controller(SermonController::class)->group(function () {
     Route::get('/member/sermon', 'mySermons')->name('member.sermon');
+});
+
+Route::controller(UserController::class)->group(function () {
+    Route::put('/admin/members/update/', 'update')->name('admin.members.update');
 });
 
 

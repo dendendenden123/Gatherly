@@ -1,75 +1,76 @@
 <div class="sermon-list grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
     <!-- Sermon Cards (repeat as needed) -->
     @forelse ($sermons as $sermon)
-        <div class="bg-white rounded-xl shadow sermon-card overflow-hidden flex flex-col">
-            <div class="relative">
-                @php
-                    $videoUrl = $sermon->video_url;
-                    $isYouTube = preg_match('/youtube\.com|youtu\.be/', $videoUrl);
-                    $isVimeo = preg_match('/vimeo\.com/', $videoUrl);
-                    $isLocalVideo = !$isYouTube && !$isVimeo && $videoUrl;
+    <div class="bg-white rounded-xl shadow sermon-card overflow-hidden flex flex-col">
+        <div class="relative">
+            @php
+                $videoUrl = $sermon->video_url;
+                $isYouTube = preg_match('/youtube\.com|youtu\.be/', $videoUrl);
+                $isVimeo = preg_match('/vimeo\.com/', $videoUrl);
+                $isLocalVideo = !$isYouTube && !$isVimeo && $videoUrl;
 
-                    // Extract YouTube thumbnail
-                    $youtubeId = null;
-                    if ($isYouTube) {
-                        preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/', $videoUrl, $matches);
-                        $youtubeId = $matches[1] ?? null;
-                    }
+                // Extract YouTube thumbnail
+                $youtubeId = null;
+                if ($isYouTube) {
+                    preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/', $videoUrl, $matches);
+                    $youtubeId = $matches[1] ?? null;
+                }
 
-                    // Extract Vimeo thumbnail (requires API call in production, using placeholder for now)
-                    $vimeoId = null;
-                    if ($isVimeo) {
-                        preg_match('/vimeo\.com\/(\d+)/', $videoUrl, $matches);
-                        $vimeoId = $matches[1] ?? null;
-                    }
-                @endphp
+                // Extract Vimeo thumbnail (requires API call in production, using placeholder for now)
+                $vimeoId = null;
+                if ($isVimeo) {
+                    preg_match('/vimeo\.com\/(\d+)/', $videoUrl, $matches);
+                    $vimeoId = $matches[1] ?? null;
+                }
+            @endphp
 
-                <div class="sermon-thumbnail">
-                    @if ($isYouTube && $youtubeId)
-                        <!-- YouTube Thumbnail -->
-                        <img src="https://img.youtube.com/vi/{{ $youtubeId }}/maxresdefault.jpg" alt="{{ $sermon->title }}"
-                            onerror="this.src='https://img.youtube.com/vi/{{ $youtubeId }}/hqdefault.jpg'">
-                    @elseif ($isVimeo && $vimeoId)
-                        <!-- Vimeo Thumbnail -->
-                        <img src="https://vumbnail.com/{{ $vimeoId }}.jpg" alt="{{ $sermon->title }}"
-                            onerror="this.src='https://cdn-icons-png.flaticon.com/512/727/727245.png'">
-                    @elseif ($isLocalVideo)
-                        <!-- Local Video with Video.js -->
-                        <video id="sermon-video-{{ $sermon->id }}" class="video-js vjs-default-skin" preload="metadata"
-                            data-setup='{"controls": false, "preload": "metadata"}'>
-                            <source src="{{ $videoUrl }}#t=0.1" type="video/mp4">
-                        </video>
-                    @else
-                        <!-- Fallback placeholder -->
-                        <img src="https://cdn-icons-png.flaticon.com/512/727/727245.png" alt="Sermon thumbnail">
-                    @endif
-                </div>
-
-                <div
-                    class="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                    <button
-                        class="play-button bg-primary hover:bg-secondary text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg"
-                        data-video-url="{{ $sermon->video_url }}" data-title="{{ $sermon->title }}"
-                        data-description="{{ $sermon->description }}">
-                        <i class="fas fa-play text-2xl pl-1"></i>
-                    </button>
-                </div>
-                <div class="absolute top-4 right-4 bg-primary text-white px-2 py-1 rounded-md text-xs font-semibold shadow">
-                    New</div>
+            <div class="sermon-thumbnail">
+                @if ($isYouTube && $youtubeId)
+                    <!-- YouTube Thumbnail -->
+                    <img src="https://img.youtube.com/vi/{{ $youtubeId }}/maxresdefault.jpg" alt="{{ $sermon->title }}"
+                        onerror="this.src='https://img.youtube.com/vi/{{ $youtubeId }}/hqdefault.jpg'">
+                @elseif ($isVimeo && $vimeoId)
+                    <!-- Vimeo Thumbnail -->
+                    <img src="https://vumbnail.com/{{ $vimeoId }}.jpg" alt="{{ $sermon->title }}"
+                        onerror="this.src='https://cdn-icons-png.flaticon.com/512/727/727245.png'">
+                @elseif ($isLocalVideo)
+                    <!-- Local Video with Video.js -->
+                    <video id="sermon-video-{{ $sermon->id }}" class="video-js vjs-default-skin" preload="metadata"
+                        data-setup='{"controls": false, "preload": "metadata"}'>
+                        <source src="{{ $videoUrl }}#t=0.1" type="video/mp4">
+                    </video>
+                @else
+                    <!-- Fallback placeholder -->
+                    <img src="https://cdn-icons-png.flaticon.com/512/727/727245.png" alt="Sermon thumbnail">
+                @endif
             </div>
-            <div class="p-5 flex-1 flex flex-col">
-                <h3 class="text-lg font-bold text-gray-800 mb-1"> {{ $sermon->title }}</h3>
-                <p class="text-gray-600 mb-3 flex-1"> {{ $sermon->description }}</p>
-                <div class="flex justify-between items-center text-xs text-gray-500 mb-3">
-                    <div class="flex items-center gap-1">
-                        <i class="fas fa-user"></i>
-                        <span> {{ $sermon->preacher?->first_name }}</span>
-                    </div>
-                    <div class="flex items-center gap-1">
-                        <i class="far fa-calendar"></i>
-                        <span>{{ $sermon->created_at->format('M d Y') }}</span>
-                    </div>
+
+            <div
+                class="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                <button
+                    class="play-button bg-primary hover:bg-secondary text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg"
+                    data-video-url="{{ $sermon->video_url }}" data-title="{{ $sermon->title }}"
+                    data-description="{{ $sermon->description }}">
+                    <i class="fas fa-play text-2xl pl-1"></i>
+                </button>
+            </div>
+            <div class="absolute top-4 right-4 bg-primary text-white px-2 py-1 rounded-md text-xs font-semibold shadow">
+                New</div>
+        </div>
+        <div class="p-5 flex-1 flex flex-col">
+            <h3 class="text-lg font-bold text-gray-800 mb-1"> {{ $sermon->title }}</h3>
+            <p class="text-gray-600 mb-3 flex-1"> {{ $sermon->description }}</p>
+            <div class="flex justify-between items-center text-xs text-gray-500 mb-3">
+                <div class="flex items-center gap-1">
+                    <i class="fas fa-user"></i>
+                    <span> {{ $sermon->preacher?->first_name }}</span>
                 </div>
+                <div class="flex items-center gap-1">
+                    <i class="far fa-calendar"></i>
+                    <span>{{ $sermon->created_at->format('M d Y') }}</span>
+                </div>
+            </div>
+            @admin
                 <div class="mt-auto">
                     <form class="delete-form" action="{{ route('admin.sermons.destroy', $sermon->id) }}" method="POST"
                         class="inline">
@@ -81,11 +82,12 @@
                         </button>
                     </form>
                 </div>
+            @endadmin
 
-            </div>
         </div>
+    </div>
     @empty
-        <div>No More Sermon Videos</div>
+    <div>No More Sermon Videos</div>
     @endforelse
 </div>
 
