@@ -5,7 +5,7 @@
             <th>Event Name</th>
             <th>Type</th>
             <th>Frequency</th>
-            <th>Created at</th>
+            <th>Time</th>
             <th>Location</th>
             <th>Status</th>
             <th>Actions</th>
@@ -33,7 +33,7 @@
                 </td>
                 <td>
                     <div class="event-datetime">
-                        <span class=" text-sm">{{ $event->created_at}}</span>
+                        <span class=" text-sm">{{ $event->start_time}} -  {{ $event->end_time}}</span>
                     </div>
                 </td>
                 <td>{{ $event->location }}</td>

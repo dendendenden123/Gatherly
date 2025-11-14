@@ -65,7 +65,9 @@
         <button class="mobile-menu-btn" id="menuToggle">
             <i class="fas fa-bars"></i>
         </button>
-        <div class="mobile-logo">Gatherly</div>
+        <div class="mobile-logo">
+            <img src="{{ asset('storage/logo.png') }}" alt="Gatherly Logo" style="height: 32px; width: auto; display: inline-block;">
+        </div>
         <div class="mobile-user-avatar"></div>
     </div>
 
@@ -75,6 +77,7 @@
     <!-- Sidebar Navigation -->
     <div class="sidebar" id="sidebar">
         <div class="logo">
+            <img src="{{ asset('storage/logo.png') }}" alt="Gatherly Logo" style="height: 40px; width: auto; margin-bottom: 8px;">
             <h2>Gatherly</h2>
             <span>Church Management System</span>
         </div>

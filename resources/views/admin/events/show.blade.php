@@ -86,7 +86,7 @@
                         <h3 class="text-sm font-medium text-gray-500">Time</h3>
                         <p class="mt-1 text-sm text-gray-900">
                             {{ \Carbon\Carbon::parse($event->start_time)->format('g:i A') }} -
-                            {{ \Carbon\Carbon::parse($event->end_time)->format('g:i A') }}
+                            {{ $event->end_time }}
                         </p>
                     </div>
 

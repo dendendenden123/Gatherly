@@ -29,7 +29,7 @@ class EventService
             ->get();
     }
 
-    public function eventAndUserTypeOverlap($request)
+    public function eventAndUserTypeOverlap($request, $eventId = null)
     {
         $startDate = Carbon::parse($request->start_date)->addDay();
         $endDate = Carbon::parse($request->end_date)->addDay();
@@ -37,6 +37,9 @@ class EventService
         $endTime = Carbon::parse($request->end_time ?? Carbon::parse($request->start_time)->addHour());
 
         return EventOccurrence::with('event')
+            ->when($eventId, function ($events) use ($eventId) {
+                $events->whereNot('event_id', $eventId);
+            })
             ->where(function ($q) use ($startDate, $endDate) {
                 // Check if occurrence date overlaps with the requested date range
                 $q->whereBetween('occurrence_date', [$startDate, $endDate]);

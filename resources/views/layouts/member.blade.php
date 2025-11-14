@@ -206,7 +206,10 @@
         <!-- Sidebar -->
         <div id="sidebar" class="sidebar bg-white w-64 md:w-20 lg:w-64 flex-shrink-0 shadow-md">
             <div class="p-4 flex items-center justify-between">
-                <span class="text-xl font-bold text-primary hidden md:block">Gatherly</span>
+                <div class="flex items-center">
+                    <img src="{{ asset('storage/logo.png') }}" alt="Gatherly Logo" class="h-8 w-auto mr-2 hidden md:block">
+                    <span class="text-xl font-bold text-primary hidden md:block">Gatherly</span>
+                </div>
                 <i class="bi bi-church text-primary text-2xl md:hidden"></i>
                 <button id="close-sidebar" class="text-gray-500 md:hidden">
                     <i class="bi bi-x-lg"></i>

@@ -18,7 +18,7 @@
         }
 
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #2ecc71;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -39,13 +39,13 @@
 
         .illustration {
             flex: 1;
-            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            background: #fff;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: top;
             padding: 40px;
-            color: white;
+            color: black;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -95,11 +95,19 @@
         }
 
         .form-container {
+            background: gray;
             flex: 1;
             padding: 40px;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            /* Add shadow */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-radius: 8px;
+            /* optional: rounded corners for nicer effect */
+            background-color: rgba(128, 128, 128, 0.05);
+            /* gray with 30% opacity */
+            /* make sure shadow is visible on non-white backgrounds */
         }
 
         .form-toggle {
@@ -200,7 +208,7 @@
 
         .form-input:focus {
             outline: none;
-            border-color: #4f46e5;
+            border-color: #2ecc71;
             box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
         }
 
@@ -287,7 +295,7 @@
         .submit-btn {
             width: 100%;
             padding: 14px;
-            background: #4f46e5;
+            background: #2ecc71;
             color: white;
             border: none;
             border-radius: 8px;
@@ -311,7 +319,7 @@
         }
 
         .auth-link {
-            color: #4f46e5;
+            color: #2ecc71;
             text-decoration: none;
             font-weight: 500;
             margin-left: 5px;
@@ -334,7 +342,7 @@
         .toggle-fields {
             display: flex;
             align-items: center;
-            color: #4f46e5;
+            color: #2ecc71;
             font-size: 14px;
             font-weight: 500;
             background: none;
@@ -400,23 +408,9 @@
     <div class="container">
         <!-- Illustration Section -->
         <div class="illustration">
+            <img src="{{ asset('storage/logo.png') }}" class="illustration-img">
             <h2 id="illustration-title">Welcome Back!</h2>
-            <p id="illustration-text">Sign in to your account and continue your journey with us.</p>
-            <svg class="illustration-img" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
-                <path fill="#ffffff"
-                    d="M80.1 183.8c-8.8-14.9-5.1-33.9 7.3-47.3 12.4-13.4 31.5-19.1 48.9-14.5 17.4 4.6 31.9 17.8 36.5 35.2 4.6 17.4-1.1 36.5-14.5 48.9-13.4 12.4-32.4 16.1-47.3 7.3z" />
-                <path fill="#ffffff"
-                    d="M319.9 183.8c8.8-14.9 5.1-33.9-7.3-47.3-12.4-13.4-31.5-19.1-48.9-14.5-17.4 4.6-31.9 17.8-36.5 35.2-4.6 17.4 1.1 36.5 14.5 48.9 13.4 12.4 32.4 16.1 47.3 7.3z" />
-                <path fill="#ffffff"
-                    d="M200 50c-82.8 0-150 67.2-150 150s67.2 150 150 150 150-67.2 150-150S282.8 50 200 50zm0 260c-60.7 0-110-49.3-110-110s49.3-110 110-110 110 49.3 110 110-49.3 110-110 110z" />
-                <path fill="#ffffff"
-                    d="M200 130c-38.7 0-70 31.3-70 70s31.3 70 70 70 70-31.3 70-70-31.3-70-70-70zm0 120c-27.6 0-50-22.4-50-50s22.4-50 50-50 50 22.4 50 50-22.4 50-50 50z" />
-                <circle fill="#ffffff" cx="160" cy="180" r="10" />
-                <circle fill="#ffffff" cx="240" cy="180" r="10" />
-                <path fill="#ffffff"
-                    d="M180 220h40c5.5 0 10-4.5 10-10s-4.5-10-10-10h-40c-5.5 0-10 4.5-10 10s4.5 10 10 10z" />
-            </svg>
-            <p>Join thousands of satisfied users</p>
+            <p id="illustration-text">Please log in to access your account and manage your church activities.</p>
         </div>
 
         <!-- Form Section -->
@@ -491,7 +485,7 @@
                 <div class="form-footer">
                     <p>Don't have an account? <a href="#" id="go-to-register" class="auth-link">Sign Up</a></p>
                     <a href="{{ route('showForgotPassword') }}" class="auth-link"
-                        style="margin-top: 10px; display: inline-block;">Forgot password?</a>
+                        style="margin-top: 10px; display: inline-block; color: red">Forgot password?</a>
                 </div>
             </div>
 
@@ -715,11 +709,6 @@
                         @enderror
                     </div>
 
-                    <!-- Additional Fields Toggle (keeps the same toggle behaviour as your markup) -->
-                    <button type="button" class="toggle-fields" id="toggle-fields-btn">
-                        Additional Information <i class="fas fa-chevron-down"></i>
-                    </button>
-
                     <!-- Additional Fields wrapper (already included above as individual fields) -->
                     <!-- (You can keep or remove the duplicated additional section; fields already appear above) -->
 
@@ -786,7 +775,7 @@
 
                 // Update illustration content
                 illustrationTitle.textContent = 'Welcome Back!';
-                illustrationText.textContent = 'Sign in to your account and continue your journey with us.';
+                illustrationText.textContent = 'Please log in to access your account and view church activities.';
             }
 
             function showRegisterForm() {
@@ -799,7 +788,7 @@
 
                 // Update illustration content
                 illustrationTitle.textContent = 'Join Us Today!';
-                illustrationText.textContent = 'Create an account to unlock all features and benefits.';
+                illustrationText.textContent = 'Register to participate in church events, view tasks, and stay connected with your brothers and sisters.';
             }
 
             // Event Listeners for Form Toggle

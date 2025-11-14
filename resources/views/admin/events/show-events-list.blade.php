@@ -10,8 +10,8 @@
                         {{ \Carbon\Carbon::parse($occurrence->occurrence_date)->format('l, F j, Y') }}
                     </div>
                     <div class="text-sm text-gray-500">
-                        {{ \Carbon\Carbon::parse($occurrence->start_time)->format('g:i A') }} -
-                        {{ \Carbon\Carbon::parse($occurrence->end_time)->format('g:i A') }}
+                        {{ \Carbon\Carbon::parse($event->start_time)->format('g:i A') }} -
+                        {{ $event->end_time }}
                     </div>
                 </div>
             </div>
@@ -50,7 +50,4 @@
     </div>
 @endforelse
 
-@php
-    $containerClass = "show-events-list";
-@endphp
-<x-pagination :containerClass="$containerClass" :data="$eventOccurrences" />
+{{ $eventOccurrences->links() }}

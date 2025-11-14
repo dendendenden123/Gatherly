@@ -30,7 +30,7 @@
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
                     <div class="flex-shrink-0 flex items-center">
-                        <i class="bi bi-church text-primary text-2xl mr-2"></i>
+                        <img src="{{ asset('storage/logo.png') }}" alt="Gatherly Logo" class="h-10 w-auto mr-2">
                         <span class="text-xl font-bold text-primary">Gatherly</span>
                     </div>
                 </div>
@@ -609,7 +609,7 @@
             <div class="grid md:grid-cols-4 gap-8">
                 <div class="md:col-span-2">
                     <div class="flex items-center mb-4">
-                        <i class="bi bi-church text-primary text-2xl mr-2"></i>
+                        <img src="{{ asset('storage/logo.png') }}" alt="Gatherly Logo" class="h-10 w-auto mr-2">
                         <span class="text-xl font-bold text-white">Gatherly Church</span>
                     </div>
                     <p class="mb-4">Loving God, Serving People - Since 1985</p>

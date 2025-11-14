@@ -40,8 +40,8 @@ class EventController extends Controller
 
     public function show(Request $request, $id)
     {
-        $event = Event::findOrFail($id)->first();
-        $eventOccurrences = EventOccurrence::where('event_id', $id)->orderByDesc('id')->simplePaginate(5);
+        $event = Event::findOrFail($id);
+        $eventOccurrences = EventOccurrence::where('event_id', $id)->orderByDesc('updated_at')->simplePaginate(50);
 
         if ($request->ajax()) {
             $showEventsListView = view('admin.events.show-events-list', compact('eventOccurrences'))->render();
@@ -134,7 +134,7 @@ class EventController extends Controller
     {
         try {
 
-            $overlapEventCounts = $this->eventService->eventAndUserTypeOverlap($request)->count();
+            $overlapEventCounts = $this->eventService->eventAndUserTypeOverlap($request, $id)->count();
             $firstOverlap = $this->eventService
                 ->eventAndUserTypeOverlap($request)
                 ->first();
