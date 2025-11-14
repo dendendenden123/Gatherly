@@ -35,30 +35,59 @@ class EventService
         $endDate = Carbon::parse($request->end_date);
         $startTime = Carbon::parse($request->start_time);
         $endTime = Carbon::parse($request->end_time ?? Carbon::parse($request->start_time)->addHour());
+        $repeat = $request->repeat; // weekly / monthly / yearly / none
+
+        // 1) Generate the exact falling dates for THIS new event
+        $repeatDates = [];
+
+        if ($repeat === 'weekly') {
+            $loop = $startDate->copy();
+            while ($loop->lte($endDate)) {
+                $repeatDates[] = $loop->format('Y-m-d');
+                $loop->addWeek();
+            }
+        } elseif ($repeat === 'monthly') {
+            $loop = $startDate->copy();
+            while ($loop->lte($endDate)) {
+                $repeatDates[] = $loop->format('Y-m-d');
+                $loop->addMonth();
+            }
+        } elseif ($repeat === 'yearly') {
+            $loop = $startDate->copy();
+            while ($loop->lte($endDate)) {
+                $repeatDates[] = $loop->format('Y-m-d');
+                $loop->addYear();
+            }
+        } else {
+            // No repeat → only use the single date(s)
+            $repeatDates = [$startDate->format('Y-m-d')];
+        }
 
         return EventOccurrence::with('event')
             ->when($eventId, function ($events) use ($eventId) {
                 $events->whereNot('event_id', $eventId);
             })
-            ->where(function ($q) use ($startDate, $endDate) {
-                // Check if occurrence date overlaps with the requested date range
-                $q->whereBetween('occurrence_date', [$startDate, $endDate]);
+            ->where(function ($q) use ($repeatDates) {
+
+                // 2) Compare only against the actual repeated falling dates
+                $q->whereIn(DB::raw('DATE(occurrence_date)'), $repeatDates);
+
             })
             ->where(function ($q) use ($startTime, $endTime) {
-                // Core overlap condition (time-based)
+
+                // 3) Time-based overlap check
                 $q->where(function ($query) use ($startTime, $endTime) {
                     $query
-                        // Starts before requested event ends, and ends after requested event starts
                         ->whereTime('start_time', '<=', $endTime)
                         ->whereTime(DB::raw('COALESCE(end_time, DATE_ADD(start_time, INTERVAL 1 HOUR))'), '>=', $startTime);
                 });
+
             })
-            ->where(function ($q) {
-                // Only check upcoming events (today onward)
-                $q->where('occurrence_date', '>=', today());
-            })
+            ->where('occurrence_date', '>=', today()) // future events only
             ->get();
     }
+
+
 
 
     public function getUpcomingEvent()

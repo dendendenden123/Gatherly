@@ -31,7 +31,7 @@ class AttendanceService
 
         return Attendance::filter($filters)
             ->orderByDesc('id')
-            ->simplePaginate(6);
+            ->simplePaginate(50);
     }
 
     public function countUserAttendances($userID)

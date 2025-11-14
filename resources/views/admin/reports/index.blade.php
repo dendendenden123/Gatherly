@@ -175,7 +175,7 @@
                     <div class="flex justify-between items-start">
                         <div>
                             <p class="text-sm font-medium text-gray-600">Total Attendance</p>
-                            <p class="text-2xl font-bold text-gray-900 mt-1">{{ $totalAttendance }}</p>
+                            <p class="text-2xl font-bold text-gray-900 mt-1">{{ $totalAttendance }} <span class="text-sm text-gray-500"> /{{ $totalAttendancetotal }} </span></p>
                         </div>
                         <div class="p-3 bg-blue-100 rounded-lg">
                             <i class="fas fa-users text-blue-600"></i>

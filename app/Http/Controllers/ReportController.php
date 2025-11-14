@@ -25,6 +25,7 @@ class ReportController extends Controller
     public function index(Request $request)
     {
         try {
+            $totalAttendancetotal = $this->reportService->getAttendanceFilteredReport($request)->count();
             $totalAttendance = $this->reportService->getAttendanceFilteredReport($request, 'present')->count();
             $totalMembers = User::query()->count();
             $engagementRate = $this->reportService->getEngagementRate($request);
@@ -55,7 +56,7 @@ class ReportController extends Controller
                 'bars' => $attendanceBars,
             ]);
 
-            return view('admin.reports.index', compact('totalAttendance', 'totalMembers', 'engagementRate', 'attendanceChart', 'engagementChart', 'attendanceDetails', 'engagementDetails'));
+            return view('admin.reports.index', compact('totalAttendance', 'totalAttendancetotal', 'totalMembers', 'engagementRate', 'attendanceChart', 'engagementChart', 'attendanceDetails', 'engagementDetails'));
         } catch (\Exception $e) {
             logger()->error('Error in ReportController@index: ' . $e->getMessage(), ['exception' => $e]);
             if ($request->ajax()) {

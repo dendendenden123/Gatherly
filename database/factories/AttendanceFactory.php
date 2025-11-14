@@ -20,17 +20,24 @@ class AttendanceFactory extends Factory
     {
         return [
             'user_id' => $this->faker->randomElement(User::pluck('id')->toArray()),
-            "event_occurrence_id" => $this->faker->randomElement(EventOccurrence::pluck('id')->toArray()),
-            'service_date' => $this->faker->dateTimeBetween('2025-08-01', '2025-10-1')->format('Y-m-d'),
+            "event_occurrence_id" => $this->faker->randomElement(
+                EventOccurrence::where('occurrence_date', '<', '2025-11-14')
+                    ->pluck('id')
+                    ->toArray()
+            ),
+            'service_date' => $this->faker->dateTimeBetween('2025-08-01', '2025-11-13')->format('Y-m-d'),
             'check_in_time' => $this->faker->time(),
             'check_out_time' => $this->faker->optional()->time(),
-            'attendance_method' => $this->faker->randomElement(['in-person', 'online', 'fingerprint', 'mobile']),
+            'attendance_method' => 'in-person',
             'biometric_data_id' => $this->faker->optional()->uuid(),
             'recorded_by' => $this->faker->optional()->randomElement(User::pluck('id')->toArray()),
-            'status' => $this->faker->randomElement(['present', 'absent']),
+            'status' => $this->faker->randomElement([
+                ...array_fill(0, 9, 'present'),
+                'absent'
+            ]),
             'notes' => $this->faker->optional()->sentence(),
-            'created_at' => $this->faker->dateTimeBetween('2025-08-01', '2025-10-1')->format('Y-m-d'),
-            'updated_at' => $this->faker->dateTimeBetween('2025-08-01', '2025-10-1')->format('Y-m-d')
+            'created_at' => $this->faker->dateTimeBetween('2025-08-01', '2025-11-13')->format('Y-m-d'),
+            'updated_at' => $this->faker->dateTimeBetween('2025-08-01', '2025-11-13')->format('Y-m-d')
         ];
     }
 }

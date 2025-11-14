@@ -89,12 +89,12 @@
                     <span>Dashboard</span>
                 </a>
             </div>
-            <div class="nav-item {{ request()->is('admin/chat') || request()->is('admin/sermons/*') ? 'active' : '' }}">
+            <!-- <div class="nav-item {{ request()->is('admin/chat') || request()->is('admin/sermons/*') ? 'active' : '' }}">
                 <a href="{{ route('admin.chat.index') }}" class="text-decoration-none text-reset">
                     <i class="fas fa-book"></i>
                     <span>Chatbot</span>
                 </a>
-            </div>
+            </div> -->
             <div
                 class="nav-item {{ request()->is('admin/sermons') || request()->is('admin/sermons/*') ? 'active' : '' }}">
                 <a href="{{ route('admin.sermons.index') }}" class="text-decoration-none text-reset">
