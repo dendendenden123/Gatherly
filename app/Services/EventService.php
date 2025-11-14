@@ -31,8 +31,8 @@ class EventService
 
     public function eventAndUserTypeOverlap($request, $eventId = null)
     {
-        $startDate = Carbon::parse($request->start_date)->addDay();
-        $endDate = Carbon::parse($request->end_date)->addDay();
+        $startDate = Carbon::parse($request->start_date);
+        $endDate = Carbon::parse($request->end_date);
         $startTime = Carbon::parse($request->start_time);
         $endTime = Carbon::parse($request->end_time ?? Carbon::parse($request->start_time)->addHour());
 
