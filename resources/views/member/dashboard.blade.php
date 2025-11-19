@@ -49,7 +49,7 @@
             <div class="bg-white rounded-lg shadow p-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-gray-500 text-sm">Pending Tasks</p>
+                        <p class="text-gray-500 text-sm">Tasks</p>
                         <h3 class="text-2xl font-bold">{{$assignedPendingTaskCount }}</h3>
                     </div>
                     <div class="w-12 h-12 rounded-full bg-primary bg-opacity-10 flex items-center justify-center">

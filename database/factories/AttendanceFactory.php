@@ -21,7 +21,7 @@ class AttendanceFactory extends Factory
         return [
             'user_id' => $this->faker->randomElement(User::pluck('id')->toArray()),
             "event_occurrence_id" => $this->faker->randomElement(
-                EventOccurrence::where('occurrence_date', '<', '2025-11-14')
+                EventOccurrence::query()
                     ->pluck('id')
                     ->toArray()
             ),

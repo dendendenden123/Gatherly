@@ -5,9 +5,7 @@
     <div class="col-span-2">Created By</div>
     <div class="col-span-2">Description</div>
     <div class="col-span-2">Priority</div>
-    <div class="col-span-2">Due Date</div>
-    <div class="col-span-1">Created_at</div>
-    <div class="col-span-1">Action</div>
+    <div class="col-span-1">Created At</div>
 </div>
 
 <!-- Task Items -->
@@ -36,21 +34,24 @@
 
             <!-- Task Priority -->
             <div class="col-span-6 md:col-span-2">
-                <span class=`px-2 py-1 text-xs rounded-full @if($task?->priority == 'high') bg-red-100 text-red-800
-                @elseif($task?->priority == 'medium') bg-yellow-100 text-yellow-800 @else bg-blue-100 text-blue-800
-                    @endif `>{{ ucfirst($task?->priority) }}</span>
+                <span class="px-2 py-1 text-xs rounded-full
+                    @if($task?->priority == 'high') bg-red-100 text-red-800
+                    @elseif($task?->priority == 'medium') bg-yellow-100 text-yellow-800
+                    @else bg-blue-100 text-blue-800
+                    @endif">
+                    {{ ucfirst($task?->priority) }}
+                </span>
             </div>
 
-
-            <!-- Task Due date -->
-            <div class="col-span-6 md:col-span-2 text-sm">
+            <!-- Task Due Date -->
+            <div class="col-span-6 md:col-span-2 text-sm hidden">
                 <div class="flex items-center">
                     <i class="bi bi-calendar-week mr-2 text-gray-400"></i>
                     <span class="text-gray-700">{{ \Carbon\Carbon::parse($task?->due_date)->format('M d, Y') }}</span>
                 </div>
                 <div class="text-xs text-red-500 mt-1">
                     @php
-                        $due = $task?->due_date;
+                        $due = \Carbon\Carbon::parse($task?->due_date);
                         $now = now();
                         $diff = $now->diffInDays($due, false);
                     @endphp
@@ -61,102 +62,94 @@
                     @elseif ($diff > 1 && $diff <= 7)
                         {{ (int) $diff }} days left
                     @elseif ($diff > 7 && $diff <= 30)
-                        {{(int) ceil($diff / 7) }} week{{ ceil($diff / 7) > 1 ? 's' : '' }} left
+                        {{ (int) ceil($diff / 7) }} week{{ ceil($diff / 7) > 1 ? 's' : '' }} left
                     @elseif ($diff > 30)
                         {{ (int) ceil($diff / 30) }} month{{ ceil($diff / 30) > 1 ? 's' : '' }} left
                     @elseif ($diff === -1)
                         Overdue by 1 day
                     @elseif ($diff < -1 && $diff >= -7)
-                        Overdue by {{(int) abs($diff) }} days
+                        Overdue by {{ (int) abs($diff) }} days
                     @elseif ($diff < -7 && $diff >= -30)
-                        Overdue by {{(int) ceil(abs($diff) / 7) }} week{{ ceil(abs($diff) / 7) > 1 ? 's' : '' }}
+                        Overdue by {{ (int) ceil(abs($diff) / 7) }} week{{ ceil(abs($diff) / 7) > 1 ? 's' : '' }}
                     @elseif ($diff < -30)
-                        Overdue by {{(int) ceil(abs($diff) / 30) }} month{{ ceil(abs($diff) / 30) > 1 ? 's' : '' }}
+                        Overdue by {{ (int) ceil(abs($diff) / 30) }} month{{ ceil(abs($diff) / 30) > 1 ? 's' : '' }}
                     @endif
                 </div>
             </div>
 
-
-            <!-- Created_at -->
+            <!-- Created At -->
             <div class="col-span-6 md:col-span-1">
                 <span>{{ $task?->created_at->format('M d, Y') }}</span>
             </div>
 
-            <!-- Action Edit and Delete -->
-            @admin
+            <!-- Update Task Button (visible to all members) -->
+
+
+            <!-- Action Edit and Delete (Admin Only) -->
             <div class="col-span-12 md:col-span-1 flex flex-col gap-2" onclick="event.stopPropagation();">
-                <a href="{{ route('admin.tasks.edit', $task->id) }}"> <button
+                @admin
+                <a href="{{ route('admin.tasks.edit', $task->id) }}">
+                    <button
                         class="action-btn edit-btn text-primary border border-primary px-2 py-1 rounded">Edit</button>
                 </a>
 
                 <form action="{{ route('admin.tasks.destroy', $task->id) }}" method="POST" style="display:inline;">
                     @csrf
                     @method('DELETE')
-                    @if (session('success'))
-                        <script>
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Success!',
-                                text: '{{ session('success') }}',
-                                confirmButtonColor: '#3085d6',
-                            })
-                        </script>
-                    @elseif(session('error'))
-                        <script>
-                            Swal.fire({
-                                icon: 'Failed',
-                                title: 'Failed!',
-                                text: '{{ session('error') }}',
-                                confirmButtonColor: '#d63030ff',
-                            })
-                        </script>
-                    @endif
-                    <button type="submit" id="delete_{{ $task->id }}"
+                    <button type="submit"
                         class="action-btn delete-btn text-accent border border-accent px-2 py-1 rounded"
-                        onclick="()=>submitDeleteBtnConfirmation(e)">
+                        onclick="submitDeleteBtnConfirmation(event)">
                         Delete
                     </button>
                 </form>
+                @endadmin
             </div>
-            @endadmin
 
-            <!-- Update Task Status Button for Members -->
-            @member
-            <div class="col-span-12 md:col-span-1" onclick="event.stopPropagation();">
-                <button type="button"
-                    class="update-task-btn text-white bg-primary hover:bg-primary-dark px-3 py-1 rounded"
-                    data-task-id="{{ $task->id }}" data-task-title="{{ $task->title }}"
-                    data-task-status="{{ $task->pivot->status ?? 'pending' }}"
-                    data-task-comment="{{ $task->pivot->comment ?? '' }}">
-                    Update
-                </button>
-            </div>
-            @endmember
         </div>
     </div>
     @empty
     <div class="p-4 hover:bg-gray-50 task-card transition priority-high">
         <div class="grid grid-cols-12 gap-4 items-center">
             <div class="col-span-12 md:col-span-5">
-                <h3 class="font-medium">No more task</h3>
+                <h3 class="font-medium">No more tasks</h3>
             </div>
-
         </div>
     </div>
     @endforelse
 </div>
 
 @php
-    $containerClass = "task-list"
+    $containerClass = "task-list";
 @endphp
 <x-pagination :containerClass="$containerClass" :data="$tasks" />
+
+<!-- Session Alerts -->
+@if (session('success'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: '{{ session('success') }}',
+            confirmButtonColor: '#3085d6',
+        });
+    </script>
+@elseif(session('error'))
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Failed!',
+            text: '{{ session('error') }}',
+            confirmButtonColor: '#d63030',
+        });
+    </script>
+@endif
 
 <!-- Update Task Modal -->
 <div id="updateTaskModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
     <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
         <div class="mt-3">
             <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4" id="modal-title">Update Task Status</h3>
-            <form id="updateTaskForm" method="POST">
+            <form id="updateTaskForm" method="POST" action="{{ route('member.task.updateStatus', $task->id) }}">
                 @csrf
                 @method('PUT')
 
@@ -190,3 +183,22 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Open modal function
+    function openUpdateModal(button) {
+        const modal = document.getElementById('updateTaskModal');
+        const form = document.getElementById('updateTaskForm');
+
+        form.action = '/tasks/' + button.dataset.taskId;
+        document.getElementById('task_status').value = button.dataset.taskStatus;
+        document.getElementById('task_comment').value = button.dataset.taskComment;
+
+        modal.classList.remove('hidden');
+    }
+
+    // Close modal
+    document.getElementById('closeModal').addEventListener('click', function () {
+        document.getElementById('updateTaskModal').classList.add('hidden');
+    });
+</script>

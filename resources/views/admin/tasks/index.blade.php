@@ -30,7 +30,7 @@
 <!-- Main Content -->
 <main class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
     <!-- Task Filters -->
-    <div class="bg-white rounded-lg shadow-md p-4 mb-6">
+    <div class="bg-white rounded-lg shadow-md p-4 mb-6 hidden">
         <form action="{{ route('admin.tasks.index') }}" id="filter-form" class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
                 <label for="task-status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
