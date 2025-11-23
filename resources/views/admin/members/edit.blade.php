@@ -168,6 +168,50 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Transfer Information Section -->
+            <div class="p-6 border-b border-gray-200">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-exchange-alt text-green-600 mr-3"></i>Transfer Information
+                </h2>
+
+                <div class="mb-4">
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" id="istransferred" name="istransferred" value="1" 
+                            class="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                            {{ $user->istransferred ? 'checked' : '' }}>
+                        <span class="ml-2 text-sm font-medium text-gray-700">This member has been transferred</span>
+                    </label>
+                </div>
+
+                <div id="transfer_fields" class="{{ $user->istransferred ? '' : 'hidden' }}">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1" for="transferred_from">Transferred From</label>
+                            <input id="transferred_from" name="transferred_from" type="text" 
+                                value="{{ $user->transferred_from }}"
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 input-focus"
+                                placeholder="Enter previous location">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1" for="transferred_to">Transferred To</label>
+                            <input id="transferred_to" name="transferred_to" type="text" 
+                                value="{{ $user->transferred_to }}"
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 input-focus"
+                                placeholder="Enter new location">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1" for="transferred_when">Transfer Date</label>
+                            <input id="transferred_when" name="transferred_when" type="date" 
+                                value="{{ $user->transferred_when ? $user->transferred_when : '' }}"
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 input-focus">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
                     <i class="fas fa-file-upload text- text-green-600  mr-3"></i>Document Upload
@@ -252,6 +296,18 @@
     </div>
 
     <script>
+        // Toggle transfer fields based on checkbox
+        const isTransferredCheckbox = document.getElementById('istransferred');
+        const transferFields = document.getElementById('transfer_fields');
+
+        isTransferredCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                transferFields.classList.remove('hidden');
+            } else {
+                transferFields.classList.add('hidden');
+            }
+        });
+
         // File upload functionality
         const profileInput = document.getElementById('profile_image');
         const profileArea = document.getElementById('profile_upload_area');
