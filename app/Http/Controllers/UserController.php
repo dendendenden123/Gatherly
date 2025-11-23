@@ -102,7 +102,6 @@ class UserController extends Controller
     //===========================================
     public function store(Request $request)
     {
-        dd($request);
         try {
             $validatedData = $request->validate([
                 'first_name' => 'required|string|max:255',
@@ -120,6 +119,10 @@ class UserController extends Controller
                 'baptism_date' => 'nullable|date',
                 'marital_status' => 'required|string|in:single,married,separated,widowed,annulled',
                 'document_image' => 'nullable|image|mimes:jpg,jpeg,png,pdf|max:4096',
+                'istransferred' => 'nullable',
+                'transferred_from' => 'nullable',
+                'transferred_to' => 'nullable',
+                'transferred_when' => 'nullable',
             ], [
                 'first_name.required' => 'Please enter your first name.',
                 'first_name.max' => 'First name must not exceed 255 characters.',
@@ -153,13 +156,23 @@ class UserController extends Controller
                 'document_image.max' => 'Document file size must not exceed 4MB.',
             ]);
 
+            $transferredTo = '';
+
             // Handle file upload for document_image
             if ($request->hasFile('document_image')) {
                 $path = $request->file('document_image')->store('documents', 'public');
                 $validatedData['document_image'] = $path;
             }
 
-            $user = User::create($validatedData);
+            if ($validatedData['istransferred'] == true) {
+                $transferredTo = $validatedData['locale'] . ' ' . $validatedData['district'];
+            }
+
+            $user = User::create([
+                ...$validatedData,
+                'transferred_to' => $transferredTo
+
+            ]);
 
 
             //logs action
@@ -272,7 +285,7 @@ class UserController extends Controller
             $user->status = $validated['status'];
 
             if ($validated['status'] == 'transferred') {
-                $user->isTransferred = true;
+                $user->istransferred = true;
                 $user->transferred_when = now();
             }
 

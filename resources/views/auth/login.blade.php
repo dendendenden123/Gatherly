@@ -579,7 +579,7 @@
                     <div class="form-group">
                         <label for="district" class="form-label">District</label>
                         <input type="text" id="district" name="district" class="form-input"
-                            placeholder="Enter your district" value="{{ old('district') }}" required>
+                            placeholder="Enter your district" value="{{ old('district', 'District of Carcar City') }}" required>
                         @error('district')
                             <p class="field-error text-sm mt-1">{{ $message }}</p>
                         @enderror
@@ -589,7 +589,7 @@
                     <div class="form-group">
                         <label for="locale" class="form-label">Locale</label>
                         <input type="text" id="locale" name="locale" class="form-input" placeholder="Enter your locale"
-                            value="{{ old('locale') }}" required>
+                            value="{{ old('locale', 'Locale og Lutopan') }}" required>
                         @error('locale')
                             <p class="field-error text-sm mt-1">{{ $message }}</p>
                         @enderror
@@ -659,6 +659,8 @@
                         @enderror
                     </div>
 
+                  
+
                     <!-- Supporting Document (Optional) -->
                     <div class="form-group">
                         <label for="document_image" class="form-label">Upload supporting documents (Optional)</label>
@@ -667,6 +669,44 @@
                         @error('document_image')
                             <p class="field-error text-sm mt-1">{{ $message }}</p>
                         @enderror
+                    </div>
+
+                      <!-- Transfer Status -->
+                    <div class="form-group">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="isTransferred" name="istransferred" value="1" 
+                                class="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out"
+                                {{ old('istransferred') ? 'checked' : '' }}>
+                            <label for="istransferred" class="ml-2 block text-sm text-gray-700">
+                                Check if transferred from another locale
+                            </label>
+                        </div>
+                        @error('istransferred')
+                            <p class="field-error text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Transfer Details (Conditional) -->
+                    <div id="transferDetails" style="display:none">
+                        <!-- Transfer Date -->
+                        <div class="form-group">
+                            <label for="transferred_when" class="form-label">Transfer Date</label>
+                            <input type="date" id="transferred_when" name="transferred_when" class="form-input"
+                                value="{{ old('transferred_when') }}">
+                            @error('transferred_when')
+                                <p class="field-error text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Transfer From -->
+                        <div class="form-group">
+                            <label for="transferred_from" class="form-label">Transferred From (Location/Church)</label>
+                            <input type="text" id="transferred_from" name="transferred_from" class="form-input"
+                                placeholder="Enter previous location/church" value="{{ old('transferred_from') }}">
+                            @error('transferred_from')
+                                <p class="field-error text-sm mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
                     </div>
 
                     <!-- Email -->
@@ -759,6 +799,17 @@
             const illustrationText = document.getElementById('illustration-text');
             const toggleFieldsBtn = document.getElementById('toggle-fields-btn');
             const additionalFields = document.getElementById('additional-fields');
+            const isTransferred = document.querySelector('#isTransferred');
+
+            
+            document.addEventListener('click', function(){
+                 if (isTransferred.checked) {
+                     document.querySelector('#transferDetails').style.display = 'block'
+                 }else{
+                    document.querySelector('#transferDetails').style.display = 'hidden'
+                 }
+            })
+          
 
             // Check if there are validation errors or success message from registration
             const hasRegistrationErrors = {!! $errors->any() && (old('email') || old('first_name') || old('last_name')) ? 'true' : 'false' !!};
