@@ -15,22 +15,12 @@ Route::controller(MemberDashboardController::class)->group(function () {
     Route::get('/member/profile', 'profile')->name('member.profile');
     Route::get('/member/profile/edit', 'editProfile')->name('member.profile.edit');
     Route::put('/member/profile/update', 'updateProfile')->name('member.profile.update');
+    Route::get('/member/transfer-request', 'viewTransferForm')->name('member.transfer');
+    Route::post('/member/update/transfer-status', 'updateTransferStatus')->name('member.update.transfer');
 });
 
 Route::get('/member/tasks', function () {
     return view("member.tasks");
-});
-
-// Attendance Routes 
-// authorize if the user is admin or minister and secretary (id 9)
-Route::middleware(['Role:9'])->controller(AttendanceController::class)->group(function () {
-    Route::get('/admin/attendance', 'index')->name('admin.attendance');
-    Route::post('/admin/attendance/store', 'store')->name('admin.attendance.store');
-    Route::get('/admin/attendance/create', 'create')->name('admin.attendance.create');
-    Route::post('/admin/attendance/enroll', 'enroll')->name('admin.attendance.enroll');
-    Route::post('/admin/attendance/scan', 'scan')->name('admin.attendance.scan');
-    Route::get('/admin/attendance/isEmailValidForEnrollment', 'isEmailValidForEnrollment')->name('admin.attendance.isEmailValidForEnrollment');
-    Route::get('/admin/attendance/{id}', 'show')->name('admin.attendance.show');
 });
 
 Route::controller(AttendanceController::class)->group(function () {
@@ -58,6 +48,20 @@ Route::controller(SermonController::class)->group(function () {
 Route::controller(UserController::class)->group(function () {
     Route::put('/admin/members/update/', 'update')->name('admin.members.update');
 });
+
+
+// Attendance Routes 
+// authorize if the user is admin or minister and secretary (id 9)
+Route::middleware(['Role:9'])->controller(AttendanceController::class)->group(function () {
+    Route::get('/admin/attendance', 'index')->name('admin.attendance');
+    Route::post('/admin/attendance/store', 'store')->name('admin.attendance.store');
+    Route::get('/admin/attendance/create', 'create')->name('admin.attendance.create');
+    Route::post('/admin/attendance/enroll', 'enroll')->name('admin.attendance.enroll');
+    Route::post('/admin/attendance/scan', 'scan')->name('admin.attendance.scan');
+    Route::get('/admin/attendance/isEmailValidForEnrollment', 'isEmailValidForEnrollment')->name('admin.attendance.isEmailValidForEnrollment');
+    Route::get('/admin/attendance/{id}', 'show')->name('admin.attendance.show');
+});
+
 
 
 

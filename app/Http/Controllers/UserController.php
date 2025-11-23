@@ -102,6 +102,7 @@ class UserController extends Controller
     //===========================================
     public function store(Request $request)
     {
+        dd($request);
         try {
             $validatedData = $request->validate([
                 'first_name' => 'required|string|max:255',
@@ -264,11 +265,17 @@ class UserController extends Controller
     {
         try {
             $validated = $request->validate([
-                'status' => 'required|in:active,inactive,partially-active,expelled',
+                'status' => 'required|in:active,inactive,partially-active,expelled,pending,transferred',
             ]);
 
             $user = User::findOrFail($id);
             $user->status = $validated['status'];
+
+            if ($validated['status'] == 'transferred') {
+                $user->isTransferred = true;
+                $user->transferred_when = now();
+            }
+
             $user->save();
 
             //logs action

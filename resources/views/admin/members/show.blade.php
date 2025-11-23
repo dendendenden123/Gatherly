@@ -125,15 +125,22 @@
                                     class="px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full status-badge">{{ $user->status }}</span>
                             </div>
                             <div class="flex justify-between items-center">
-                                <span class="text-gray-600">Verification</span>
+                                <span class="text-gray-600">Transfer Date</span>
                                 <span
-                                    class="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full status-badge">Verified</span>
+                                    class="px-3 py-1  text-sm font-medium rounded-full status-badge">{{ $user->transferred_when}}</span>
                             </div>
                             <div class="flex justify-between items-center">
-                                <span class="text-gray-600">Email Confirmation</span>
+                                <span class="text-gray-600">Transferred From</span>
                                 <span
-                                    class="px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full status-badge">{{ $user->email_verified}}</span>
+                                    class="px-3 py-1  text-sm font-medium rounded-full status-badge">{{ $user->transferred_from}}</span>
                             </div>
+
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Transferred to</span>
+                                <span
+                                    class="px-3 py-1  text-sm font-medium rounded-full status-badge">{{ $user->transferred_to}}</span>
+                            </div>
+
                         </div>
                     </div>
 
@@ -168,10 +175,12 @@
                                         @endif
                                     </div>
                                     <div class="flex gap-2">
-                                        <a href="{{ asset('storage/' . $user->document_image) }}" target="_blank" class="text-green-600 hover:text-green-800">
+                                        <a href="{{ asset('storage/' . $user->document_image) }}" target="_blank"
+                                            class="text-green-600 hover:text-green-800">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        <a href="{{ asset('storage/' . $user->document_image) }}" download class="text-green-600 hover:text-green-800">
+                                        <a href="{{ asset('storage/' . $user->document_image) }}" download
+                                            class="text-green-600 hover:text-green-800">
                                             <i class="fas fa-download"></i>
                                         </a>
                                     </div>

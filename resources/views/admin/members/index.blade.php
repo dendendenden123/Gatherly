@@ -13,18 +13,18 @@
 @endsection
 
 @section('content')
-
-
     <!-- Filters -->
     <form id="filterForm" action="{{ route('admin.members') }}" class="members-filters">
         <div class="filter-group">
             <label>Status:</label>
-            <select name='status'>
+            <select name="status">
                 <option value="">All Members</option>
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
-                <option value="partially-active">Partially-Active</option>
+                <option value="partially-active">Partially Active</option>
                 <option value="expelled">Expelled</option>
+                <option value="transferred">Transferred</option>
+                <option value="pending">Requesting for Transfer</option>
             </select>
         </div>
 

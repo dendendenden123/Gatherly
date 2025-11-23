@@ -207,7 +207,8 @@
         <div id="sidebar" class="sidebar bg-white w-64 md:w-20 lg:w-64 flex-shrink-0 shadow-md">
             <div class="p-4 flex items-center justify-between">
                 <div class="flex items-center">
-                    <img src="{{ asset('storage/logo.png') }}" alt="Gatherly Logo" class="h-8 w-auto mr-2 hidden md:block">
+                    <img src="{{ asset('storage/logo.png') }}" alt="Gatherly Logo"
+                        class="h-8 w-auto mr-2 hidden md:block">
                     <span class="text-xl font-bold text-primary hidden md:block">Gatherly</span>
                 </div>
                 <i class="bi bi-church text-primary text-2xl md:hidden"></i>
@@ -221,7 +222,7 @@
             <div class="p-4">
                 <div class="flex items-center space-x-3 mb-8">
                     <div class="relative">
-                        <img   src="{{ Auth::user()->profile_image && !str_contains(Auth::user()->profile_image, 'Default_pfp.jpg') ? asset('storage/' . Auth::user()->profile_image) : Auth::user()->profile_image }}"
+                        <img src="{{ Auth::user()->profile_image && !str_contains(Auth::user()->profile_image, 'Default_pfp.jpg') ? asset('storage/' . Auth::user()->profile_image) : Auth::user()->profile_image }}"
                             alt="User" class="w-10 h-10 rounded-full object-cover">
                         <span
                             class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
@@ -268,6 +269,11 @@
                         class="{{ Request::is('member/task') ? 'flex items-center space-x-3 p-2 rounded-lg bg-primary bg-opacity-10 text-primary' : 'flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100' }}">
                         <i class="bi bi-list-task"></i>
                         <span class="md:hidden lg:block">Tasks</span>
+                    </a>
+                    <a href="{{ route('member.transfer') }}"
+                        class="{{ Request::is('member/task') ? 'flex items-center space-x-3 p-2 rounded-lg bg-primary bg-opacity-10 text-primary' : 'flex items-center space-x-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100' }}">
+                        <i class="bi bi-list-task"></i>
+                        <span class="md:hidden lg:block">Request for transfer</span>
                     </a>
                     @secretary
                     <a href="{{ route('admin.attendance') }}"

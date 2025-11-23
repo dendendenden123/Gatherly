@@ -40,6 +40,8 @@
                             <option value="partially-active" {{ $user->status === 'partially-active' ? 'selected' : '' }}>
                                 Partially-Active</option>
                             <option value="expelled" {{ $user->status === 'expelled' ? 'selected' : '' }}>Expelled</option>
+                            <option value="transferred" {{ $user->status === 'transferred' ? 'selected' : '' }}>Transferred
+                            </option>
                         </select>
                     </td>
                     <td>

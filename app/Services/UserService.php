@@ -82,4 +82,9 @@ class UserService
     {
         return User::where('email', $email)->whereNotNull('rekognition_face_id')->exists();
     }
+
+    public function updateUser($userId, $arr)
+    {
+        User::findOrFail($userId)->update($arr);
+    }
 }

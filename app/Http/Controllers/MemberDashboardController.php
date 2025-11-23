@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Services\AttendanceService;
 use App\Services\NotificationService;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use App\Models\EventOccurrence;
 use App\Models\User;
@@ -20,13 +21,16 @@ class MemberDashboardController extends Controller
     protected EventService $eventService;
     protected AttendanceService $attendanceService;
     protected NotificationService $notificationService;
+
+    protected UserService $userService;
     protected $userId;
     protected $user;
-    public function __construct(EventService $eventService, AttendanceService $attendanceService, NotificationService $notificationService)
+    public function __construct(EventService $eventService, AttendanceService $attendanceService, NotificationService $notificationService, UserService $userService)
     {
         $this->eventService = $eventService;
         $this->attendanceService = $attendanceService;
         $this->notificationService = $notificationService;
+        $this->userService = $userService;
         $this->userId = Auth::id();
         $this->user = User::find($this->userId);
     }
@@ -124,6 +128,33 @@ class MemberDashboardController extends Controller
 
 
             $user->update($validated);
+            return redirect()->back()->with('success', 'User updated successfully');
+        } catch (\Exception $e) {
+            \Log::error('Updating user data failed: ' . $e->getMessage());
+            return redirect()->back()->with('error', $e);
+        }
+    }
+
+    public function viewTransferForm()
+    {
+        return view('member.transfer-request');
+    }
+
+    public function updateTransferStatus(Request $request)
+    {
+        $currentLocale = User::findOrFail($this->userId)->locale;
+
+        try {
+            $this->userService->updateUser(
+                $this->userId,
+                [
+                    ...$request->all(),
+                    'transferred_from' => $currentLocale,
+                    'istransferred' => 'pending',
+                    'status' => 'pending'
+                ]
+            );
+
             return redirect()->back()->with('success', 'User updated successfully');
         } catch (\Exception $e) {
             \Log::error('Updating user data failed: ' . $e->getMessage());
