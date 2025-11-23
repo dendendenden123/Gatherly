@@ -15,6 +15,12 @@ return new class extends Migration {
             $table->id();
             $table->string('recipient_group')->nullable();
             $table->foreignIdFor(User::class, 'sender_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignIdFor(User::class, 'receiver_id')
+                ->nullable()
+                ->constrained()
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+
             $table->string('subject');
             $table->text('message');
             $table->string('category')->nullable();

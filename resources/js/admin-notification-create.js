@@ -6,12 +6,10 @@ $(document).ready(function () {
 
     // Recipient Type Selection
     $("#recipientType").on("change", function () {
-        $("#groupSelection, #customSelection").hide();
-
-        if ($(this).val() === "small_groups") {
-            $("#groupSelection").show();
-        } else if ($(this).val() === "custom") {
-            $("#customSelection").show();
+        if (this.value == "specific_member") {
+            $("#specificMemberInput").removeClass("hidden");
+        } else {
+            $("#specificMemberInput").addClass("hidden");
         }
     });
 

@@ -32,8 +32,12 @@ class AttendanceObserver
 
             if ($user->created_at < Carbon::now()->subMonth()) {
                 if ($user->attendances->count() == '0') {
+
+                    logger('user has been inactive', ['user' => $user]);
                     return $user->update(['status' => 'inactive']);
                 } else if ($user->attendances->count() <= ($worshipDaysCount / 2)) {
+
+                    logger('user has been partially-active', ['user' => $user]);
                     return $user->update(['status' => 'partially-active']);
                 } else if ($user->attendances->count() >= $worshipDaysCount) {
                     return $user->update(['status' => 'active']);

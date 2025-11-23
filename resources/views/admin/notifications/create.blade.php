@@ -74,6 +74,7 @@
                 <select id="recipientType" name="recipient_group" required>
                     <option value="">Select recipient group...</option>
                     <option value="all">All Members</option>
+                    <option value="specific_member">Specific member</option>
                     <option value="volunteers">All Officers/Volunteer</option>
                     <option value="buklod">Buklod</option>
                     <option value="kadiwa">kadiwa</option>
@@ -83,27 +84,12 @@
                     @empty
                         <option value="">No more...</option>
                     @endforelse
-
                 </select>
             </div>
 
-            <!-- Dynamic recipient selection (shown when Small Groups or Custom selected) -->
-            <div class="form-group" id="groupSelection" style="display: none;">
-                <label>Select Groups</label>
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
-                    <label style="display: flex; align-items: center; gap: 5px;">
-                        <input type="checkbox" name="category" value="mens_group"> Men's Bible Study
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 5px;">
-                        <input type="checkbox" name="category" value="womens_group"> Women's Fellowship
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 5px;">
-                        <input type="checkbox" name="category" value="youth_group"> Youth Group
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 5px;">
-                        <input type="checkbox" name="category" value="seniors_group"> Seniors Ministry
-                    </label>
-                </div>
+            <div class="form-group hidden" id="specificMemberInput">
+                <label>Name or Id</label>
+                <input type="text" id="notificationSubject" name="receiver_id" placeholder="Enter name or id">
             </div>
         </div>
 

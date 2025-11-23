@@ -47,6 +47,7 @@ class NotificationController extends Controller
     {
         $validated = $request->validate([
             'recipient_group' => 'nullable|string',
+            'receiver_id' => 'nullable|numeric',
             'subject' => 'required|string|max:255',
             'message' => 'required|string',
             'category' => 'nullable|string|max:100',
@@ -56,6 +57,7 @@ class NotificationController extends Controller
         $notif = Notification::create([
             'recipient_group' => $validated['recipient_group'] ?? null,
             'sender_id' => $this->userId,
+            'receiver_id' => $validated['receiver_id'] ?? null,
             'subject' => $validated['subject'],
             'message' => $validated['message'],
             'category' => $validated['category'] ?? null,

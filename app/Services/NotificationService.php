@@ -49,7 +49,7 @@ class NotificationService
     public function getUserNotifications($userId, $userAssociation = null)
     {
         $userRoles = $this->userService->getUsersRoles($userId);
-        $audiences = array_merge(['all', $userAssociation], $userRoles);
+        $audiences = array_merge(['all', 'specific_member', $userAssociation], $userRoles);
 
         return $this->user->receivedNotifications()
             ->when(!empty($audiences), function ($q) use ($audiences) {

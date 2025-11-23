@@ -35,8 +35,14 @@ class Notification extends Model
     protected static function booted()
     {
         static::created(function ($notification) {
-            $usersId = User::pluck('id')->toArray();
-            $notification->recipients()->attach($usersId, ['read_at' => null]);
+
+            if ($notification->receiver_id > 0) {
+                $notification->recipients()->attach($notification->receiver_id, ['read_at' => null]);
+            } else {
+                $usersId = User::pluck('id')->toArray();
+                $notification->recipients()->attach($usersId, ['read_at' => null]);
+            }
+
         });
     }
 }
