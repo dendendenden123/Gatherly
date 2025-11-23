@@ -149,7 +149,7 @@
     <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
         <div class="mt-3">
             <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4" id="modal-title">Update Task Status</h3>
-            <form id="updateTaskForm" method="POST" action="{{ route('member.task.updateStatus', $task->id) }}">
+            <form id="updateTaskForm" method="POST" action="{{ route('member.task.updateStatus', $task->id ?? 1) }}">
                 @csrf
                 @method('PUT')
 
