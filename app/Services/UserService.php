@@ -3,12 +3,13 @@
 namespace App\Services;
 
 use App\Models\User;
+use App\Mail\MemberStatusNotification;
 use App\Models\Notification;
-use Auth;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
 use App\Helpers\AttendanceHelper;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class UserService
 {
@@ -119,6 +120,25 @@ class UserService
                 logger('user has been inactive', ['user' => $user]);
                 $user->update(['status' => 'inactive']);
 
+                // Send email to member
+                try {
+                    Mail::to($user->email)->send(new MemberStatusNotification($user, 'inactive'));
+                } catch (\Exception $e) {
+                    \Log::error('Failed to send inactive email to member: ' . $e->getMessage());
+                }
+
+                // Send email to ministers
+                foreach ($ministersIds as $ministerId) {
+                    $minister = User::find($ministerId);
+                    if ($minister && $minister->email) {
+                        try {
+                            Mail::to($minister->email)->send(new MemberStatusNotification($user, 'inactive', true));
+                        } catch (\Exception $e) {
+                            \Log::error('Failed to send inactive notification to minister: ' . $e->getMessage());
+                        }
+                    }
+                }
+
                 Notification::create([
                     'recipient_group' => 'specific_member',
                     'sender_id' => Auth::id(),
@@ -145,6 +165,25 @@ class UserService
             } else if ($user->attendances->count() <= ($worshipDaysCount / 2)) {
                 logger('user has been partially-active', ['user' => $user]);
                 $user->update(['status' => 'partially-active']);
+
+                // Send email to member
+                try {
+                    Mail::to($user->email)->send(new MemberStatusNotification($user, 'partially-active'));
+                } catch (\Exception $e) {
+                    \Log::error('Failed to send partially-active email to member: ' . $e->getMessage());
+                }
+
+                // Send email to ministers
+                foreach ($ministersIds as $ministerId) {
+                    $minister = User::find($ministerId);
+                    if ($minister && $minister->email) {
+                        try {
+                            Mail::to($minister->email)->send(new MemberStatusNotification($user, 'partially-active', true));
+                        } catch (\Exception $e) {
+                            \Log::error('Failed to send partially-active notification to minister: ' . $e->getMessage());
+                        }
+                    }
+                }
 
                 $notif = Notification::create([
                     'recipient_group' => 'specific_member',
