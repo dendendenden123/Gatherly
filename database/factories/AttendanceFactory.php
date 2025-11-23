@@ -20,7 +20,7 @@ class AttendanceFactory extends Factory
     {
         return [
             // 'user_id' => $this->faker->randomElement(User::pluck('id')->toArray()),
-            'user_id' => 4,
+            'user_id' => 3,
             "event_occurrence_id" => $this->faker->randomElement(
                 EventOccurrence::query()
                     ->pluck('id')

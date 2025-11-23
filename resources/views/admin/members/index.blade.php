@@ -10,11 +10,20 @@
             <p>View and manage all church members</p>
         </div>
     </div>
+
+    <div
+        class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 cursor-pointer">
+        <a href="{{ route('admin.members.recalculateMemberStatus') }}" class="hover:no-underline">
+            Recalculate Status
+        </a>
+    </div>
 @endsection
 
 @section('content')
     <!-- Filters -->
     <form id="filterForm" action="{{ route('admin.members') }}" class="members-filters">
+
+
         <div class="filter-group">
             <label>Status:</label>
             <select name="status">
@@ -61,10 +70,7 @@
         </div>
 
 
-        <div class="">
-            <i class="fas fa-search"></i>
-            <a href="{{ route('admin.members.recalculateMemberStatus') }}"> Recalculate Member Status </a>
-        </div>
+
 
     </form>
     <div class="index-list ">

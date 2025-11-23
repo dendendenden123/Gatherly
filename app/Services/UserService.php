@@ -112,7 +112,12 @@ class UserService
         $worshipDaysCount = AttendanceHelper::getWorshipDaysCountLastMonth();
 
         foreach ($users as $user) {
-            if ($user->created_at > Carbon::now()->subMonth()->startOfMonth()) {
+            if (
+                $user->created_at > Carbon::now()->subMonth()->startOfMonth() ||
+                $user->status == 'transferred' ||
+                $user->status == 'pending' ||
+                $user->status == 'expelled'
+            ) {
                 continue;
             }
 
