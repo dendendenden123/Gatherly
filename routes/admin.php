@@ -34,6 +34,7 @@ Route::controller(UserController::class)->group(function () {
     Route::put('/admin/members/update/', 'update')->name('admin.members.update');
     Route::put('/admin/members/{id}/status', 'updateStatus')->name('admin.members.updateStatus');
     Route::delete('/admin/members/destroy/{id}', 'destroy')->name('admin.members.destroy');
+    Route::get('/admin/members/recalculateMemberStatus', 'recalculateMemberStatus')->name('admin.members.recalculateMemberStatus');
 });
 
 // Notification Routes

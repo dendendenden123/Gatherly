@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\UserService;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -16,9 +17,12 @@ use App\Mail\PasswordResetMail;
 
 class UserController extends Controller
 {
-    //===========================================
-    //=== Password Reset Functionality
-    //===========================================
+    protected UserService $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
 
     public function showForgotPasswordForm()
     {
@@ -404,6 +408,14 @@ class UserController extends Controller
     public function viewResetPassword()
     {
         return view('auth.reset-password');
+    }
+
+    public function recalculateMemberStatus()
+    {
+        
+        $this->userService->recalculateMemberStatus();
+
+        return redirect()->route('admin.members');
     }
 
 }

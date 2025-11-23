@@ -19,7 +19,8 @@ class AttendanceFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => $this->faker->randomElement(User::pluck('id')->toArray()),
+            // 'user_id' => $this->faker->randomElement(User::pluck('id')->toArray()),
+            'user_id' => 4,
             "event_occurrence_id" => $this->faker->randomElement(
                 EventOccurrence::query()
                     ->pluck('id')
@@ -31,12 +32,14 @@ class AttendanceFactory extends Factory
             'attendance_method' => 'in-person',
             'biometric_data_id' => $this->faker->optional()->uuid(),
             'recorded_by' => $this->faker->optional()->randomElement(User::pluck('id')->toArray()),
-            'status' => $this->faker->randomElement([
-                ...array_fill(0, 9, 'present'),
-                'absent'
-            ]),
+            // 'status' => $this->faker->randomElement([
+            //     ...array_fill(0, 9, 'present'),
+            //     'absent'
+            // ]),
+
+            'status' => 'present',
             'notes' => $this->faker->optional()->sentence(),
-            'created_at' => $this->faker->dateTimeBetween('2025-08-01', '2025-11-13')->format('Y-m-d'),
+            'created_at' => $this->faker->dateTimeBetween('2025-10-01', '2025-10-30')->format('Y-m-d'),
             'updated_at' => $this->faker->dateTimeBetween('2025-08-01', '2025-11-13')->format('Y-m-d')
         ];
     }

@@ -59,6 +59,13 @@
             <i class="fas fa-search"></i>
             <input name="memberName" id="member-search" type="text" placeholder="Search members...">
         </div>
+
+
+        <div class="">
+            <i class="fas fa-search"></i>
+            <a href="{{ route('admin.members.recalculateMemberStatus') }}"> Recalculate Member Status </a>
+        </div>
+
     </form>
     <div class="index-list ">
         @include('admin.members.index-list')
